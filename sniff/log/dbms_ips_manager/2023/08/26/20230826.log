@@ -1,0 +1,4 @@
+[17:12:41] main()-89: START
+[17:12:42] init_program()-492
+[17:13:05] main()-89: START
+[17:13:05] stop_processor()-342: signal=2
