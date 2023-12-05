@@ -75,6 +75,8 @@ class IpsSession {
 		int timeInit(std::map<session_t, u_int>::iterator itr);
 		std::map<session_t, u_int>::iterator existSession(packet_t* p);
 		session_t makeSession(packet_t *p);
+
+		static void* printSessionWrapper(void* context);
 };
 
 #endif

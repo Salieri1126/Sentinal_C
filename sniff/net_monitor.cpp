@@ -37,6 +37,8 @@
 #include "match.h"
 #include "session.h"
 #include "log.h"
+#include "thread_manage.h"
+
 /**
   \addtogroup  net_monitor
   \{
@@ -50,13 +52,16 @@
 
 
 /*---- GLOBAL VARIABLES ------------------------------------------------------*/
-
 extern configure_t g_conf;             ///< 전체 시스템 동작 환경 설정 
 extern IpsMatch rules;
+extern IpsLog logs;
 
 /*---- STATIC VARIABLES ------------------------------------------------------*/
-IpsSession testSes;
-extern IpsLog logs;
+IpsSession sess;
+IpsThread threads;
+
+pthread_t m_threads[MAX_THREAD_NUM];
+
 /*---- STATIC FUNCTIONS FORWARD DECLARATION ----------------------------------*/
 
 static void packet_sniff(u_char *args, const struct pcap_pkthdr *header, const u_char *packet);
@@ -75,6 +80,9 @@ static int setFlow(packet_t *p);
  */
 void *init_net_monitor(int nic_index)
 {
+	//	쓰레드 초기화
+	memset(m_threads, 0, sizeof(pthread_t));
+
 	u_char u_nic_index = 0;
 
 	if ( !g_conf.pd[nic_index] )
@@ -87,7 +95,16 @@ void *init_net_monitor(int nic_index)
 
 	/* set callback function */
 	u_nic_index = (u_char)nic_index&0xff;
+
+	//	세션 출력하는 쓰레드 실행
+	if( pthread_create( &m_threads[0], NULL, &IpsSession::printSessionWrapper, &sess ) != 0){
+		printf("printSession thread make fail\n");
+		return NULL;
+	}
+
 	pcap_loop(g_conf.pd[nic_index], NEVER_ENDING_MODE, packet_sniff, (u_char*)&u_nic_index);
+
+	pthread_join(m_threads[0], NULL);
 
 	g_conf.is_running = 0;
 
@@ -294,10 +311,12 @@ static int packet_filter(u_char *packet, packet_t *p, int nic_index)
 	if ( g_conf.is_debug_mode && p->reverse_flow != -1 )
 		fprintf(stderr, "%s,%d: Flow(%d) %x:%d -> %x:%d dsize:%d\n", __func__, __LINE__, p->reverse_flow, p->sip, p->sp, p->dip, p->dp, p->dsize);
 
-	if( !testSes.checkSession(p) ) {
-		if ( rules.ruleFilter(p, preBuildData(packet, p->caplen - p->dsize)) )
-			return ACTION_LOG;
-	}
+	if( !sess.checkSession(p) ) 
+		return ACTION_PASS;
+
+	if ( rules.ruleFilter(p, preBuildData(packet, p->caplen - p->dsize)) )
+		return ACTION_LOG;
+	
 	return ACTION_PASS;
 }
 

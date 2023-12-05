@@ -14,7 +14,7 @@ char *rule_field_name[] = {
 	"base_limit"
 };
 
-extern IpsSession testSes;
+extern IpsSession sess;
 
 /*
  *! \brief 
@@ -233,14 +233,14 @@ int IpsMatch::ruleFilter(packet_t *p, u_char *pdata){
 
 		if( match ){
 
-			itr = testSes.existSession(p);
+			itr = sess.existSession(p);
 				//	Select찾았으면 기준 시간 지났는지 확인
 			if ( (time(NULL)-itr->first.s_time) > m_astRules[i].base_time) {
 				//	지났으면 Session의 cnt 초기화, time 초기화 후 cnt++
 				//	안지났으면 Session의 cnt++
 				//	기준 Cnt 보다 큰지 확인
 				itr->second = 0;
-				testSes.timeInit(itr);
+				sess.timeInit(itr);
 			}
 			itr->second++;
 			if( itr->second > m_astRules[i].base_limit) {

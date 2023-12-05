@@ -76,23 +76,33 @@ int IpsSession::addSession(packet_t *p){
  */
 int IpsSession::printSession(){
 
-	struct in_addr *ip_src;
-	struct in_addr *ip_dst;
-	
-	std::map<session_t, u_int>::iterator sItr;
-	
-	for( sItr = m_astSession.begin() ; sItr != m_astSession.end() ; sItr++ ){
-		
-		ip_src = (struct in_addr*)(&(sItr->first.sip));
-		ip_dst = (struct in_addr*)(&(sItr->first.dip)); 
+	while(1){
 
-		printf("/------------ Session --------------/\n");
-		printf("Source IP : %s\n", inet_ntoa(*ip_src));
-		printf("Source Port : %d\n", sItr->first.sp);
-		printf("Destiny IP : %s\n", inet_ntoa(*ip_dst));
-		printf("Destiny Port : %d\n", sItr->first.dp);
-		printf("Session Count : %d\n", sItr->second);
-		printf("/-----------------------------------/\n\n");
+		if( m_astSession.empty() )
+			continue;
+
+		sleep(10);
+
+		struct in_addr *ip_src;
+		struct in_addr *ip_dst;
+	
+		std::map<session_t, u_int>::iterator sItr;
+			
+		for( sItr = m_astSession.begin() ; sItr != m_astSession.end() ; sItr++ ){
+			time_t tmpTime = time(NULL);
+			ip_src = (struct in_addr*)(&(sItr->first.sip));
+			ip_dst = (struct in_addr*)(&(sItr->first.dip)); 
+				
+			if( (tmpTime-(sItr->first.s_time)) < 120 ){
+				printf("/------------ Session --------------/\n");
+				printf("Source IP : %s\n", inet_ntoa(*ip_src));
+				printf("Source Port : %d\n", sItr->first.sp);
+				printf("Destiny IP : %s\n", inet_ntoa(*ip_dst));
+				printf("Destiny Port : %d\n", sItr->first.dp);
+				printf("Session Count : %d\n", sItr->second);
+				printf("/-----------------------------------/\n\n");
+			}
+		}
 	}
 		
 	return 0;
@@ -140,9 +150,13 @@ int IpsSession::delSession(packet_t *p){
 
 	std::map<session_t, u_int>::iterator sItr;
 
-	if( (sItr = m_astSession.find(makeSession(p))) != m_astSession.end() )
-		m_astSession.erase(sItr++);
-
+	for( sItr = m_astSession.begin() ; sItr != m_astSession.end() ; sItr++){
+		if( sItr->first.sip == p->dip && sItr->first.sp == p->dp){
+			m_astSession.erase(sItr++);
+		}
+	}
+	
+	
 	return 0;
 }
 
@@ -177,4 +191,8 @@ session_t IpsSession::makeSession(packet_t *p){
 	tmpSes.dp = p->dp;
 
 	return tmpSes;
+}
+
+void* IpsSession::printSessionWrapper(void* context) {
+	return reinterpret_cast<void*>(static_cast<IpsSession*>(context)->printSession());
 }
