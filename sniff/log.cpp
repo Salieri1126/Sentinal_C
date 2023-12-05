@@ -27,14 +27,12 @@ int IpsLog::create_log(){
 	/* Connect to database */
     if (!mysql_real_connect(conn, l_info.logIp, l_info.user, l_info.password, "mysql", atoi(l_info.logPort), NULL, 0)) {
        	fprintf(stderr, "%s\n", mysql_error(conn));
-        printf("!!\n");
 		return 1;
     }
 
     /* send SQL query */
     if (mysql_query(conn, "CREATE DATABASE IF NOT EXISTS S_ips_log_db")) {
         fprintf(stderr, "%s\n", mysql_error(conn));
-		printf("!!!\n");
         return 1;
     }
 

@@ -37,13 +37,14 @@ class IpsLog {
 		}
 
 		~IpsLog(){
-		
+			mysql_close(conn);
 		}
 
 		int is_read_logInfo();
 		int printLog();
 		int create_log();
 		int insert_log(u_char *packet, packet_t *p, rule_t *rule);
+		int close_log_db();
 };
 
 
