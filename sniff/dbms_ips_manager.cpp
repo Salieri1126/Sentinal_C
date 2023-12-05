@@ -28,6 +28,7 @@
 #include "util.h"
 #include "init_agent.h"
 #include "match.h"
+#include "log.h"
 /*---- DEFINES		------------------------------------------------*/
 
 #define INPUT_TYPE_NET 0
@@ -51,6 +52,7 @@ static struct option2 program_options[] =
 /*---- GLOBAL VARIABLES -----------------------------------------------*/
 configure_t g_conf;      /**< Environment value collection structure for action */
 IpsMatch rules;
+IpsLog logs;
 
 /*---- STATIC FUNCTIONS FORWARD DECLARATION ---------------------------*/
 
@@ -259,6 +261,11 @@ static void init_program(int nType)
 	// 		prac-3 : compile 하기
 	// 		prac-4 : contentsFilter 작성하기
 	// 		prac-5 : packet을 가져와서 contentsFilter로 비교하기
+
+	if ( logs.is_read_logInfo() ){
+		printf("read Log Fail\n");
+		return;
+	}
 
 
 	///////////////////////////////////////////////////

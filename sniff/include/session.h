@@ -71,6 +71,7 @@ class IpsSession {
 		int addSession(packet_t *p);
 		int delSession(packet_t *p);
 		int printSession();
+		int limit(packet_t *p);
 		int timeInit(std::map<session_t, u_int>::iterator itr);
 		std::map<session_t, u_int>::iterator existSession(packet_t* p);
 		session_t makeSession(packet_t *p);

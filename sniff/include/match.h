@@ -20,9 +20,14 @@ typedef struct {
 	unsigned int	rid;											// 탐지 룰 번호
 	char			deName[MAX_STR_LEN];							// 탐지 룰 이름
 	unsigned int	srcIp;											// 탐지 IP
+	unsigned int	to_srcIp;
 	unsigned short	srcPort;										// 탐지 PORT
+	unsigned short	to_srcPort;
 	char			content[MAX_REG_NUM][MAX_RULE_STR_LEN];			// 탐지 룰 content[탐지 룰 개수][탐지 룰 형식]
+	unsigned int	action;
+	unsigned int	level;
 	regex_t			regex[MAX_REG_NUM];								// 정규식
+
 
 	unsigned int base_limit;										// 제한 수
 	unsigned int base_time;											// 기준 초

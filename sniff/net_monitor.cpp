@@ -36,6 +36,7 @@
 #include "util.h"
 #include "match.h"
 #include "session.h"
+#include "log.h"
 /**
   \addtogroup  net_monitor
   \{
@@ -55,7 +56,7 @@ extern IpsMatch rules;
 
 /*---- STATIC VARIABLES ------------------------------------------------------*/
 IpsSession testSes;
-
+extern IpsLog logs;
 /*---- STATIC FUNCTIONS FORWARD DECLARATION ----------------------------------*/
 
 static void packet_sniff(u_char *args, const struct pcap_pkthdr *header, const u_char *packet);
@@ -138,6 +139,11 @@ static void packet_sniff(u_char *args, const struct pcap_pkthdr *header, const u
 		if ( packet_filter((u_char*)packet, &p, nic_index) == ACTION_PASS )
 			return;
 
+		//	로그 후에 화면 출력
+		if ( packet_filter((u_char*)packet, &p, nic_index) == ACTION_LOG ){
+			logs.create_log();
+			logs.insert_log((u_char*)packet, &p, rules.getRules());
+		}
 		/* 화면 출력 */
 		if ( g_conf.is_print_list )
 			print_to_console(&p, packet, g_conf.is_print_console, g_conf.is_print_hexa);

@@ -81,7 +81,7 @@ HEX_STR_LEN	./include/policy.h	121;"	d
 INADDR_NONE	./include/policy.h	85;"	d
 INPUT_TYPE_DB	./include/policy.h	/^	INPUT_TYPE_DB,$/;"	e	enum:__anon6
 INPUT_TYPE_FILE	./include/policy.h	/^	INPUT_TYPE_FILE,$/;"	e	enum:__anon6
-INPUT_TYPE_NET	./dbms_ips_manager.cpp	33;"	d	file:
+INPUT_TYPE_NET	./dbms_ips_manager.cpp	34;"	d	file:
 INPUT_TYPE_NET	./include/policy.h	/^	INPUT_TYPE_NET = 0,$/;"	e	enum:__anon6
 INPUT_TYPE_RESET	./include/policy.h	/^	INPUT_TYPE_RESET$/;"	e	enum:__anon6
 IPS_MANAGER_CONF	./include/repository.h	34;"	d
@@ -95,6 +95,8 @@ IP_HEADER_SIZE	./include/packet.h	56;"	d
 IP_HLEN	./include/packet.h	68;"	d
 IP_SEGMENT_BITS	./include/policy.h	94;"	d
 IP_VER	./include/packet.h	69;"	d
+IpsLog	./include/log.h	/^		IpsLog(){$/;"	f	class:IpsLog
+IpsLog	./include/log.h	/^class IpsLog {$/;"	c
 IpsMatch	./include/match.h	/^		IpsMatch(){$/;"	f	class:IpsMatch
 IpsMatch	./include/match.h	/^class IpsMatch {$/;"	c
 IpsSession	./include/session.h	/^		IpsSession(){$/;"	f	class:IpsSession
@@ -116,7 +118,9 @@ MAX_HASH_SIZE	./net_monitor.cpp	45;"	d	file:
 MAX_HOST_NAME_LEN	./include/getdbinfo.h	19;"	d
 MAX_INTERFACE_NUM	./include/dbms_ips.h	40;"	d
 MAX_IPADDR_LEN	./include/policy.h	43;"	d
+MAX_IPADD_LEN	./include/log.h	10;"	d
 MAX_PCAP_CHECK_COUNT	./include/policy.h	142;"	d
+MAX_PORT_LEN	./include/log.h	11;"	d
 MAX_QUARANTINE_TIME	./include/policy.h	143;"	d
 MAX_RECOVER_COUNT	./include/policy.h	140;"	d
 MAX_REG_NUM	./include/match.h	11;"	d
@@ -257,6 +261,7 @@ _SUN	./include/config.h	52;"	d
 _VERSION_H	./include/version.h	34;"	d
 __DBMS_IPS_H_	./include/dbms_ips.h	24;"	d
 __IPS_MANAGER_H	./include/dbms_ips_manager.h	20;"	d
+__LOG_H__	./include/log.h	2;"	d
 __MATCH_H_	./include/match.h	2;"	d
 __MATCH_H__	./match.cpp	2;"	d	file:
 __PACKET_H__	./include/packet.h	25;"	d
@@ -331,6 +336,7 @@ daddr	./include/util.h	/^	u_int32_t daddr;       \/**< 목적지 IP주소 *\/$/;"	m	s
 date_begin	./include/policy.h	/^	u_int  date_begin;                  \/**< 시작 일 YYYYMMDD *\/$/;"	m	struct:__anon13
 date_end	./include/policy.h	/^	u_int  date_end;                    \/**< 종료 일 YYYYMMDD *\/$/;"	m	struct:__anon13
 db	./include/getdbinfo.h	/^	char db[35];           \/\/\/ DB명$/;"	m	struct:_CONFIGURE_SET2_T
+dbName	./include/log.h	/^	char dbName[MAX_STR_LEN];$/;"	m	struct:__anon1
 db_port	./include/policy.h	/^	char db_port[MAX_STR_LEN];        \/**< DB Port *\/$/;"	m	struct:__anon15
 dbinfo	./include/dbms_ips.h	/^	CONFIGURE_SET2_T dbinfo;               \/**< MySQL 접속 정보 *\/$/;"	m	struct:__anon1
 dbms_type	./include/policy.h	/^	u_int  dbms_type;            \/**< DBMS 타입 저장 *\/$/;"	m	struct:_rule_list_t
@@ -365,8 +371,10 @@ ex_sip_list	./include/policy.h	/^	ip_info_t *ex_sip_list;      \/**< 예외 검사 �
 ex_sp_count	./include/policy.h	/^	u_int ex_sp_count;           \/**< 예외 sp_list의 개수 *\/$/;"	m	struct:_rule_list_t
 ex_sp_list	./include/policy.h	/^	port_info_t *ex_sp_list;     \/**< 예외 검사 대상이 되는 Source Port 리스트 *\/$/;"	m	struct:_rule_list_t
 existSession	./session.cpp	/^std::map<session_t, u_int>::iterator IpsSession::existSession(packet_t* p){$/;"	f	class:IpsSession
+exist_logDB	./include/log.h	/^		int exist_logDB;$/;"	m	class:IpsLog
 exist_select	./include/packet.h	/^	short exist_select;$/;"	m	struct:__anon7
 exist_select	./include/policy.h	/^	u_int  exist_select:1; $/;"	m	struct:_rule_list_t
+exist_table	./include/log.h	/^		int exist_table;$/;"	m	class:IpsLog
 exist_union	./include/packet.h	/^	short exist_union;$/;"	m	struct:__anon7
 exist_union	./include/policy.h	/^	u_int  exist_union:1; $/;"	m	struct:_rule_list_t
 exist_where	./include/packet.h	/^	short exist_where;$/;"	m	struct:__anon7
@@ -461,6 +469,7 @@ is_nocase	./include/policy.h	/^	u_int   is_nocase;                  \/**< 0:대소
 is_print_console	./include/dbms_ips.h	/^	int  is_print_console;                 \/**< 탐지된 패킷의 리스트를 콘솔 화면크기에 맞춰 출력하는 mode 지정 *\/$/;"	m	struct:__anon1
 is_print_hexa	./include/dbms_ips.h	/^	int  is_print_hexa;                    \/**< 탐지된 패킷의 HEXA code를 콘솔 화면에 출력하는 mode 지정 *\/$/;"	m	struct:__anon1
 is_print_list	./include/dbms_ips.h	/^	int  is_print_list;                    \/**< 탐지된 패킷의 리스트를 콘솔 화면에 출력하는 mode 지정 *\/$/;"	m	struct:__anon1
+is_read_logInfo	./log.cpp	/^int IpsLog::is_read_logInfo(){$/;"	f	class:IpsLog
 is_read_rules	./match.cpp	/^int IpsMatch::is_read_rules(char *fileName){$/;"	f	class:IpsMatch
 is_run_dblog	./include/dbms_ips.h	/^	int  is_run_dblog;                     \/**< DB Scan 결과를 ips_log DB에 쓸 것인가 0: 화면 출력, 1: ips_log_xx에 기록 *\/$/;"	m	struct:__anon1
 is_running	./include/dbms_ips.h	/^	int  is_running;                       \/**< 0: 멈춤, 1:동작중 *\/$/;"	m	struct:__anon1
@@ -477,6 +486,7 @@ is_windows	./include/packet.h	/^	u_int is_windows:1;            \/**< 0:윈도우즈
 is_write_mode	./include/dbms_ips.h	/^	int  is_write_mode;                    \/**< 탐지된 패킷을 파일로 저장할 것인지 여부 1 or 0 *\/$/;"	m	struct:__anon1
 jumpdata	./include/util.h	/^	char jumpdata[255];    \/**< Not use. *\/$/;"	m	struct:_ALERT_T
 key	./include/policy.h	/^	u_int   key;$/;"	m	struct:_detect_session_t
+l_info	./include/log.h	/^	log_db_info l_info;$/;"	m	class:IpsLog
 language_type	./include/dbms_ips.h	/^	char language_type;                    \/**< 언어 선택 *\/$/;"	m	struct:__anon1
 left	./include/policy.h	/^	service_tree_t *left;$/;"	m	struct:_service_tree_t
 left	./include/policy.h	/^	struct _detect_session_t *left;        $/;"	m	struct:_detect_session_t	typeref:struct:_detect_session_t::_detect_session_t
@@ -488,11 +498,15 @@ length_min	./include/policy.h	/^	u_int  length_min;           \/**< 패킷의 최소 
 level	./include/policy.h	/^	u_int  level:3;              \/**< 위험 등급 *\/$/;"	m	struct:_rule_list_t
 linktype	./include/packet.h	/^	unsigned short linktype;       \/**< link type *\/$/;"	m	struct:__anon8
 llong	./include/policy.h	/^typedef long long      llong;$/;"	t
+logIp	./include/log.h	/^	char logIp[MAX_IPADD_LEN];$/;"	m	struct:__anon1
+logPort	./include/log.h	/^	char logPort[MAX_PORT_LEN];$/;"	m	struct:__anon1
+log_db_info	./include/log.h	/^}log_db_info;$/;"	t	typeref:struct:__anon1
 log_info_t	./include/policy.h	/^} log_info_t;$/;"	t	typeref:struct:_log_info_t
 log_level	./include/policy.h	/^	u_char log_level;            \/**< 로그 등급 *\/$/;"	m	struct:_rule_list_t
 log_printf	./util.cpp	/^int	log_printf (char *pname, const char *pre_fmt , ... )$/;"	f
 logic_type	./include/policy.h	/^	u_int  logic_type;           \/**< 0: 검사전, 1: 정상, 2: 논리오류, 3: 검사회피, 4: 다중라인 *\/$/;"	m	struct:_rule_list_t
 logic_type_e	./include/policy.h	/^} logic_type_e;$/;"	t	typeref:enum:__anon7
+logs	./dbms_ips_manager.cpp	/^IpsLog logs;$/;"	v
 m_astRules	./include/match.h	/^	rule_t m_astRules[MAX_RULE_NUMBER];$/;"	m	class:IpsMatch
 m_astSession	./include/session.h	/^	std::map<session_t, u_int>			m_astSession;$/;"	m	class:IpsSession
 mac	./include/policy.h	/^	char       mac[18];$/;"	m	struct:__anon12
@@ -532,6 +546,7 @@ packet_t	./include/packet.h	/^} packet_t;$/;"	t	typeref:struct:__anon7
 parse_alias	./util.cpp	/^static int  parse_alias(char *str_value, void *alias_list, int type, char *conf_file_name)$/;"	f	file:
 parse_alias_list	./util.cpp	/^int parse_alias_list(const char *str_value, void *alias_list, int type, char *conf_file_name)$/;"	f
 parse_flow	./util.cpp	/^int parse_flow(char *field_value, unsigned char *flow)$/;"	f
+password	./include/log.h	/^	char password[MAX_STR_LEN];$/;"	m	struct:__anon1
 pattern_content_t	./include/policy.h	/^} pattern_content_t;$/;"	t	typeref:struct:__anon10
 pd	./include/dbms_ips.h	/^	pcap_t *pd[MAX_INTERFACE_NUM];         \/**< sniffing 하기 위한 pcap_t 리스트 *\/$/;"	m	struct:__anon1
 perMimute	./session.cpp	4;"	d	file:
@@ -547,6 +562,7 @@ port_base	./include/policy.h	/^    unsigned short port_base;           \/**< 기�
 port_info_t	./include/policy.h	/^} port_info_t;$/;"	t	typeref:struct:__anon8
 port_max	./include/policy.h	/^    unsigned short port_max;            \/**< 범위형을 고려한 최대 port 번호 *\/$/;"	m	struct:__anon8
 preBuildData	./match.cpp	/^u_char *preBuildData(u_char *pPacket, int nDataSize){$/;"	f
+printLog	./log.cpp	/^int IpsLog::printLog(){$/;"	f	class:IpsLog
 printSession	./session.cpp	/^int IpsSession::printSession(){$/;"	f	class:IpsSession
 print_interface	./util.cpp	/^void print_interface()$/;"	f
 print_to_console	./util.cpp	/^void print_to_console(const packet_t *p, const u_char *packet, int is_print_console, int is_print_hexa)$/;"	f
@@ -670,6 +686,7 @@ unix_socket	./include/getdbinfo.h	/^	char unix_socket[80];  \/\/\/ Unix socket명
 updated_alias_crc	./include/policy.h	/^	char updated_alias_crc[CRC_STR_SIZE];    \/**< 이미 배포된 그룹 정보 file의 CRC *\/$/;"	m	struct:__anon15
 updated_rule_crc	./include/policy.h	/^	char updated_rule_crc[CRC_STR_SIZE];     \/**< 이미 배포된 접속 정책 file의 CRC *\/$/;"	m	struct:__anon15
 useless	./include/util.h	/^	u_int8_t  useless;     \/**< reserved field *\/$/;"	m	struct:__anon3
+user	./include/log.h	/^	char user[MAX_STR_LEN];$/;"	m	struct:__anon1
 user_ip	./include/policy.h	/^	u_int        user_ip;$/;"	m	struct:_log_info_t
 userdefine	./include/policy.h	/^	u_int  userdefine:1;         \/**< 0: 고정룰, 1:사용자 정의 룰 *\/$/;"	m	struct:_rule_list_t
 val	./include/util.h	/^	int val;$/;"	m	struct:option2
@@ -681,5 +698,7 @@ vth_proto	./include/packet.h	/^	u_int16_t vth_proto;           \/**< protocol fi
 wday_mask_e	./include/policy.h	/^} wday_mask_e;$/;"	t	typeref:enum:__anon5
 wday_num_e	./include/policy.h	/^} wday_num_e;$/;"	t	typeref:enum:__anon4
 week_mask	./include/policy.h	/^	u_char week_mask;                   \/**< 0x0: any, 0x01:일, 0x02:월, 0x04:화, 0x08:수, 0x10:목, 0x20:금, 0x40:토 *\/ $/;"	m	struct:__anon13
+writeLog	./include/log.h	/^		int writeLog;$/;"	m	class:IpsLog
+~IpsLog	./include/log.h	/^		~IpsLog(){$/;"	f	class:IpsLog
 ~IpsMatch	./include/match.h	/^		~IpsMatch(){$/;"	f	class:IpsMatch
 ~IpsSession	./include/session.h	/^		~IpsSession(){$/;"	f	class:IpsSession
