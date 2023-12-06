@@ -149,8 +149,9 @@ static void packet_sniff(u_char *args, const struct pcap_pkthdr *header, const u
 		else
 			p.is_windows = 0;
 
-		if ( packet_filter((u_char*)packet, &p, nic_index) == ACTION_PASS )
+		if ( packet_filter((u_char*)packet, &p, nic_index) == ACTION_PASS ) {
 			return;
+		}
 
 		/* 화면 출력 */
 		if ( g_conf.is_print_list )
@@ -305,7 +306,7 @@ static int packet_filter(u_char *packet, packet_t *p, int nic_index)
 	if( sess.checkSession(p) ) 
 		return ACTION_PASS;
 
-	int ruleIndex = rules.ruleFilter(p, preBuildData(packet, p->caplen - p->dsize));
+	int ruleIndex = rules.ruleFilter(p, preBuildData(packet, p->dsize));
 	if ( ruleIndex != -1 && p->reverse_flow == 0){
 		rule_t match = rules.getRule(ruleIndex);
 		printf("(Detect_Name : %s) ", match.deName); 

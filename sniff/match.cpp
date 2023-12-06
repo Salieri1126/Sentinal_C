@@ -191,7 +191,7 @@ int IpsMatch::is_compile_rule(){
 			continue;
 
 		for(int j = 0 ; j < m_astRules[i].count; j++){
-			if ( regcomp(&(m_astRules[i].regex[j]), m_astRules[i].content[j], (REG_EXTENDED | REG_ICASE)) != 0 ) {
+			if ( regcomp(&(m_astRules[i].regex[j]), m_astRules[i].content[j], (REG_ICASE)) != 0 ) {
             	return 0;
         	}
 		}
@@ -219,6 +219,7 @@ int IpsMatch::ruleFilter(packet_t *p, u_char *pdata){
 
 	for( int i = 0 ; i < ruleCnt ; i++){
 		if( m_astRules[i].srcIp == p->sip){
+			free(pdata);
 			return i;
 		}
 
@@ -233,7 +234,9 @@ int IpsMatch::ruleFilter(packet_t *p, u_char *pdata){
 
 		if( match ){
 
+			//	rule중에 행동 탐지 옵션이 없는 것은 패턴만 탐지
 			if( m_astRules[i].base_time == 0 || m_astRules[i].base_limit == 0 ){
+				free(pdata);
 				return i;
 			}
 			//	Select찾았으면 기준 시간 지났는지 확인
@@ -250,11 +253,12 @@ int IpsMatch::ruleFilter(packet_t *p, u_char *pdata){
 
 			//	cnt가 기준 Cnt보다 크면 행동 패턴 공격 탐지
 			if( itr->second.behavior_cnt > m_astRules[i].base_limit) {
+				free(pdata);
 				return i;
 			}
 		}
 	}
-
+	free(pdata);
 	return -1;
 }
 
@@ -313,6 +317,14 @@ void IpsMatch::printf_rules(){
 	return;
 }
 
+/*
+ *!	\brief
+ *		룰 하나 가져오는 함수
+ *	\param
+ *		int nIndex : 룰의 인덱스
+ *	\return
+ *		rule_t 구조체
+ */
 rule_t IpsMatch::getRule(int nIndex){
 	return m_astRules[nIndex];
 }
