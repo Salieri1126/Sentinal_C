@@ -1,8 +1,6 @@
 #include "session.h"
 #include "match.h"
 
-#define perMimute 60
-
 /*
  *!\brief
  *		세션 확인 함수
@@ -22,24 +20,25 @@ int IpsSession::checkSession(packet_t *p){
 	if( !p || p->reverse_flow == -1 )
 		return 1;
 
-	std::map<session_t, u_int>::iterator sItr;
-	
-	if( p->reverse_flow == 1 && ((p->tcph->th_flags & R_FIN) || (p->tcph->th_flags & R_RST)) ) {
-		delSession(p);
-		return 0;
-	}
-	
+	sItr = m_astSession.begin();
+
 	if( (sItr = m_astSession.find(	makeSession(p) )) != m_astSession.end() ){
-		sItr->second++;
+		if( ((p->tcph->th_flags & R_FIN) || (p->tcph->th_flags & R_RST)) ) {
+			m_astSession.erase(sItr);
+			return 0;
+		}
+		sItr->second.session_cnt++;
+		sItr->second.s_time = time(NULL);
 		return 0;
 	}
 
-	if( sItr == m_astSession.end() && p->reverse_flow == 0 && (p->tcph->th_flags & R_SYN) ){
+	if( p->reverse_flow == 0 && (p->tcph->th_flags & R_SYN) ){
 		if( addSession(p) ){
 			printf("Session Add Fail!\n");
 			return 1;
 		}
 	}
+
 	return 0;
 }
 
@@ -59,9 +58,14 @@ int IpsSession::addSession(packet_t *p){
 
 	session_t tmpSes = makeSession(p);	
 	
-	tmpSes.s_time = time(NULL);
+	session_value tmpVal;
+
+	memset(&tmpVal, 0, sizeof(session_value));
+
+	tmpVal.s_time = time(NULL);
+	tmpVal.session_cnt++;
 	
-	m_astSession.insert(std::make_pair(tmpSes, 1));
+	m_astSession.insert(std::make_pair(tmpSes, tmpVal));
 
 	return 0;
 }
@@ -72,7 +76,7 @@ int IpsSession::addSession(packet_t *p){
  * \param
  *		p : 들어오는 패킷의 정보
  * \return
- *		0 : 
+ *		0 : 함수 종료 
  */
 int IpsSession::printSession(){
 
@@ -81,82 +85,35 @@ int IpsSession::printSession(){
 		if( m_astSession.empty() )
 			continue;
 
-		sleep(10);
+		sleep(60);
 
 		struct in_addr *ip_src;
 		struct in_addr *ip_dst;
 	
-		std::map<session_t, u_int>::iterator sItr;
-			
 		for( sItr = m_astSession.begin() ; sItr != m_astSession.end() ; sItr++ ){
 			time_t tmpTime = time(NULL);
+			struct tm ses_t;
+			struct tm cur_t;
+
+			ses_t = *localtime(&sItr->second.s_time);
+			cur_t = *localtime(&tmpTime);
 			ip_src = (struct in_addr*)(&(sItr->first.sip));
 			ip_dst = (struct in_addr*)(&(sItr->first.dip)); 
-				
-			if( (tmpTime-(sItr->first.s_time)) < 120 ){
+			
+			if( difftime(tmpTime,(sItr->second.s_time)) <= 120 ){
 				printf("/------------ Session --------------/\n");
 				printf("Source IP : %s\n", inet_ntoa(*ip_src));
 				printf("Source Port : %d\n", sItr->first.sp);
 				printf("Destiny IP : %s\n", inet_ntoa(*ip_dst));
 				printf("Destiny Port : %d\n", sItr->first.dp);
-				printf("Session Count : %d\n", sItr->second);
+				printf("Session Count : %d\n", sItr->second.session_cnt);
+				printf("Make Session time : %04d.%02d.%02d %02d:%02d:%02d\n", ses_t.tm_year+1900, ses_t.tm_mon+1, ses_t.tm_mday, ses_t.tm_hour, ses_t.tm_min, ses_t.tm_sec);
+				printf("Current time : %04d.%02d.%02d %02d:%02d:%02d\n", cur_t.tm_year+1900, cur_t.tm_mon+1, cur_t.tm_mday, cur_t.tm_hour, cur_t.tm_min, cur_t.tm_sec);
 				printf("/-----------------------------------/\n\n");
 			}
 		}
 	}
 		
-	return 0;
-}
-
-/*
- *!\brief
- *		세션의 시간 초기화
- * \param
- *		std::map<session_t, u_int>::iterator itr 시간 초기화할 세션의 iterator
- * \return
- *		0 : 시간 초기화 성공
- *		1 : 시간 초기화 실패
- */
-int IpsSession::timeInit(std::map<session_t, u_int>::iterator itr){
-
-	if ( itr == m_astSession.end() )
-		return 1;
-
-	session_t tmpSes = itr->first;
-
-	tmpSes.s_time = time(NULL);
-
-	m_astSession.erase(itr++);
-
-	m_astSession.insert(std::make_pair(tmpSes, 1));
-
-	return 0;
-}
-
-/*
- *! \brief
- *		세션 삭제
- *	\param
- *		packet_t* p : 캡쳐 패킷
- *	\return int 
- *		0 : 삭제 성공
- *		1 : 삭제 실패
- */
-
-int IpsSession::delSession(packet_t *p){
-	
-	if( !p )
-		return 1;
-
-	std::map<session_t, u_int>::iterator sItr;
-
-	for( sItr = m_astSession.begin() ; sItr != m_astSession.end() ; sItr++){
-		if( sItr->first.sip == p->dip && sItr->first.sp == p->dp){
-			m_astSession.erase(sItr++);
-		}
-	}
-	
-	
 	return 0;
 }
 
@@ -166,9 +123,9 @@ int IpsSession::delSession(packet_t *p){
  * 		packet_t* p : 캡쳐 패킷
  * 	\return iterator 세션의 iterator 출력
  */
-std::map<session_t, u_int>::iterator IpsSession::existSession(packet_t* p){
+std::map<session_t, session_value>::iterator IpsSession::existSession(packet_t* p){
 	
-	std::map<session_t, u_int>::iterator sItr;
+	std::map<session_t, session_value>::iterator sItr;
 
 	sItr = m_astSession.find(makeSession(p));
 

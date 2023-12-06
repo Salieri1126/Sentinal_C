@@ -25,7 +25,6 @@ struct session_t{
 	u_int	dip;
 	u_int 	dp;
 
-	time_t	s_time;
 
 	bool operator<(const session_t& other) const{
 		if( sip < other.sip )
@@ -43,6 +42,13 @@ struct session_t{
 	}
 };
 
+typedef struct{
+
+	time_t	s_time;
+	u_int		session_cnt;
+	u_int		behavior_cnt;
+
+} session_value;
 /*
  *	mem : 세션의 수, 세션 구조체의 자료구조
  *	생성자, 소멸자
@@ -55,13 +61,15 @@ struct session_t{
  */
 class IpsSession {
 
-	std::map<session_t, u_int>			m_astSession;
+	std::map<session_t, session_value>				m_astSession;
+	std::map<session_t, session_value>::iterator	sItr;
 
 	private :
 
 
 	public :
 		IpsSession(){
+
 		}
 
 		~IpsSession(){
@@ -69,11 +77,8 @@ class IpsSession {
 
 		int checkSession(packet_t *p);
 		int addSession(packet_t *p);
-		int delSession(packet_t *p);
 		int printSession();
-		int limit(packet_t *p);
-		int timeInit(std::map<session_t, u_int>::iterator itr);
-		std::map<session_t, u_int>::iterator existSession(packet_t* p);
+		std::map<session_t, session_value>::iterator existSession(packet_t* p);
 		session_t makeSession(packet_t *p);
 
 		static void* printSessionWrapper(void* context);

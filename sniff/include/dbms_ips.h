@@ -99,6 +99,9 @@ typedef struct
 	unsigned int  dbscan_cycle;            /**< 주기적으로 DB LOG에 저장된 데이터를 스캔할 것인지를 결정하는 옵션 */
 
 	pthread_mutex_t sync_mutex;            /**< 룰 업데이트시 탐지엔진이 동작하지 않도록 하기위한 mutex */
+
+	char targetIp[15];
+	char targetPort[6];
 } configure_t;
 
 

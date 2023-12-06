@@ -41,9 +41,10 @@ class IpsLog {
 		}
 
 		int is_read_logInfo();
+		int connect_db();
 		int printLog();
 		int create_log();
-		int insert_log(u_char *packet, packet_t *p, rule_t *rule);
+		int insert_log(u_char *packet, packet_t *p, int ruleIndex);
 		int close_log_db();
 };
 

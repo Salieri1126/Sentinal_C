@@ -23,12 +23,15 @@
 #include <errno.h>
 #include <ctype.h>
 #include <locale.h>
+#include <pthread.h>
 
 #include "dbms_ips_manager.h"
 #include "util.h"
 #include "init_agent.h"
 #include "match.h"
 #include "log.h"
+#include "session.h"
+
 /*---- DEFINES		------------------------------------------------*/
 
 #define INPUT_TYPE_NET 0
@@ -53,7 +56,7 @@ static struct option2 program_options[] =
 configure_t g_conf;      /**< Environment value collection structure for action */
 IpsMatch rules;
 IpsLog logs;
-
+IpsSession sess;
 /*---- STATIC FUNCTIONS FORWARD DECLARATION ---------------------------*/
 
 static void display_manager_help(char *progname);
@@ -157,7 +160,6 @@ int main(int argc, char *argv[])
 
 	///////////////////////////////////////////////////
 	// step-4 : Program termination processing
-	
 	if ( g_conf.is_debug_mode )
 		log_printf(IPS_MANAGER_NAME, "%s() %d: End of program\n", __func__, __LINE__);
 
@@ -262,11 +264,23 @@ static void init_program(int nType)
 	// 		prac-4 : contentsFilter 작성하기
 	// 		prac-5 : packet을 가져와서 contentsFilter로 비교하기
 
+	get_dump_conf(IPS_MANAGER_CONF, "TARGET_DB_IP", g_conf.targetIp, sizeof(g_conf.targetIp));
+	get_dump_conf(IPS_MANAGER_CONF, "TARGET_DB_PORT", g_conf.targetPort, sizeof(g_conf.targetPort));
+
 	if ( logs.is_read_logInfo() ){
 		printf("read Log Fail\n");
 		return;
 	}
 
+	if ( logs.connect_db() ) {
+		printf("connect Fail\n");
+		return;
+	}
+
+	if ( logs.create_log() ) {
+		printf("Don't create log_db\n");
+		return;
+	}
 
 	///////////////////////////////////////////////////
 	// step-2 : get db-scan cycle

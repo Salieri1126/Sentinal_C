@@ -28,14 +28,14 @@ typedef struct {
 	unsigned int	level;
 	regex_t			regex[MAX_REG_NUM];								// 정규식
 
-
 	unsigned int base_limit;										// 제한 수
 	unsigned int base_time;											// 기준 초
 }rule_t;
 
 class IpsMatch {
 	
-	rule_t m_astRules[MAX_RULE_NUMBER];
+	rule_t 		m_astRules[MAX_RULE_NUMBER];
+	int			ruleCnt;
 
 	private:
 
@@ -43,6 +43,7 @@ class IpsMatch {
 
 		IpsMatch(){
 			memset(m_astRules, 0, sizeof(m_astRules));
+			ruleCnt = 0;
 		}
 
 		~IpsMatch(){
@@ -60,7 +61,7 @@ class IpsMatch {
 		int setRules(char *ruleLine, char *field, int nIndex);
 		int convertValue(char *field, char *szValue, int nIndex);
 		void inValue(int nIndex, char *field, int value);
-		rule_t *getRules(); 
+		rule_t getRule(int nIndex); 
 };
 
 u_char *preBuildData(u_char *pPacket, int nDataSize);

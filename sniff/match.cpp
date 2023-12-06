@@ -66,8 +66,10 @@ int IpsMatch::is_read_rules(char *fileName){
 
 		//	룰이 적혀진 줄에서 가져오기
 		for( i = 0 ; i < nRuleFieldSize ; i++){
-			if( setRules(index, rule_field_name[i], ruleCount) )
+			if( setRules(index, rule_field_name[i], ruleCount) ){
+				ruleCnt++;
 				continue;
+			}
 		}
 		//	다음 룰 담을 공간이동
 		ruleCount++;
@@ -160,7 +162,6 @@ void IpsMatch::inValue(int nIndex, char *field, int value){
 	
 	if( !strcmp(field, "rid") )
 		m_astRules[nIndex].rid = value;
-	
 
 	if(	!strcmp(field, "srcPort") )
 		m_astRules[nIndex].srcPort = value;
@@ -184,7 +185,7 @@ void IpsMatch::inValue(int nIndex, char *field, int value){
  */
 int IpsMatch::is_compile_rule(){
 
-	for (int i = 0; i < MAX_RULE_NUMBER; i++) {
+	for (int i = 0; i < ruleCnt; i++) {
 		//	content가 없는 곳은 skip
 		if(m_astRules[i].count == 0)
 			continue;
@@ -205,8 +206,8 @@ int IpsMatch::is_compile_rule(){
  *		p		: packet_t 구조체 포인터
  *		pdata	: 가공된 payload
  *	\return
- *		0 : rule에 맞는 packet 매칭 실패
- *		1 : rule에 맞는 packet 매칭 성공
+ *		-1 : rule에 맞는 packet 매칭 실패
+ *		i : 매칭된 룰의 index 번호 반환
  *	\detail
  *		IP와 Port를 비교하여 rule에 맞는 IP와 Port가 매칭되었을때 content까지 안보고 매칭 성공
  *		IP와 Port가 다를때는 저장된 content와 비교하여 매칭되었을때 매칭된 ruleName을 출력
@@ -214,12 +215,11 @@ int IpsMatch::is_compile_rule(){
 int IpsMatch::ruleFilter(packet_t *p, u_char *pdata){
 
 	int match = 0;
-	std::map<session_t, u_int>::iterator itr;
+	std::map<session_t, session_value>::iterator itr;
 
-	for( int i = 0 ; i < MAX_RULE_NUMBER ; i++){
+	for( int i = 0 ; i < ruleCnt ; i++){
 		if( m_astRules[i].srcIp == p->sip){
-			printf("detection IP & Port : ");
-			return 1;
+			return i;
 		}
 
 		if( m_astRules[i].count == 0 )
@@ -233,26 +233,29 @@ int IpsMatch::ruleFilter(packet_t *p, u_char *pdata){
 
 		if( match ){
 
-			itr = sess.existSession(p);
-				//	Select찾았으면 기준 시간 지났는지 확인
-			if ( (time(NULL)-itr->first.s_time) > m_astRules[i].base_time) {
-				//	지났으면 Session의 cnt 초기화, time 초기화 후 cnt++
-				//	안지났으면 Session의 cnt++
-				//	기준 Cnt 보다 큰지 확인
-				itr->second = 0;
-				sess.timeInit(itr);
+			if( m_astRules[i].base_time == 0 || m_astRules[i].base_limit == 0 ){
+				return i;
 			}
-			itr->second++;
-			if( itr->second > m_astRules[i].base_limit) {
-				//	cnt가 기준 Cnt보다 크면 행동 패턴 공격 탐지
-				//	cnt가 기준 Cnt보다 작으면 종료
-				printf("(deName : %s) ", m_astRules[i].deName);
-				printf("(count : %d) ", itr->second);
-				return 1;
+			//	Select찾았으면 기준 시간 지났는지 확인
+			//	지났으면 Session의 cnt 초기화, time 초기화 후 cnt++
+			//	안지났으면 Session의 cnt++
+			itr = sess.existSession(p);
+
+			if ( (time(NULL)-(itr->second.s_time)) > m_astRules[i].base_time) {
+				itr->second.behavior_cnt = 0;
+				itr->second.s_time = time(NULL);
+			}
+
+			itr->second.behavior_cnt++;
+
+			//	cnt가 기준 Cnt보다 크면 행동 패턴 공격 탐지
+			if( itr->second.behavior_cnt > m_astRules[i].base_limit) {
+				return i;
 			}
 		}
 	}
-	return 0;
+
+	return -1;
 }
 
 /*
@@ -310,8 +313,8 @@ void IpsMatch::printf_rules(){
 	return;
 }
 
-rule_t* IpsMatch::getRules(){
-	return m_astRules;
+rule_t IpsMatch::getRule(int nIndex){
+	return m_astRules[nIndex];
 }
 
 #endif

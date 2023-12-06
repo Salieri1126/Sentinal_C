@@ -1,6 +1,6 @@
 #탐지 룰 아이디
-#rid = 100001 : deName = detect_passwd 	: srcIp = any : srcPort = any : content = "where 1=1", "or 1=1"
-#rid = 100002 : deName = detect_mysqlDB 	: srcIp = any : srcPort = any : content = "mysql"
-#rid = 100003 : deName = detect_grants : srcIp = any : srcPort = any : content = "show grants", "grant", "privileges"
-#rid = 100004 : deName = detect_src : srcIp = 192.168.1.65 : srcPort = any
+rid = 100001 : deName = detect_passwd 	: srcIp = any : srcPort = any : content = "where 1=1", "or 1=1"
+rid = 100002 : deName = detect_policyDB	: srcIp = any : srcPort = any : content = "policy"
+rid = 100003 : deName = detect_grants : srcIp = any : srcPort = any : content = "show grants", "grant", "privileges"
+rid = 100004 : deName = detect_src : srcIp = 192.168.1.86 : srcPort = any
 rid = 100005 : deName = detect_behavior(select-test) : base_time = 30 : base_limit = 100 : content = "select"
