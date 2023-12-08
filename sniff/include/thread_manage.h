@@ -3,7 +3,7 @@
 
 #include <pthread.h>
 
-#define MAX_THREAD_NUM 3
+#define MAX_THREAD_NUM 2
 
 class IpsThread{
 
@@ -12,13 +12,9 @@ class IpsThread{
 	private:
 
 	public:
-
-
+	
+		int logging;
+		int printSession;
 };
-
-
-
-
-
 
 #endif

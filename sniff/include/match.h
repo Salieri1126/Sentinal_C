@@ -61,8 +61,8 @@ class IpsMatch {
 		int setRules(char *ruleLine, char *field, int nIndex);
 		int convertValue(char *field, char *szValue, int nIndex);
 		void inValue(int nIndex, char *field, int value);
-		rule_t getRule(int nIndex); 
+		rule_t* getRule(int nIndex); 
 };
 
-u_char *preBuildData(u_char *pPacket, int nDataSize);
+char *preBuildData(u_char *pPacket, int nDataSize);
 #endif

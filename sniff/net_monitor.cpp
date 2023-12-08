@@ -36,8 +36,7 @@
 #include "util.h"
 #include "match.h"
 #include "session.h"
-#include "log.h"
-#include "thread_manage.h"
+#include "logging.h"
 
 /**
   \addtogroup  net_monitor
@@ -67,7 +66,7 @@ static int  packet_filter(u_char *packet, packet_t *p, int nic_index);
 static int is_skip_port(unsigned short port);
 static int decode_packet(packet_t *p, int size, const u_char *packet);
 static int setFlow(packet_t *p);
-
+static int is_dbPort(u_short port);
 /*---- FUNCTIONS		------------------------------------------------------*/
 
 /*! \brief	
@@ -126,6 +125,9 @@ static void packet_sniff(u_char *args, const struct pcap_pkthdr *header, const u
 	int nic_index = 0;
 	nic_index = (int)(*args & 0xff);
 
+	if( g_conf.is_running == 0)
+		return;
+
 	if ( !g_conf.is_bypass_mode && g_conf.is_running && header && packet ) 
 	{
 		packet_t p;
@@ -150,6 +152,7 @@ static void packet_sniff(u_char *args, const struct pcap_pkthdr *header, const u
 			p.is_windows = 0;
 
 		if ( packet_filter((u_char*)packet, &p, nic_index) == ACTION_PASS ) {
+			print_to_console(&p, packet, g_conf.is_print_console, g_conf.is_print_hexa);
 			return;
 		}
 
@@ -295,21 +298,25 @@ static int is_skip_port(unsigned short port)
  */
 static int packet_filter(u_char *packet, packet_t *p, int nic_index)
 {
+
+	if ( g_conf.is_debug_mode && p->reverse_flow != -1 )
+		fprintf(stderr, "%s,%d: Flow(%d) %x:%d -> %x:%d dsize:%d\n", __func__, __LINE__, p->reverse_flow, p->sip, p->sp, p->dip, p->dp, p->dsize);
+
 	//////////////////////////////////////////////////////
 	// flow 확인 및 설정
 	if ( setFlow(p) == -1 )
 		return ACTION_PASS;
 
-	if ( g_conf.is_debug_mode && p->reverse_flow != -1 )
-		fprintf(stderr, "%s,%d: Flow(%d) %x:%d -> %x:%d dsize:%d\n", __func__, __LINE__, p->reverse_flow, p->sip, p->sp, p->dip, p->dp, p->dsize);
-
 	if( sess.checkSession(p) ) 
 		return ACTION_PASS;
 
-	int ruleIndex = rules.ruleFilter(p, preBuildData(packet, p->dsize));
+	if ( p->dsize == 0 )
+		return ACTION_PASS;
+	//FIXME:preBuildData 따로 담고 데이터 잘 들어가게 수정
+	int ruleIndex = rules.ruleFilter(p, (u_char*)preBuildData(packet, p->dsize));
 	if ( ruleIndex != -1 && p->reverse_flow == 0){
-		rule_t match = rules.getRule(ruleIndex);
-		printf("(Detect_Name : %s) ", match.deName); 
+		rule_t* match = rules.getRule(ruleIndex);
+		printf("(Detect_Name : %s) ", match->deName); 
 		logs.insert_log(packet, p, ruleIndex);
 		return ACTION_LOG;
 	}
@@ -327,20 +334,18 @@ static int packet_filter(u_char *packet, packet_t *p, int nic_index)
  *		역방향 : DB에서 나가는 패킷 reverse_flow = 1
  *		DB와 관련없는 패킷은 reverse_flow = -1
  */
+//TODO:불특정 다수에 대한 탐지
 static int setFlow(packet_t *p){
 	
 	if (!p)
 		return -1;
 
-	u_int dbIp = inet_addr(g_conf.targetIp);
-	u_int dbPort = atoi(g_conf.targetPort);
-
-	if( p->sip == dbIp && p->sp == dbPort ){
+	if( is_dbPort(p->sp)){
 		p->reverse_flow = 1;
 		return 0;
 	}
 
-	if( p->dip == dbIp && p->dp == dbPort ){
+	if( is_dbPort(p->dp) ){
 		p->reverse_flow = 0;
 		return 0;
 	}
@@ -350,5 +355,29 @@ static int setFlow(packet_t *p){
 	return -1;
 }
 
+/*
+ *	port가 DB와 관련되어있는 포트인지 확인
+ *	
+ *
+ */
+static int is_dbPort(u_short port){
+
+	switch ( port ){
+	
+		case 156:
+		case 1433:
+		case 1521:
+		case 3306:
+		case 5432:
+		case 6379:
+		case 8629:
+		case 11211:
+		case 27017:
+		case 50000:
+			return 1;
+
+	}
+	return 0;
+}
 /** \}*/
 

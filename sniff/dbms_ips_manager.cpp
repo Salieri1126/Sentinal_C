@@ -29,7 +29,7 @@
 #include "util.h"
 #include "init_agent.h"
 #include "match.h"
-#include "log.h"
+#include "logging.h"
 #include "session.h"
 
 /*---- DEFINES		------------------------------------------------*/
@@ -61,7 +61,7 @@ IpsSession sess;
 
 static void display_manager_help(char *progname);
 static void init_program(int nType);
-
+void stop_processor(int sig);
 
 /*---- FUNCTIONS ------------------------------------------------------*/
 
@@ -144,11 +144,20 @@ int main(int argc, char *argv[])
 	///////////////////////////////////////////////////
 	// step-3 : Run dbms_ips_manager
 
+	//signal(SIGTERM, stop_processor);
+	signal(SIGINT, stop_processor);
+	signal(SIGHUP, stop_processor);
+	signal(SIGUSR1, stop_processor);
+	//signal(SIGILL, SIG_IGN);
+	//signal(SIGALRM, SIG_IGN);
+	signal(SIGPROF, SIG_IGN);
+
 	// step-3.1 : Program initialization according to options
 	init_program(g_conf.input_type);
 
 	if ( g_conf.is_debug_mode )
 		fprintf(stderr, "%s() %d: write_own_pid(%s)\n", __func__, __LINE__, SERVICE_IPS_MANAGER_PID_FILE);
+
 
 	// step-3.3 : Run main-thread & log-thread
 	if ( init_server_agent(&g_conf) != ERR_SUCCESS )
@@ -332,6 +341,25 @@ static void init_program(int nType)
 
 	// Synchronization variable initialization (pthread_mutex_lock/unlock)
 	g_conf.sync_mutex = PTHREAD_MUTEX_INITIALIZER;
+}
+
+/*
+ *!\brief
+ *	End signal mapping function
+ * \param sig : signal number
+ * \return void : none
+ *
+ */
+
+void stop_processor(int sig)
+{
+	signal(SIGPROF, SIG_IGN);
+	g_conf.is_running = 0;
+
+	log_printf(IPS_MANAGER_NAME, "%s()-%d: signal=%d", __func__, __LINE__, sig);
+
+	sleep(1);
+	exit(0);
 }
 
 /* End of program */

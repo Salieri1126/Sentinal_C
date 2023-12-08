@@ -95,8 +95,8 @@ IP_HEADER_SIZE	./include/packet.h	56;"	d
 IP_HLEN	./include/packet.h	68;"	d
 IP_SEGMENT_BITS	./include/policy.h	94;"	d
 IP_VER	./include/packet.h	69;"	d
-IpsLog	./include/log.h	/^		IpsLog(){$/;"	f	class:IpsLog
-IpsLog	./include/log.h	/^class IpsLog {$/;"	c
+IpsLog	./include/logging.h	/^		IpsLog(){$/;"	f	class:IpsLog
+IpsLog	./include/logging.h	/^class IpsLog {$/;"	c
 IpsMatch	./include/match.h	/^		IpsMatch(){$/;"	f	class:IpsMatch
 IpsMatch	./include/match.h	/^class IpsMatch {$/;"	c
 IpsSession	./include/session.h	/^		IpsSession(){$/;"	f	class:IpsSession
@@ -115,20 +115,19 @@ MAX_ALIAS	./include/policy.h	70;"	d
 MAX_ARRAY_SIZE	./include/policy.h	44;"	d
 MAX_BLOCKING_TIME	./include/policy.h	144;"	d
 MAX_CONTENT_LEN	./include/policy.h	122;"	d
-MAX_HASH_SIZE	./net_monitor.cpp	48;"	d	file:
+MAX_HASH_SIZE	./net_monitor.cpp	47;"	d	file:
 MAX_HOST_NAME_LEN	./include/getdbinfo.h	19;"	d
 MAX_INTERFACE_NUM	./include/dbms_ips.h	40;"	d
 MAX_IPADDR_LEN	./include/policy.h	43;"	d
-MAX_IPADD_LEN	./include/log.h	11;"	d
+MAX_IPADD_LEN	./include/logging.h	11;"	d
 MAX_PCAP_CHECK_COUNT	./include/policy.h	142;"	d
-MAX_PORT_LEN	./include/log.h	12;"	d
+MAX_PORT_LEN	./include/logging.h	12;"	d
 MAX_QUARANTINE_TIME	./include/policy.h	143;"	d
 MAX_RECOVER_COUNT	./include/policy.h	140;"	d
 MAX_REG_NUM	./include/match.h	11;"	d
 MAX_RULE_NUMBER	./include/policy.h	124;"	d
 MAX_RULE_STR_LEN	./include/policy.h	123;"	d
 MAX_SERVICE_COUNT	./include/policy.h	137;"	d
-MAX_SES_NUM	./include/session.h	10;"	d
 MAX_STR_LEN	./include/dbms_ips.h	41;"	d
 MAX_STR_SIZE	./include/util.h	41;"	d
 MAX_THREAD_NUM	./include/thread_manage.h	6;"	d
@@ -263,7 +262,7 @@ _SUN	./include/config.h	52;"	d
 _VERSION_H	./include/version.h	34;"	d
 __DBMS_IPS_H_	./include/dbms_ips.h	24;"	d
 __IPS_MANAGER_H	./include/dbms_ips_manager.h	20;"	d
-__LOG_H__	./include/log.h	2;"	d
+__LOGGING_H__	./include/logging.h	2;"	d
 __MATCH_H_	./include/match.h	2;"	d
 __MATCH_H__	./match.cpp	2;"	d	file:
 __PACKET_H__	./include/packet.h	25;"	d
@@ -306,8 +305,8 @@ base_count	./include/policy.h	/^	u_int  base_count;           \/**< ±âÁØ ¹Ýº¹ È½
 base_limit	./include/match.h	/^	unsigned int base_limit;										\/\/ ì œí•œ ìˆ˜$/;"	m	struct:__anon1
 base_sec	./include/policy.h	/^	u_int  base_sec;             \/**< ±âÁØÃÊ *\/$/;"	m	struct:_rule_list_t
 base_time	./include/match.h	/^	unsigned int base_time;											\/\/ ê¸°ì¤€ ì´ˆ$/;"	m	struct:__anon1
-behavior_cnt	./include/session.h	/^	u_int		behavior_cnt;$/;"	m	struct:__anon1
-bin_to_hex	./log.cpp	/^static void bin_to_hex(const u_char *bin, size_t len, char *out) {$/;"	f	file:
+behavior_cnt	./include/session.h	/^	u_int		behavior_cnt;$/;"	m	struct:__anon2
+bin_to_hex	./logging.cpp	/^static void bin_to_hex(const u_char *bin, size_t len, char *out) {$/;"	f	file:
 bind_address	./include/dbms_ips.h	/^	int  bind_address;                     \/**< binding IP Address, : default(INADDR_ANY) *\/$/;"	m	struct:__anon1
 byte_order_magic	./include/packet.h	/^	unsigned int byte_order_magic; \/**< magic code (tcpdump) *\/$/;"	m	struct:__anon8
 bytes	./include/policy.h	/^	u_int  bytes;                \/**< Æ®·¡ÇÈÀÇ ÃÑ Bytes ·® *\/$/;"	m	struct:_rule_list_t
@@ -328,8 +327,8 @@ comment_count	./include/packet.h	/^	u_int   comment_count;$/;"	m	struct:__anon7
 comment_count	./include/policy.h	/^	u_int  comment_count;        \/**< ÁÖ¼®ÀÇ °³¼ö *\/$/;"	m	struct:_rule_list_t
 conf_file_name	./include/dbms_ips.h	/^	char conf_file_name[MAX_STR_LEN];      \/**< server_agent µ¿ÀÛÀ» À§ÇÑ È¯¼³ ¼³Á¤°ªÀÌ ÀúÀåµÈ fileÀÇ °æ·Î*\/$/;"	m	struct:__anon1
 configure_t	./include/dbms_ips.h	/^} configure_t;$/;"	t	typeref:struct:__anon1
-conn	./include/log.h	/^	MYSQL *conn;$/;"	m	class:IpsLog
-connect_db	./log.cpp	/^int IpsLog::connect_db(){$/;"	f	class:IpsLog
+conn	./include/logging.h	/^	MYSQL *conn;$/;"	m	class:IpsLog
+connect_db	./logging.cpp	/^int IpsLog::connect_db(){$/;"	f	class:IpsLog
 content	./include/match.h	/^	char			content[MAX_REG_NUM][MAX_RULE_STR_LEN];			\/\/ íƒì§€ ë£° content[íƒì§€ ë£° ê°œìˆ˜][íƒì§€ ë£° í˜•ì‹]$/;"	m	struct:__anon1
 content	./include/policy.h	/^	char    *content;                   \/**< ÆÐÅÏ ¹®ÀÚ¿­ *\/$/;"	m	struct:__anon10
 convertValue	./match.cpp	/^int IpsMatch::convertValue(char *field, char *szValue, int nIndex){$/;"	f	class:IpsMatch
@@ -338,14 +337,14 @@ count	./include/policy.h	/^	u_int  count;$/;"	m	struct:_detect_session_t
 count	./include/policy.h	/^    unsigned char  count;               \/**< count 0ÀÌ¸é Á¤º¸°¡ ¾ø´Ù´Â ¶æÀÌ°í, 0x1Àº ´ÜÀÏÇü, 0x2´Â ¹üÀ§Çü *\/$/;"	m	struct:__anon8
 crc	./include/util.h	/^	char crc[CRC_STR_SIZE];$/;"	m	struct:__anon2
 crc	./include/util.h	/^	unsigned char crc;     \/**< CRC *\/$/;"	m	struct:_ALERT_T
-create_log	./log.cpp	/^int IpsLog::create_log(){$/;"	f	class:IpsLog
+create_log	./logging.cpp	/^int IpsLog::create_log(){$/;"	f	class:IpsLog
 create_pcap_handler	./init_agent.cpp	/^static pcap_t *create_pcap_handler(const char * device, char * errBuf) $/;"	f	file:
 current_datetime	./include/dbms_ips.h	/^	time_t current_datetime;               \/**< ÇöÀç ½Ã°£ (ÃÊ) *\/$/;"	m	struct:__anon1
 daddr	./include/util.h	/^	u_int32_t daddr;       \/**< ¸ñÀûÁö IPÁÖ¼Ò *\/$/;"	m	struct:__anon3
 date_begin	./include/policy.h	/^	u_int  date_begin;                  \/**< ½ÃÀÛ ÀÏ YYYYMMDD *\/$/;"	m	struct:__anon13
 date_end	./include/policy.h	/^	u_int  date_end;                    \/**< Á¾·á ÀÏ YYYYMMDD *\/$/;"	m	struct:__anon13
 db	./include/getdbinfo.h	/^	char db[35];           \/\/\/ DB¸í$/;"	m	struct:_CONFIGURE_SET2_T
-dbName	./include/log.h	/^	char dbName[MAX_STR_LEN];$/;"	m	struct:__anon1
+dbName	./include/logging.h	/^	char dbName[MAX_STR_LEN];$/;"	m	struct:__anon1
 db_port	./include/policy.h	/^	char db_port[MAX_STR_LEN];        \/**< DB Port *\/$/;"	m	struct:__anon15
 dbinfo	./include/dbms_ips.h	/^	CONFIGURE_SET2_T dbinfo;               \/**< MySQL Á¢¼Ó Á¤º¸ *\/$/;"	m	struct:__anon1
 dbms_type	./include/policy.h	/^	u_int  dbms_type;            \/**< DBMS Å¸ÀÔ ÀúÀå *\/$/;"	m	struct:_rule_list_t
@@ -360,16 +359,17 @@ depth2	./include/policy.h	/^	u_short depth2;                     \/**< 0~1500, ´
 detect_session_t	./include/policy.h	/^} detect_session_t;$/;"	t	typeref:struct:_detect_session_t
 dip	./include/packet.h	/^	unsigned int   dip;            \/**< destination ip *\/$/;"	m	struct:__anon7
 dip	./include/policy.h	/^	u_int   dip;$/;"	m	struct:_detect_session_t
-dip	./include/session.h	/^	u_int	dip;$/;"	m	struct:session_t
+dip	./include/session.h	/^	u_int	dip;$/;"	m	struct:__anon1
 display_manager_help	./dbms_ips_manager.cpp	/^static void display_manager_help(char *progname)$/;"	f	file:
 display_version	./util.cpp	/^void display_version(char *progname)$/;"	f
 dp	./include/packet.h	/^	unsigned short dp;             \/**< destination port *\/$/;"	m	struct:__anon7
 dp	./include/policy.h	/^	u_short dp;$/;"	m	struct:_detect_session_t
-dp	./include/session.h	/^	u_int 	dp;$/;"	m	struct:session_t
+dp	./include/session.h	/^	u_short	dp;$/;"	m	struct:__anon1
 drop_count	./include/packet.h	/^	unsigned short drop_count;     \/**< drop_count *\/$/;"	m	struct:__anon8
 dsize	./include/packet.h	/^	unsigned short dsize;          \/**< payloadÀÇ ±æÀÌ *\/$/;"	m	struct:__anon7
 dump_file_info	./include/dbms_ips.h	/^	char dump_file_info[MAX_STR_LEN];      \/**< Å½ÁöµÈ ÆÐÅ¶ÀÇ ¿ä¾à Á¤º¸°¡ ÀúÀåµÉ °æ·Î *\/$/;"	m	struct:__anon1
 dump_file_name	./include/dbms_ips.h	/^	char dump_file_name[MAX_STR_LEN];      \/**< Å½ÁöµÈ ÆÐÅ¶µéÀÌ ÀúÀåµÉ °æ·Î *\/$/;"	m	struct:__anon1
+e_time	./include/session.h	/^	time_t 		e_time;$/;"	m	struct:__anon2
 eh	./include/packet.h	/^	struct ethhdr  *eh;            \/**< ethernet header *\/$/;"	m	struct:__anon7	typeref:struct:__anon7::ethhdr
 etc	./include/policy.h	/^	char etc[64];                \/**< ±âÅ¸ Snort·ê °ü·Ã Ç¥Çö ÇÊµå *\/$/;"	m	struct:_rule_list_t
 ethhdr	./include/packet.h	/^struct ethhdr$/;"	s
@@ -378,7 +378,7 @@ ex_sip_count	./include/policy.h	/^	u_int ex_sip_count;          \/**< ¿¹¿Ü sip_l
 ex_sip_list	./include/policy.h	/^	ip_info_t *ex_sip_list;      \/**< ¿¹¿Ü °Ë»ç ´ë»óÀÌ µÇ´Â Source IP¸®½ºÆ® *\/$/;"	m	struct:_rule_list_t
 ex_sp_count	./include/policy.h	/^	u_int ex_sp_count;           \/**< ¿¹¿Ü sp_listÀÇ °³¼ö *\/$/;"	m	struct:_rule_list_t
 ex_sp_list	./include/policy.h	/^	port_info_t *ex_sp_list;     \/**< ¿¹¿Ü °Ë»ç ´ë»óÀÌ µÇ´Â Source Port ¸®½ºÆ® *\/$/;"	m	struct:_rule_list_t
-existSession	./session.cpp	/^std::map<session_t, session_value>::iterator IpsSession::existSession(packet_t* p){$/;"	f	class:IpsSession
+existSession	./session.cpp	/^std::unordered_map<u_int, session_value>::iterator IpsSession::existSession(packet_t* p){$/;"	f	class:IpsSession
 exist_select	./include/packet.h	/^	short exist_select;$/;"	m	struct:__anon7
 exist_select	./include/policy.h	/^	u_int  exist_select:1; $/;"	m	struct:_rule_list_t
 exist_union	./include/packet.h	/^	short exist_union;$/;"	m	struct:__anon7
@@ -397,7 +397,7 @@ flag_type	./include/policy.h	/^	u_int  flag_type:2;          \/**, COMMENT 0: do
 ftp_port	./include/policy.h	/^	char ftp_port[MAX_STR_LEN];       \/**< FTP Port *\/$/;"	m	struct:__anon15
 g_conf	./dbms_ips_manager.cpp	/^configure_t g_conf;      \/**< Environment value collection structure for action *\/$/;"	v
 g_license_string	./util.cpp	/^const char *g_license_string = "(c)2010 PNPSecure Corporation, 4b120-088-4825934-61611";$/;"	v
-getRules	./match.cpp	/^rule_t* IpsMatch::getRules(){$/;"	f	class:IpsMatch
+getRule	./match.cpp	/^rule_t* IpsMatch::getRule(int nIndex){$/;"	f	class:IpsMatch
 get_dump_conf	./util.cpp	/^int get_dump_conf(const char* file_name, const char* field_name, char *output, int max_size)$/;"	f
 get_ipmac_from_ippkt	./net_monitor.cpp	/^static int get_ipmac_from_ippkt(const u_char *packet, packet_t *p)$/;"	f	file:
 getopt_long2	./util.cpp	/^char getopt_long2(int argc, char *argv[], char *options, const struct option2 longopts[], int *reserved, char **optarg)$/;"	f
@@ -430,7 +430,7 @@ init_server_agent	./init_agent.cpp	/^int init_server_agent ($/;"	f
 inline	./include/config.h	67;"	d
 input_type	./include/dbms_ips.h	/^	int  input_type;                       \/**< 0: network, 1: ÆÄÀÏ, 2: DB *\/$/;"	m	struct:__anon1
 input_type_e	./include/policy.h	/^} input_type_e;$/;"	t	typeref:enum:__anon6
-insert_log	./log.cpp	/^int IpsLog::insert_log(u_char *packet, packet_t *p, rule_t *rule){$/;"	f	class:IpsLog
+insert_log	./logging.cpp	/^int IpsLog::insert_log(u_char *packet, packet_t *p, int ruleIndex){$/;"	f	class:IpsLog
 interface_count	./include/dbms_ips.h	/^	int  interface_count;                  \/**< ½º´ÏÇÎ ÀÎÆÛÀÌ½ºÀÇ °³¼ö *\/$/;"	m	struct:__anon1
 interface_id	./include/packet.h	/^	unsigned short interface_id;   \/**< interface id *\/$/;"	m	struct:__anon8
 interface_name	./include/dbms_ips.h	/^	char interface_name[MAX_INTERFACE_NUM][MAX_STR_LEN];      \/**< ÆÐÅ¶À» ¼öÁýÇÒ ÀÎÅÍÆäÀÌ½º ÀÌ¸§, ÀÎÅÍÆäÀÌ½º´Â 32°³±îÁö ÁöÁ¤ °¡´É *\/$/;"	m	struct:__anon1
@@ -465,6 +465,7 @@ is_auth_fail	./include/packet.h	/^	u_int   is_auth_fail:1;        \/**< 1: ÀÎÁõ 
 is_both_mode	./include/dbms_ips.h	/^	int  is_both_mode;                     \/**< ÇÊÅÍ¸µÀ» ¾ç¹æÀ¸·Î ÇÏ´Â ¿É¼Ç *\/$/;"	m	struct:__anon1
 is_bypass_mode	./include/dbms_ips.h	/^	int  is_bypass_mode;                   \/**< set Bypass mode *\/  $/;"	m	struct:__anon1
 is_compile_rule	./match.cpp	/^int IpsMatch::is_compile_rule(){$/;"	f	class:IpsMatch
+is_dbPort	./net_monitor.cpp	/^static int is_dbPort(u_short port){$/;"	f	file:
 is_debug_mode	./include/dbms_ips.h	/^	int  is_debug_mode;                    \/**< ½Ã½ºÅÛÀÇ ÀÌº¥Æ®¸¦ È­¸é¿¡ Ãâ·ÂÇÏ´Â ¸ðµå *\/$/;"	m	struct:__anon1
 is_empty_string	./util.cpp	/^int is_empty_string(const char *str)$/;"	f
 is_fromdb	./include/policy.h	/^	u_int  is_fromdb:1; $/;"	m	struct:_rule_list_t
@@ -476,7 +477,7 @@ is_nocase	./include/policy.h	/^	u_int   is_nocase;                  \/**< 0:´ë¼Ò
 is_print_console	./include/dbms_ips.h	/^	int  is_print_console;                 \/**< Å½ÁöµÈ ÆÐÅ¶ÀÇ ¸®½ºÆ®¸¦ ÄÜ¼Ö È­¸éÅ©±â¿¡ ¸ÂÃç Ãâ·ÂÇÏ´Â mode ÁöÁ¤ *\/$/;"	m	struct:__anon1
 is_print_hexa	./include/dbms_ips.h	/^	int  is_print_hexa;                    \/**< Å½ÁöµÈ ÆÐÅ¶ÀÇ HEXA code¸¦ ÄÜ¼Ö È­¸é¿¡ Ãâ·ÂÇÏ´Â mode ÁöÁ¤ *\/$/;"	m	struct:__anon1
 is_print_list	./include/dbms_ips.h	/^	int  is_print_list;                    \/**< Å½ÁöµÈ ÆÐÅ¶ÀÇ ¸®½ºÆ®¸¦ ÄÜ¼Ö È­¸é¿¡ Ãâ·ÂÇÏ´Â mode ÁöÁ¤ *\/$/;"	m	struct:__anon1
-is_read_logInfo	./log.cpp	/^int IpsLog::is_read_logInfo(){$/;"	f	class:IpsLog
+is_read_logInfo	./logging.cpp	/^int IpsLog::is_read_logInfo(){$/;"	f	class:IpsLog
 is_read_rules	./match.cpp	/^int IpsMatch::is_read_rules(char *fileName){$/;"	f	class:IpsMatch
 is_run_dblog	./include/dbms_ips.h	/^	int  is_run_dblog;                     \/**< DB Scan °á°ú¸¦ ips_log DB¿¡ ¾µ °ÍÀÎ°¡ 0: È­¸é Ãâ·Â, 1: ips_log_xx¿¡ ±â·Ï *\/$/;"	m	struct:__anon1
 is_running	./include/dbms_ips.h	/^	int  is_running;                       \/**< 0: ¸ØÃã, 1:µ¿ÀÛÁß *\/$/;"	m	struct:__anon1
@@ -491,9 +492,10 @@ is_web	./include/policy.h	/^	u_char     is_web;$/;"	m	struct:__anon11
 is_web	./include/policy.h	/^	u_int  is_web;$/;"	m	struct:_detect_session_t
 is_windows	./include/packet.h	/^	u_int is_windows:1;            \/**< 0:À©µµ¿ìÁî ÀÌ¿ÜÀÇ ÇÃ·§Æû, 1:¿øµµ¿ìÁî¿¡¼­ ¹ß»ýµÈ ÆÐÅ¶ *\/$/;"	m	struct:__anon7
 is_write_mode	./include/dbms_ips.h	/^	int  is_write_mode;                    \/**< Å½ÁöµÈ ÆÐÅ¶À» ÆÄÀÏ·Î ÀúÀåÇÒ °ÍÀÎÁö ¿©ºÎ 1 or 0 *\/$/;"	m	struct:__anon1
+is_writing_log	./include/dbms_ips.h	/^	int is_writing_log;$/;"	m	struct:__anon1
 jumpdata	./include/util.h	/^	char jumpdata[255];    \/**< Not use. *\/$/;"	m	struct:_ALERT_T
 key	./include/policy.h	/^	u_int   key;$/;"	m	struct:_detect_session_t
-l_info	./include/log.h	/^	log_db_info l_info;$/;"	m	class:IpsLog
+l_info	./include/logging.h	/^	log_db_info l_info;$/;"	m	class:IpsLog
 language_type	./include/dbms_ips.h	/^	char language_type;                    \/**< ¾ð¾î ¼±ÅÃ *\/$/;"	m	struct:__anon1
 left	./include/policy.h	/^	service_tree_t *left;$/;"	m	struct:_service_tree_t
 left	./include/policy.h	/^	struct _detect_session_t *left;        $/;"	m	struct:_detect_session_t	typeref:struct:_detect_session_t::_detect_session_t
@@ -506,22 +508,23 @@ level	./include/match.h	/^	unsigned int	level;$/;"	m	struct:__anon1
 level	./include/policy.h	/^	u_int  level:3;              \/**< À§Çè µî±Þ *\/$/;"	m	struct:_rule_list_t
 linktype	./include/packet.h	/^	unsigned short linktype;       \/**< link type *\/$/;"	m	struct:__anon8
 llong	./include/policy.h	/^typedef long long      llong;$/;"	t
-logIp	./include/log.h	/^	char logIp[MAX_IPADD_LEN];$/;"	m	struct:__anon1
-logPort	./include/log.h	/^	char logPort[MAX_PORT_LEN];$/;"	m	struct:__anon1
-log_db_info	./include/log.h	/^}log_db_info;$/;"	t	typeref:struct:__anon1
+logIp	./include/logging.h	/^	char logIp[MAX_IPADD_LEN];$/;"	m	struct:__anon1
+logPort	./include/logging.h	/^	char logPort[MAX_PORT_LEN];$/;"	m	struct:__anon1
+log_db_info	./include/logging.h	/^}log_db_info;$/;"	t	typeref:struct:__anon1
 log_info_t	./include/policy.h	/^} log_info_t;$/;"	t	typeref:struct:_log_info_t
 log_level	./include/policy.h	/^	u_char log_level;            \/**< ·Î±× µî±Þ *\/$/;"	m	struct:_rule_list_t
 log_printf	./util.cpp	/^int	log_printf (char *pname, const char *pre_fmt , ... )$/;"	f
+logging	./include/thread_manage.h	/^		int logging;$/;"	m	class:IpsThread
 logic_type	./include/policy.h	/^	u_int  logic_type;           \/**< 0: °Ë»çÀü, 1: Á¤»ó, 2: ³í¸®¿À·ù, 3: °Ë»çÈ¸ÇÇ, 4: ´ÙÁß¶óÀÎ *\/$/;"	m	struct:_rule_list_t
 logic_type_e	./include/policy.h	/^} logic_type_e;$/;"	t	typeref:enum:__anon7
 logs	./dbms_ips_manager.cpp	/^IpsLog logs;$/;"	v
 m_astRules	./include/match.h	/^	rule_t 		m_astRules[MAX_RULE_NUMBER];$/;"	m	class:IpsMatch
-m_astSession	./include/session.h	/^	std::map<session_t, session_value>				m_astSession;$/;"	m	class:IpsSession
+m_astSession	./include/session.h	/^	std::unordered_map<u_int, session_value>			m_astSession;$/;"	m	class:IpsSession
 m_astThread	./include/thread_manage.h	/^	pthread_t m_astThread[MAX_THREAD_NUM];$/;"	m	class:IpsThread
 mac	./include/policy.h	/^	char       mac[18];$/;"	m	struct:__anon12
 main	./dbms_ips_manager.cpp	/^int main(int argc, char *argv[])$/;"	f
 major_version	./include/packet.h	/^	unsigned short major_version;  \/**< major version *\/$/;"	m	struct:__anon8
-makeSession	./session.cpp	/^session_t IpsSession::makeSession(packet_t *p){$/;"	f	class:IpsSession
+makeSession	./session.cpp	/^u_int IpsSession::makeSession(packet_t *p){$/;"	f	class:IpsSession
 malloc_n_exit	./util.cpp	/^void *malloc_n_exit(size_t nSize, const char *pFname, int nLine)$/;"	f
 manager_port	./include/dbms_ips.h	/^	int  manager_port;                     \/**< Á¤Ã¥ ¿¬µ¿¿¬ °ü¸® Æ÷Æ® : default(21113) *\/$/;"	m	struct:__anon1
 max_rows	./include/policy.h	/^	u_int  max_rows;$/;"	m	struct:_rule_list_t
@@ -545,17 +548,17 @@ object_index	./include/policy.h	/^	u_int      object_index;$/;"	m	struct:__anon1
 object_index	./include/policy.h	/^	u_int  object_index;$/;"	m	struct:__anon13
 offset1	./include/policy.h	/^	u_short offset1;                    \/**< 0~1500 *\/$/;"	m	struct:__anon10
 offset2	./include/policy.h	/^	u_short offset2;                    \/**< 0~1500, ´Ü txt_offset1º¸´Ù´Â °°°Å³ª Å« °ª *\/ $/;"	m	struct:__anon10
-operator <	./include/session.h	/^	bool operator<(const session_t& other) const{$/;"	f	struct:session_t
 option2	./include/util.h	/^struct option2$/;"	s
 order	./include/policy.h	/^	u_int  order;                \/**< ¿ì¼± ¼øÀ§ *\/$/;"	m	struct:_rule_list_t
 orignal_port	./include/policy.h	/^	u_short orignal_port;$/;"	m	struct:_mts_ports_t
+p_session	./include/session.h	/^	session_t	p_session;$/;"	m	struct:__anon2
 packet_filter	./net_monitor.cpp	/^static int packet_filter(u_char *packet, packet_t *p, int nic_index)$/;"	f	file:
 packet_sniff	./net_monitor.cpp	/^static void packet_sniff(u_char *args, const struct pcap_pkthdr *header, const u_char *packet)$/;"	f	file:
 packet_t	./include/packet.h	/^} packet_t;$/;"	t	typeref:struct:__anon7
 parse_alias	./util.cpp	/^static int  parse_alias(char *str_value, void *alias_list, int type, char *conf_file_name)$/;"	f	file:
 parse_alias_list	./util.cpp	/^int parse_alias_list(const char *str_value, void *alias_list, int type, char *conf_file_name)$/;"	f
 parse_flow	./util.cpp	/^int parse_flow(char *field_value, unsigned char *flow)$/;"	f
-password	./include/log.h	/^	char password[MAX_STR_LEN];$/;"	m	struct:__anon1
+password	./include/logging.h	/^	char password[MAX_STR_LEN];$/;"	m	struct:__anon1
 pattern_content_t	./include/policy.h	/^} pattern_content_t;$/;"	t	typeref:struct:__anon10
 pd	./include/dbms_ips.h	/^	pcap_t *pd[MAX_INTERFACE_NUM];         \/**< sniffing ÇÏ±â À§ÇÑ pcap_t ¸®½ºÆ® *\/$/;"	m	struct:__anon1
 pkt_bin	./include/policy.h	/^	char         pkt_bin[1520];$/;"	m	struct:_log_info_t
@@ -570,6 +573,7 @@ port_base	./include/policy.h	/^    unsigned short port_base;           \/**< ±âÁ
 port_info_t	./include/policy.h	/^} port_info_t;$/;"	t	typeref:struct:__anon8
 port_max	./include/policy.h	/^    unsigned short port_max;            \/**< ¹üÀ§ÇüÀ» °í·ÁÇÑ ÃÖ´ë port ¹øÈ£ *\/$/;"	m	struct:__anon8
 preBuildData	./match.cpp	/^u_char *preBuildData(u_char *pPacket, int nDataSize){$/;"	f
+printSession	./include/thread_manage.h	/^		int printSession;$/;"	m	class:IpsThread
 printSession	./session.cpp	/^int IpsSession::printSession(){$/;"	f	class:IpsSession
 printSessionWrapper	./session.cpp	/^void* IpsSession::printSessionWrapper(void* context) {$/;"	f	class:IpsSession
 print_interface	./util.cpp	/^void print_interface()$/;"	f
@@ -580,6 +584,7 @@ protocol	./include/util.h	/^	u_int8_t  protocol;    \/**< protocol ¹øÈ£ (TCP, UD
 pseudohdr_t	./include/util.h	/^} pseudohdr_t;$/;"	t	typeref:struct:__anon3
 quarantine_time	./include/policy.h	/^	u_int  quarantine_time;      \/**< °Ý¸® ½Ã°£ *\/$/;"	m	struct:_rule_list_t
 range_int_t	./include/policy.h	/^} range_int_t;$/;"	t	typeref:struct:__anon9
+read_policy	./logging.cpp	/^int IpsLog::read_policy(){$/;"	f	class:IpsLog
 regex	./include/match.h	/^	regex_t			regex[MAX_REG_NUM];								\/\/ ì •ê·œì‹$/;"	m	struct:__anon1
 required_argument	./include/util.h	39;"	d
 reserved	./include/packet.h	/^	unsigned short reserved;       \/**< reserved filed *\/$/;"	m	struct:__anon8
@@ -599,8 +604,8 @@ rule_list_t	./include/policy.h	/^typedef struct _rule_list_t rule_list_t;$/;"	t	
 rule_no	./include/policy.h	/^	long long rule_no;           \/**< Á¤Ã¥ ¹øÈ£ *\/$/;"	m	struct:_rule_list_t
 rule_t	./include/match.h	/^}rule_t;$/;"	t	typeref:struct:__anon1
 rules	./dbms_ips_manager.cpp	/^IpsMatch rules;$/;"	v
-sItr	./include/session.h	/^	std::map<session_t, session_value>::iterator	sItr;$/;"	m	class:IpsSession
-s_time	./include/session.h	/^	time_t	s_time;$/;"	m	struct:__anon1
+sItr	./include/session.h	/^	std::unordered_map<u_int, session_value>::iterator	sItr;$/;"	m	class:IpsSession
+s_time	./include/session.h	/^	time_t		s_time;$/;"	m	struct:__anon2
 sa_message_t	./include/util.h	/^} sa_message_t;$/;"	t	typeref:struct:__anon2
 saddr	./include/util.h	/^	u_int32_t saddr;       \/**< Ãâ¹ßÁö IPÁÖ¼Ò *\/$/;"	m	struct:__anon3
 search_mem_keyword	./util.cpp	/^int search_mem_keyword(char *buff, int buff_len, char *keyword, int keyword_len)$/;"	f
@@ -623,16 +628,16 @@ service_no	./include/policy.h	/^	u_int        service_no;$/;"	m	struct:_log_info
 service_port	./include/policy.h	/^	char service_port[MAX_STR_LEN];   \/**< ¼­ºñ½º Port *\/$/;"	m	struct:__anon14
 service_tree_t	./include/policy.h	/^typedef struct _service_tree_t service_tree_t;$/;"	t	typeref:struct:_service_tree_t
 sess	./dbms_ips_manager.cpp	/^IpsSession sess;$/;"	v
-session_cnt	./include/session.h	/^	u_int		session_cnt;$/;"	m	struct:__anon1
-session_t	./include/session.h	/^struct session_t{$/;"	s
-session_value	./include/session.h	/^} session_value;$/;"	t	typeref:struct:__anon1
+session_cnt	./include/session.h	/^	u_int		session_cnt;$/;"	m	struct:__anon2
+session_t	./include/session.h	/^}session_t;$/;"	t	typeref:struct:__anon1
+session_value	./include/session.h	/^}session_value;$/;"	t	typeref:struct:__anon2
 setFlow	./net_monitor.cpp	/^static int setFlow(packet_t *p){$/;"	f	file:
 setRules	./match.cpp	/^int IpsMatch::setRules(char *ruleLine, char *field, int nIndex){$/;"	f	class:IpsMatch
 shell_port	./include/policy.h	/^	char shell_port[MAX_STR_LEN];     \/**< Shell Port *\/$/;"	m	struct:__anon15
 sin	./include/dbms_ips_manager.h	/^    struct sockaddr_in *sin; $/;"	m	struct:_ifinfo	typeref:struct:_ifinfo::sockaddr_in
 sip	./include/packet.h	/^	unsigned int   sip;            \/**< source ip *\/$/;"	m	struct:__anon7
 sip	./include/policy.h	/^	u_int   sip;$/;"	m	struct:_detect_session_t
-sip	./include/session.h	/^	u_int 	sip;$/;"	m	struct:session_t
+sip	./include/session.h	/^	u_int	sip;$/;"	m	struct:__anon1
 sip_count	./include/policy.h	/^	u_int sip_count;             \/**< sip_listÀÇ °³¼ö *\/$/;"	m	struct:_rule_list_t
 sip_list	./include/policy.h	/^	ip_info_t *sip_list;         \/**< °Ë»ç ´ë»óÀÌ µÇ´Â Source IP¸®½ºÆ® *\/$/;"	m	struct:_rule_list_t
 snaplen	./include/packet.h	/^	unsigned int snaplen;          \/**< snap length *\/$/;"	m	struct:__anon8
@@ -644,14 +649,17 @@ sniff_udp_t	./include/packet.h	/^} sniff_udp_t;$/;"	t	typeref:struct:__anon5
 sniff_vlan_t	./include/packet.h	/^} sniff_vlan_t;$/;"	t	typeref:struct:__anon1
 sp	./include/packet.h	/^	unsigned short sp;             \/**< source port *\/$/;"	m	struct:__anon7
 sp	./include/policy.h	/^	u_short sp;$/;"	m	struct:_detect_session_t
-sp	./include/session.h	/^	u_int 	sp;$/;"	m	struct:session_t
+sp	./include/session.h	/^	u_short	sp;$/;"	m	struct:__anon1
 sp_count	./include/policy.h	/^	u_int sp_count;              \/**< sp_listÀÇ °³¼ö *\/$/;"	m	struct:_rule_list_t
 sp_list	./include/policy.h	/^	port_info_t *sp_list;        \/**< °Ë»ç ´ë»óÀÌ µÇ´Â Source Port ¸®½ºÆ® *\/$/;"	m	struct:_rule_list_t
 srcIp	./include/match.h	/^	unsigned int	srcIp;											\/\/ íƒì§€ IP$/;"	m	struct:__anon1
 srcPort	./include/match.h	/^	unsigned short	srcPort;										\/\/ íƒì§€ PORT$/;"	m	struct:__anon1
+stop_processor	./dbms_ips_manager.cpp	/^void stop_processor(int sig)$/;"	f
 strim_both	./util.cpp	/^void strim_both(char *source)$/;"	f
 strncpy2	./util.cpp	/^char *strncpy2(char *dest, const char *src, size_t n)$/;"	f
 sync_mutex	./include/dbms_ips.h	/^	pthread_mutex_t sync_mutex;            \/**< ·ê ¾÷µ¥ÀÌÆ®½Ã Å½Áö¿£ÁøÀÌ µ¿ÀÛÇÏÁö ¾Êµµ·Ï ÇÏ±âÀ§ÇÑ mutex *\/$/;"	m	struct:__anon1
+targetIp	./include/dbms_ips.h	/^	char targetIp[15];$/;"	m	struct:__anon1
+targetPort	./include/dbms_ips.h	/^	char targetPort[6];$/;"	m	struct:__anon1
 tcpdump_header_t	./include/packet.h	/^} tcpdump_header_t;$/;"	t	typeref:struct:__anon8
 tcph	./include/packet.h	/^	sniff_tcp_t  *tcph;            \/**< tcp header *\/$/;"	m	struct:__anon7
 tcplength	./include/util.h	/^	u_int16_t tcplength;   \/**< tcp headerÀÇ ±æÀÌ *\/$/;"	m	struct:__anon3
@@ -699,7 +707,7 @@ unix_socket	./include/getdbinfo.h	/^	char unix_socket[80];  \/\/\/ Unix socket¸í
 updated_alias_crc	./include/policy.h	/^	char updated_alias_crc[CRC_STR_SIZE];    \/**< ÀÌ¹Ì ¹èÆ÷µÈ ±×·ì Á¤º¸ fileÀÇ CRC *\/$/;"	m	struct:__anon15
 updated_rule_crc	./include/policy.h	/^	char updated_rule_crc[CRC_STR_SIZE];     \/**< ÀÌ¹Ì ¹èÆ÷µÈ Á¢¼Ó Á¤Ã¥ fileÀÇ CRC *\/$/;"	m	struct:__anon15
 useless	./include/util.h	/^	u_int8_t  useless;     \/**< reserved field *\/$/;"	m	struct:__anon3
-user	./include/log.h	/^	char user[MAX_STR_LEN];$/;"	m	struct:__anon1
+user	./include/logging.h	/^	char user[MAX_STR_LEN];$/;"	m	struct:__anon1
 user_ip	./include/policy.h	/^	u_int        user_ip;$/;"	m	struct:_log_info_t
 userdefine	./include/policy.h	/^	u_int  userdefine:1;         \/**< 0: °íÁ¤·ê, 1:»ç¿ëÀÚ Á¤ÀÇ ·ê *\/$/;"	m	struct:_rule_list_t
 val	./include/util.h	/^	int val;$/;"	m	struct:option2
@@ -711,6 +719,6 @@ vth_proto	./include/packet.h	/^	u_int16_t vth_proto;           \/**< protocol fi
 wday_mask_e	./include/policy.h	/^} wday_mask_e;$/;"	t	typeref:enum:__anon5
 wday_num_e	./include/policy.h	/^} wday_num_e;$/;"	t	typeref:enum:__anon4
 week_mask	./include/policy.h	/^	u_char week_mask;                   \/**< 0x0: any, 0x01:ÀÏ, 0x02:¿ù, 0x04:È­, 0x08:¼ö, 0x10:¸ñ, 0x20:±Ý, 0x40:Åä *\/ $/;"	m	struct:__anon13
-~IpsLog	./include/log.h	/^		~IpsLog(){$/;"	f	class:IpsLog
+~IpsLog	./include/logging.h	/^		~IpsLog(){$/;"	f	class:IpsLog
 ~IpsMatch	./include/match.h	/^		~IpsMatch(){$/;"	f	class:IpsMatch
 ~IpsSession	./include/session.h	/^		~IpsSession(){$/;"	f	class:IpsSession

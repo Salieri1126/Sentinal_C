@@ -3,4 +3,9 @@ rid = 100001 : deName = detect_passwd 	: srcIp = any : srcPort = any : content =
 rid = 100002 : deName = detect_policyDB	: srcIp = any : srcPort = any : content = "policy"
 rid = 100003 : deName = detect_grants : srcIp = any : srcPort = any : content = "show grants", "grant", "privileges"
 rid = 100004 : deName = detect_src : srcIp = 192.168.1.86 : srcPort = any
-rid = 100005 : deName = detect_behavior(select-test) : base_time = 30 : base_limit = 100 : content = "select"
+rid = 100005 : deName = detect(test!!DBLOG) : base_time = 10 : base_limit = 5 : content = "test_xx"
+rid = 100006 : deName = detect_grants2 : srcIp = any : srcPort = any : content = "mind 01234567890123456789"
+rid = 100007 : deName = detect_src1 : srcIp = 192.168.1.134 : srcPort = any
+rid = 100008 : deName = detect_src2 : srcIp = any : srcPort = 1234
+rid = 100009 : deName = detect(test!!DBLOG)1 : base_time = 10 : base_limit = 5 : content = "test_xx1"
+rid = 100010 : deName = detect(test!!DBLOG)2 : base_time = 30 : base_limit = 5 : content = "test_xx2"

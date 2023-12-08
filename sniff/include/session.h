@@ -1,54 +1,34 @@
 #ifndef __SESSION_H__
 #define __SESSION_H__
 
-#include <map>
 #include <ctime>
-#include <utility>
 
 #include "policy.h"
 
-#define MAX_SES_NUM 10000
-
-/*
- * 세션 구조체
- * Source Ip
- * Source Port
- * Destiny Ip
- * Destiny Port
- * f_time
- * e_time
- * count
- */
-struct session_t{
-	u_int 	sip;
-	u_int 	sp;
-	u_int	dip;
-	u_int 	dp;
-
-
-	bool operator<(const session_t& other) const{
-		if( sip < other.sip )
-			return sip < other.sip;
-		
-		if( sp < other.sp )
-			return sp < other.sp;
-		
-		if( dip < other.dip )
-			return dip < other.dip;
-		
-		if( dp < other.dp )
-			return dp < other.dp;
-		return sip < other.sip;
-	}
-};
+#define MAX_SESSION_NUM 0xffff
 
 typedef struct{
+	
+	u_int	sip;
+	u_int	dip;
+	u_short	sp;
+	u_short	dp;
 
-	time_t	s_time;
-	u_int		session_cnt;
-	u_int		behavior_cnt;
+}session_info;
 
-} session_value;
+//TODO:데이터 사이즈에 관한 탐지
+typedef struct{
+
+	u_int			session_hash;
+
+	session_info	p_session;
+
+	time_t			s_time;
+	time_t 			e_time;
+	u_int			session_cnt;
+	u_int			behavior_cnt;
+
+}session_t;
 /*
  *	mem : 세션의 수, 세션 구조체의 자료구조
  *	생성자, 소멸자
@@ -61,15 +41,14 @@ typedef struct{
  */
 class IpsSession {
 
-	std::map<session_t, session_value>				m_astSession;
-	std::map<session_t, session_value>::iterator	sItr;
+	session_t			m_astSession[MAX_SESSION_NUM];
 
 	private :
 
 
 	public :
 		IpsSession(){
-
+			memset( m_astSession, 0, sizeof(session_t) );
 		}
 
 		~IpsSession(){
@@ -78,8 +57,8 @@ class IpsSession {
 		int checkSession(packet_t *p);
 		int addSession(packet_t *p);
 		int printSession();
-		std::map<session_t, session_value>::iterator existSession(packet_t* p);
-		session_t makeSession(packet_t *p);
+		int existSession();
+		u_int makeSession(packet_t *p);
 
 		static void* printSessionWrapper(void* context);
 };

@@ -215,9 +215,14 @@ int IpsMatch::is_compile_rule(){
 int IpsMatch::ruleFilter(packet_t *p, u_char *pdata){
 
 	int match = 0;
-	std::map<session_t, session_value>::iterator itr;
+
+	if( p->dsize == 0 )
+		return -1;
 
 	for( int i = 0 ; i < ruleCnt ; i++){
+
+		match = 0;
+		
 		if( m_astRules[i].srcIp == p->sip){
 			free(pdata);
 			return i;
@@ -239,23 +244,11 @@ int IpsMatch::ruleFilter(packet_t *p, u_char *pdata){
 				free(pdata);
 				return i;
 			}
+
 			//	Select찾았으면 기준 시간 지났는지 확인
 			//	지났으면 Session의 cnt 초기화, time 초기화 후 cnt++
 			//	안지났으면 Session의 cnt++
-			itr = sess.existSession(p);
-
-			if ( (time(NULL)-(itr->second.s_time)) > m_astRules[i].base_time) {
-				itr->second.behavior_cnt = 0;
-				itr->second.s_time = time(NULL);
-			}
-
-			itr->second.behavior_cnt++;
-
 			//	cnt가 기준 Cnt보다 크면 행동 패턴 공격 탐지
-			if( itr->second.behavior_cnt > m_astRules[i].base_limit) {
-				free(pdata);
-				return i;
-			}
 		}
 	}
 	free(pdata);
@@ -275,16 +268,24 @@ int IpsMatch::ruleFilter(packet_t *p, u_char *pdata){
  *		가공하여 문자와 숫자가 아닌 부분을 공란으로 처리하여
  *		payload를 반환
  */
-u_char *preBuildData(u_char *pPacket, int nDataSize){
+//FIXME:precompile 수정
+char *preBuildData(u_char *pPacket, int nDataSize){
 
-	u_char *tmp = (u_char *)malloc(nDataSize);
-	memset(tmp, 0, nDataSize);
-	memcpy(tmp, pPacket+54, nDataSize); 
+	char tmp[2048] = "";
+	strncpy(tmp, (char*)pPacket, nDataSize);
 	
+	printf("tmp:%s\n", tmp);
 	for(int i = 0 ; i < nDataSize ; i++){
 		tmp[i] = ( tmp[i] > 127 || tmp[i] < ' ' ) ? ' ' : tmp[i];
+		if(tmp[i-1] == ' ' && tmp[i] == ' '){
+			for(int j= i ; j < nDataSize ; j++){
+				tmp[j-1] = tmp[j];
+			}
+		}
 	}
-	
+
+	tmp[nDataSize] = '\0';
+	printf("tmp:%s\n", tmp);	
 	return tmp;
 }
 
@@ -325,8 +326,8 @@ void IpsMatch::printf_rules(){
  *	\return
  *		rule_t 구조체
  */
-rule_t IpsMatch::getRule(int nIndex){
-	return m_astRules[nIndex];
+rule_t* IpsMatch::getRule(int nIndex){
+	return &m_astRules[nIndex];
 }
 
 #endif

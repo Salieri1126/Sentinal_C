@@ -102,6 +102,8 @@ typedef struct
 
 	char targetIp[15];
 	char targetPort[6];
+
+	int is_writing_log;
 } configure_t;
 
 

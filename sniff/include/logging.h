@@ -1,5 +1,5 @@
-#ifndef __LOG_H__
-#define __LOG_H__
+#ifndef __LOGGING_H__
+#define __LOGGING_H__
 
 #include <mysql.h>
 #include <stdio.h>
@@ -46,6 +46,9 @@ class IpsLog {
 		int create_log();
 		int insert_log(u_char *packet, packet_t *p, int ruleIndex);
 		int close_log_db();
+		int conn_policy();
+		int read_policy();
+		int create_policy();
 };
 
 
