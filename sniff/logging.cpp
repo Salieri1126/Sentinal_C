@@ -3,7 +3,7 @@
 extern configure_t g_conf;
 extern IpsMatch rules;
 
-static void bin_to_bin(const u_char *bin, size_t len, char *out); 
+static void bin_to_hex(const u_char *bin, size_t len, char *out);
 
 /*
  *	!brief
@@ -113,19 +113,31 @@ int IpsLog::insert_log(u_char *packet, packet_t *p, int ruleIndex){
 	struct tm tm = *localtime(&t);
 	struct in_addr *ip_src = (struct in_addr*)&p->sip;
 
-	char bin[p->caplen * 8 + 1];
-    bin_to_bin(packet, p->caplen, bin);
-
+	char hex[p->caplen * 2 + 1];
+    bin_to_hex(packet, p->caplen, hex);
+	
 	rule_t* detectRule = rules.getRule(ruleIndex);
 
 	sprintf(query, "INSERT INTO log_%04d%02d%02d"
 			"(detected_no, detected_name, time, action, detail, src_ip, packet_bin, level)"
-			"VALUES (%d, '%s', NOW(), %d, '%s', '%s', '%s', %d)", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, detectRule->rid, detectRule->deName, detectRule->action, "test detected", inet_ntoa(*ip_src), bin, detectRule->level);
+			"VALUES (%d, '%s', NOW(), %d, '%s', '%s', '%s', %d)", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, detectRule->rid, detectRule->deName, detectRule->action, "test detected", inet_ntoa(*ip_src), hex, detectRule->level);
 
 	if (mysql_query(conn, query)) {
     	fprintf(stderr, "%s\n", mysql_error(conn));
     	return -1;
 	}
+
+	memset( query, 0 , sizeof(query));
+
+	sprintf(query, "INSERT INTO log_%04d%02d%02d"
+	            "(detected_no, detected_name, time, action, detail, src_ip, packet_bin, level)"
+		         "VALUES (%d, '%s', NOW(), %d, '%s', '%s', '%s', %d)", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, detectRule->rid, detectRule->deName, detectRule->action, "test detected", inet_ntoa(*ip_src), hex, detectRule->level);
+
+     if (mysql_query(conn, query)) {
+         fprintf(stderr, "%s\n", mysql_error(conn));
+         return -1;
+     }
+
 
 	return 0;
 }
@@ -136,10 +148,9 @@ int IpsLog::insert_log(u_char *packet, packet_t *p, int ruleIndex){
  *
  *
  */
-static void bin_to_bin(const u_char *bin, size_t len, char *out) {
+static void bin_to_hex(const u_char *bin, size_t len, char *out) {
     for (size_t i = 0; i < len; i++) {
-        sprintf(out + (i * 8), "%08d", bin[i]);
+        sprintf(out + (i * 2), "%02X", bin[i]);
     }
 }
-
 //TODO : logging thread에서 로그를 실행해야 할 함수 추가

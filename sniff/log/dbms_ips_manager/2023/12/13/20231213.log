@@ -195,3 +195,6 @@
 [09:06:35] main()-82: START
 [09:06:35] init_program()-340
 [09:06:57] stop_processor()-359: signal=2
+[17:37:16] main()-82: START
+[17:37:16] init_program()-340
+[17:40:18] stop_processor()-359: signal=2
