@@ -129,9 +129,7 @@ int IpsLog::insert_log(u_char *packet, packet_t *p, int ruleIndex){
 
 	memset( query, 0 , sizeof(query));
 
-	sprintf(query, "INSERT INTO log_%04d%02d%02d"
-	            "(detected_no, detected_name, time, action, detail, src_ip, packet_bin, level)"
-		         "VALUES (%d, '%s', NOW(), %d, '%s', '%s', '%s', %d)", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, detectRule->rid, detectRule->deName, detectRule->action, "test detected", inet_ntoa(*ip_src), hex, detectRule->level);
+	sprintf(query, "UPDATE log_%04d%02d%02d set packet_bin = UNHEX(packet_bin);"
 
      if (mysql_query(conn, query)) {
          fprintf(stderr, "%s\n", mysql_error(conn));
