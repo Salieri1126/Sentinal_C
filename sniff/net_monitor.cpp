@@ -152,7 +152,6 @@ static void packet_sniff(u_char *args, const struct pcap_pkthdr *header, const u
 			p.is_windows = 0;
 
 		if ( packet_filter((u_char*)packet, &p, nic_index) == ACTION_PASS ) {
-			print_to_console(&p, packet, g_conf.is_print_console, g_conf.is_print_hexa);
 			return;
 		}
 
@@ -312,8 +311,11 @@ static int packet_filter(u_char *packet, packet_t *p, int nic_index)
 
 	if ( p->dsize == 0 )
 		return ACTION_PASS;
+
 	//FIXME:preBuildData 따로 담고 데이터 잘 들어가게 수정
-	int ruleIndex = rules.ruleFilter(p, (u_char*)preBuildData(packet, p->dsize));
+	preBuildData(p, packet, p->dsize);
+	
+	int ruleIndex = rules.ruleFilter(p, p->nocase);
 	if ( ruleIndex != -1 && p->reverse_flow == 0){
 		rule_t* match = rules.getRule(ruleIndex);
 		printf("(Detect_Name : %s) ", match->deName); 

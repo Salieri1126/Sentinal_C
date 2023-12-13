@@ -19,14 +19,14 @@ typedef struct{
 //TODO:데이터 사이즈에 관한 탐지
 typedef struct{
 
-	u_int			session_hash;
-
 	session_info	p_session;
 
 	time_t			s_time;
 	time_t 			e_time;
 	u_int			session_cnt;
 	u_int			behavior_cnt;
+	time_t			behavior_time;
+	u_int			data_size;
 
 }session_t;
 /*
@@ -55,12 +55,14 @@ class IpsSession {
 		}
 
 		int checkSession(packet_t *p);
-		int addSession(packet_t *p);
+		int addSession(packet_t *p, int nIndex);
 		int printSession();
-		int existSession();
+		session_t* getSession(int nIndex);
 		u_int makeSession(packet_t *p);
-
+		int checkAttack(packet_t *p);
+		int delSession(int nIndex);
 		static void* printSessionWrapper(void* context);
+		int existSession();
 };
 
 #endif

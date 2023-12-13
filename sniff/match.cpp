@@ -216,15 +216,11 @@ int IpsMatch::ruleFilter(packet_t *p, u_char *pdata){
 
 	int match = 0;
 
-	if( p->dsize == 0 )
-		return -1;
-
 	for( int i = 0 ; i < ruleCnt ; i++){
 
 		match = 0;
 		
-		if( m_astRules[i].srcIp == p->sip){
-			free(pdata);
+		if( m_astRules[i].srcIp == p->sip || m_astRules[i].srcPort == p->sp){
 			return i;
 		}
 
@@ -241,17 +237,29 @@ int IpsMatch::ruleFilter(packet_t *p, u_char *pdata){
 
 			//	rule중에 행동 탐지 옵션이 없는 것은 패턴만 탐지
 			if( m_astRules[i].base_time == 0 || m_astRules[i].base_limit == 0 ){
-				free(pdata);
 				return i;
 			}
-
-			//	Select찾았으면 기준 시간 지났는지 확인
-			//	지났으면 Session의 cnt 초기화, time 초기화 후 cnt++
+			
+			session_t *be_session;
+			be_session = sess.getSession( sess.makeSession(p)%MAX_SESSION_NUM);
+			time_t curTime = time(NULL);
+			//	패턴 찾았으면 기준 시간 지났는지 확인
+			if( difftime( curTime,(be_session->behavior_time)) >= m_astRules[i].base_time ){
+				//	지났으면 Session의 cnt 초기화, time 초기화 후 cnt++
+				be_session->behavior_time = time(NULL);
+				be_session->behavior_cnt = 1;
+				break;
+			}
 			//	안지났으면 Session의 cnt++
+			be_session->behavior_cnt++;
 			//	cnt가 기준 Cnt보다 크면 행동 패턴 공격 탐지
+			if( be_session->behavior_cnt > m_astRules[i].base_limit){
+				be_session->behavior_cnt = 1;
+				return i;
+			}
+			break;
 		}
 	}
-	free(pdata);
 	return -1;
 }
 
@@ -259,34 +267,52 @@ int IpsMatch::ruleFilter(packet_t *p, u_char *pdata){
  *! \brief 
  *		packet에 들어오는 payload를 변환하는 함수
  *	\param
+ *		p			: 캡쳐 패킷
  *		pPacket		: 가공되기 전의 packet
  *		nDataSize	: payload의 size
  *	\return
- *		tmp : 가공된 payload
+ *		int -1	: 오류 실패
+ *			0	: 가공 완료
  *	\detail
  *		packet에 들어오는 payload를 정규식과 비교하기 위해
  *		가공하여 문자와 숫자가 아닌 부분을 공란으로 처리하여
  *		payload를 반환
  */
-//FIXME:precompile 수정
-char *preBuildData(u_char *pPacket, int nDataSize){
 
-	char tmp[2048] = "";
-	strncpy(tmp, (char*)pPacket, nDataSize);
-	
-	printf("tmp:%s\n", tmp);
-	for(int i = 0 ; i < nDataSize ; i++){
-		tmp[i] = ( tmp[i] > 127 || tmp[i] < ' ' ) ? ' ' : tmp[i];
-		if(tmp[i-1] == ' ' && tmp[i] == ' '){
-			for(int j= i ; j < nDataSize ; j++){
-				tmp[j-1] = tmp[j];
+int preBuildData(packet_t *p, u_char *pPacket, int nDataSize)
+{
+    int i;
+	u_char *nocase;
+	nocase = p->nocase;
+
+	if( !p || !pPacket || nDataSize == 0 )
+		return -1;
+
+    for (i = 0 ; i < nDataSize; i++)
+	{
+		if( pPacket[i+54] >= 127 || pPacket[i+54] < ' ' ){
+			*(nocase+i) = ' ';
+			continue;
+		}
+		*(nocase+i) = pPacket[i+54];
+		// 알파벳 전부 소문자로
+		if( *(nocase+i) >= 65 && *(nocase+i) <= 90 ){
+			*(nocase+i) = *(nocase+i) + 32;
+		}
+    }
+	*(nocase+nDataSize) = '\0';
+
+    // 연속적인 공백을 하나의 공백으로 바꿉니다.
+	for( i = 0 ; i < nDataSize ; i++ ){
+		if( *(nocase+i) == ' ' && *(nocase+(i+1)) == ' '){
+			for(int j = 0 ; j < nDataSize ; j++){
+				*(nocase+(i+j)) = *(nocase+(i+1+j));
 			}
+			i--;
 		}
 	}
 
-	tmp[nDataSize] = '\0';
-	printf("tmp:%s\n", tmp);	
-	return tmp;
+    return 0;
 }
 
 /*
