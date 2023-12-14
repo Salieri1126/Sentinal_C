@@ -84,7 +84,7 @@ void *init_net_monitor(int nic_index)
 	if ( g_conf.is_debug_mode )
 		fprintf(stderr,"%s,%d: net_monitor(%d, %s)-start\n", __func__, __LINE__, nic_index, g_conf.interface_name[nic_index]);
 
-	g_conf.reset_socket[nic_index] = init_resetpacket(g_conf.interface_name[nic_index]);
+	g_conf.reset_socket[0] = init_resetpacket(g_conf.interface_name[0]);
 
 	/* set callback function */
 	u_nic_index = (u_char)nic_index&0xff;
@@ -297,24 +297,22 @@ static int is_skip_port(unsigned short port)
  */
 static int packet_filter(u_char *packet, packet_t *p, int nic_index)
 {
-
-	if ( g_conf.is_debug_mode && p->reverse_flow != -1 )
-		fprintf(stderr, "%s,%d: Flow(%d) %x:%d -> %x:%d dsize:%d\n", __func__, __LINE__, p->reverse_flow, p->sip, p->sp, p->dip, p->dp, p->dsize);
-
 	//////////////////////////////////////////////////////
 	// flow 확인 및 설정
 	if ( setFlow(p) == -1 )
 		return ACTION_PASS;
 
+	if ( g_conf.is_debug_mode && p->reverse_flow != -1 )
+		fprintf(stderr, "%s,%d: Flow(%d) %x:%d -> %x:%d dsize:%d\n", __func__, __LINE__, p->reverse_flow, p->sip, p->sp, p->dip, p->dp, p->dsize);
+
+	//	세션 확인
 	if( sess.checkSession(p) ) 
 		return ACTION_PASS;
-
-	if ( p->dsize == 0 )
-		return ACTION_PASS;
-
-	//FIXME:preBuildData 따로 담고 데이터 잘 들어가게 수정
-	preBuildData(p, packet, p->dsize);
 	
+	preBuildData(p, packet, p->dsize, p->caplen - p->dsize);
+
+	//	룰 매칭 확인
+	//	TODO:logging thread 실행
 	int ruleIndex = rules.ruleFilter(p, p->nocase);
 	if ( ruleIndex != -1 && p->reverse_flow == 0){
 		rule_t* match = rules.getRule(ruleIndex);
@@ -336,7 +334,6 @@ static int packet_filter(u_char *packet, packet_t *p, int nic_index)
  *		역방향 : DB에서 나가는 패킷 reverse_flow = 1
  *		DB와 관련없는 패킷은 reverse_flow = -1
  */
-//TODO:불특정 다수에 대한 탐지
 static int setFlow(packet_t *p){
 	
 	if (!p)

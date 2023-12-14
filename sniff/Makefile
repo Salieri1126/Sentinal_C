@@ -6,8 +6,8 @@ PATCH_PATH="patch_ips"
 
 IPSMANAGER = dbms_ips_manager
 
-#CFLAGS      = -O2 -D_REENTRANT -Wall -Wno-write-strings -I include -I/usr/include/pcap -I/usr/local/include/mysql -I/usr/include/mysql ${MYSQL_INC}
-CFLAGS      = -pg -D_REENTRANT -Wall -Wno-write-strings -I include -I/usr/include/pcap -I/usr/local/include/mysql -I/usr/include/mysql ${MYSQL_INC}
+CFLAGS      = -O2 -D_REENTRANT -Wall -Wno-write-strings -I include -I/usr/include/pcap -I/usr/local/include/mysql -I/usr/include/mysql ${MYSQL_INC}
+#CFLAGS      = -D_REENTRANT -Wall -Wno-write-strings -I include -I/usr/include/pcap -I/usr/local/include/mysql -I/usr/include/mysql ${MYSQL_INC}
 #CFLAGS      = -p -D_REENTRANT -Wall -Wno-write-strings -I include -I/usr/include/pcap -I/usr/local/include/mysql -I/usr/include/mysql ${MYSQL_INC}
 #CFLAGS      = -Wl,--no-as-needed,-lprofiler,--as-needed -pg -D_REENTRANT -Wall -Wno-write-strings -I include -I/usr/include/pcap -I/usr/local/include/mysql -I/usr/include/mysql ${MYSQL_INC}
 

@@ -14,11 +14,11 @@ static void bin_to_hex(const u_char *bin, size_t len, char *out);
  */
 int IpsLog::is_read_logInfo(){
 	
-	strncpy( l_info.logIp, g_conf.dbinfo.base.host, strlen(g_conf.dbinfo.base.host) );
-	strncpy( l_info.logPort, g_conf.dbinfo.port, strlen(g_conf.dbinfo.port) );
-	strncpy( l_info.user, g_conf.dbinfo.base.dbusr, strlen(g_conf.dbinfo.base.dbusr) );
-	strncpy( l_info.password, g_conf.dbinfo.base.dbpass, strlen(g_conf.dbinfo.base.dbpass) );
-	strncpy( l_info.dbName, g_conf.dbinfo.db, strlen(g_conf.dbinfo.db) );
+	memcpy( l_info.logIp, g_conf.dbinfo.base.host, strlen(g_conf.dbinfo.base.host) );
+	memcpy( l_info.logPort, g_conf.dbinfo.port, strlen(g_conf.dbinfo.port) );
+	memcpy( l_info.user, g_conf.dbinfo.base.dbusr, strlen(g_conf.dbinfo.base.dbusr) );
+	memcpy( l_info.password, g_conf.dbinfo.base.dbpass, strlen(g_conf.dbinfo.base.dbpass) );
+	memcpy( l_info.dbName, g_conf.dbinfo.db, strlen(g_conf.dbinfo.db) );
 
 	strim_both ( l_info.logIp );
 	strim_both ( l_info.logPort );
@@ -108,28 +108,28 @@ int IpsLog::create_log(){
 
 int IpsLog::insert_log(u_char *packet, packet_t *p, int ruleIndex){
 
-	char query[2048];
+	char query[0xFFF]="";
 	time_t t = time(NULL);
 	struct tm tm = *localtime(&t);
 	struct in_addr *ip_src = (struct in_addr*)&p->sip;
 
-	char hex[p->caplen * 2 + 1];
-    bin_to_hex(packet, p->caplen, hex);
+	char hex[3040];
+	bin_to_hex(packet, p->caplen, hex);
 	
 	rule_t* detectRule = rules.getRule(ruleIndex);
 
-	sprintf(query, "INSERT INTO log_%04d%02d%02d"
+	snprintf(query, sizeof(query), "INSERT INTO log_%04d%02d%02d"
 			"(detected_no, detected_name, time, action, detail, src_ip, packet_bin, level)"
 			"VALUES (%d, '%s', NOW(), %d, '%s', '%s', '%s', %d)", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, detectRule->rid, detectRule->deName, detectRule->action, "test detected", inet_ntoa(*ip_src), hex, detectRule->level);
 
 	if (mysql_query(conn, query)) {
-    	fprintf(stderr, "%s\n", mysql_error(conn));
+	   	fprintf(stderr, "%s\n", mysql_error(conn));
     	return -1;
 	}
 
 	memset( query, 0 , sizeof(query));
 
-	sprintf(query, "UPDATE log_%04d%02d%02d set packet_bin = UNHEX(packet_bin);"
+	snprintf(query, sizeof(query),  "UPDATE log_%04d%02d%02d set packet_bin = UNHEX(packet_bin) where log_index = (select count(*) from log_%04d%02d%02d)", tm.tm_year + 1900, tm.tm_mon+1, tm.tm_mday, tm.tm_year+1900, tm.tm_mon+1, tm.tm_mday);
 
      if (mysql_query(conn, query)) {
          fprintf(stderr, "%s\n", mysql_error(conn));
@@ -147,6 +147,7 @@ int IpsLog::insert_log(u_char *packet, packet_t *p, int ruleIndex){
  *
  */
 static void bin_to_hex(const u_char *bin, size_t len, char *out) {
+
     for (size_t i = 0; i < len; i++) {
         sprintf(out + (i * 2), "%02X", bin[i]);
     }

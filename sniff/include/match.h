@@ -35,7 +35,7 @@ typedef struct {
 class IpsMatch {
 	
 	rule_t 		m_astRules[MAX_RULE_NUMBER];
-	int			ruleCnt;
+	int			m_ruleCnt;
 
 	private:
 
@@ -43,7 +43,7 @@ class IpsMatch {
 
 		IpsMatch(){
 			memset(m_astRules, 0, sizeof(m_astRules));
-			ruleCnt = 0;
+			m_ruleCnt = 0;
 		}
 
 		~IpsMatch(){
@@ -61,8 +61,9 @@ class IpsMatch {
 		int setRules(char *ruleLine, char *field, int nIndex);
 		int convertValue(char *field, char *szValue, int nIndex);
 		void inValue(int nIndex, char *field, int value);
+		int compareSession(int nIndex, packet_t *p);
 		rule_t* getRule(int nIndex); 
 };
 
-int preBuildData(packet_t *p, u_char *pPacket, int nDataSize);
+int preBuildData(packet_t *p, u_char *pPacket, int nDataSize, int nOffset);
 #endif

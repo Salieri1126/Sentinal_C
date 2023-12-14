@@ -17,9 +17,7 @@
  * 			- FIN or RST 패킷이 아닐경우 세션 cnt++
  * 		- 관리 중인 세션이 아닐 경우 세션 추가
  */
-//TODO:	여러 IP에서 동시에 오는 DDOS공격에 대한 탐지
-//		한 IP에서 시간내에 일정개수 이상의 SYN패킷이 감지 되었을때 탐지
-//		SYN패킷이 아닌 연결중에 탐지 시스템이 켜졌을때 새로운 세션 생성
+//TODO:	SYN패킷이 아닌 연결중에 탐지 시스템이 켜졌을때 새로운 세션 생성
 int IpsSession::checkSession(packet_t *p){
 
 	time_t curTime = time(NULL);
@@ -27,7 +25,7 @@ int IpsSession::checkSession(packet_t *p){
 	if( !p || p->reverse_flow == -1 )
 		return -1;
 	
-	u_int nIndex = makeSession(p)%MAX_SESSION_NUM;
+	u_int nIndex = makeSession(p) % MAX_SESSION_NUM;
 
 	// 관리중인 세션이면 s_time이 0일수 없으므로 0이면 세션 추가
 	if( m_astSession[nIndex].s_time == 0 ) {
@@ -178,11 +176,7 @@ session_t* IpsSession::getSession(int nIndex){
  */
 u_int IpsSession::makeSession(packet_t *p){
 
-	u_int tmpSes;	
-
-	tmpSes = ((p->sip ^ p->sp)>>1) ^ p->dip ^ p->dp;
-
-	return tmpSes;
+	return ((p->sip ^ p->sp)>>1) ^ p->dip ^ p->dp;
 }
 
 void* IpsSession::printSessionWrapper(void* context) {

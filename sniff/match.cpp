@@ -67,7 +67,7 @@ int IpsMatch::is_read_rules(char *fileName){
 		//	룰이 적혀진 줄에서 가져오기
 		for( i = 0 ; i < nRuleFieldSize ; i++){
 			if( setRules(index, rule_field_name[i], ruleCount) ){
-				ruleCnt++;
+				m_ruleCnt++;
 				continue;
 			}
 		}
@@ -108,7 +108,7 @@ int IpsMatch::setRules(char *ruleLine, char *field, int nIndex){
 	
 	separator_pos = strstr(field_value_pos, ":");
 	
-	strncpy(szValue, field_value_pos, separator_pos == NULL ? strlen(field_value_pos) : strlen(field_value_pos)-strlen(separator_pos));
+	memcpy(szValue, field_value_pos, separator_pos == NULL ? strlen(field_value_pos) : strlen(field_value_pos)-strlen(separator_pos));
 
 	strim_both(szValue);
 	//	필드별로 맞춰서 넣기
@@ -118,7 +118,7 @@ int IpsMatch::setRules(char *ruleLine, char *field, int nIndex){
 }
 
 int IpsMatch::convertValue(char *field, char *szValue, int nIndex){
-	
+
 	if( !field || !szValue )
 		return 1;
 
@@ -135,22 +135,22 @@ int IpsMatch::convertValue(char *field, char *szValue, int nIndex){
 		m_astRules[nIndex].srcIp = inet_addr(szValue);
 	}
 
-	if( !strcmp(field, "deName") )
-		strncpy( m_astRules[nIndex].deName, szValue, strlen(szValue));
-
+	if( !strcmp(field, "deName") ){
+		memcpy( m_astRules[nIndex].deName, szValue, strlen(szValue));
+	}
 	if( !strcmp(field, "content") ){
 		
 		char *conSepPos = NULL;
 
 		while( (conSepPos = strstr( szValue, ",") ) != NULL){
 			char tmpContent[MAX_STR_LEN] = "";
-			strncpy( tmpContent, szValue, strlen(szValue)-strlen(conSepPos));
+			memcpy( tmpContent, szValue, strlen(szValue)-strlen(conSepPos));
 			szValue = szValue+strlen(tmpContent)+1;
 			strim_both(tmpContent);
-			strncpy( m_astRules[nIndex].content[m_astRules[nIndex].count], tmpContent, strlen(tmpContent) );
+			memcpy( m_astRules[nIndex].content[m_astRules[nIndex].count], tmpContent, strlen(tmpContent) );
 			m_astRules[nIndex].count++;
 		}
-		strncpy( m_astRules[nIndex].content[m_astRules[nIndex].count], szValue, strlen(szValue));
+		memcpy( m_astRules[nIndex].content[m_astRules[nIndex].count], szValue, strlen(szValue));
 		strim_both( m_astRules[nIndex].content[m_astRules[nIndex].count] );
 		m_astRules[nIndex].count++;
 	}
@@ -182,10 +182,10 @@ void IpsMatch::inValue(int nIndex, char *field, int value){
  *		1 : 컴파일 성공
  *	\detail
  *		content가 없는 곳은 skip하고 content가 있는 만큼만 regcomp한다.
- */
+ /*/
 int IpsMatch::is_compile_rule(){
 
-	for (int i = 0; i < ruleCnt; i++) {
+	for (int i = 0; i < m_ruleCnt; i++) {
 		//	content가 없는 곳은 skip
 		if(m_astRules[i].count == 0)
 			continue;
@@ -199,6 +199,20 @@ int IpsMatch::is_compile_rule(){
 	return 1;
 }
 
+int IpsMatch::compareSession(int nIndex, packet_t *p){
+		
+	// port만 설정되어있는 경우
+	if( m_astRules[nIndex].srcPort && m_astRules[nIndex].srcPort != p->sp){
+		return -1;
+	}
+	
+	//	ip만 설정되어있는 경우
+	if( m_astRules[nIndex].srcIp && m_astRules[nIndex].srcIp != p->sip ){
+		return -1;
+	}
+
+	return 0;	
+}
 /*
  *! \brief 
  *		IpsMatch의 rule과 packet을 비교하여 rule에 일치하는 packet을 찾는 함수
@@ -215,13 +229,19 @@ int IpsMatch::is_compile_rule(){
 int IpsMatch::ruleFilter(packet_t *p, u_char *pdata){
 
 	int match = 0;
+	
+	if(p->reverse_flow == 1)
+		return -1;
 
-	for( int i = 0 ; i < ruleCnt ; i++){
-
+	for(int i = 0 ; i < m_ruleCnt ; i++){
+	
 		match = 0;
-		
-		if( m_astRules[i].srcIp == p->sip || m_astRules[i].srcPort == p->sp){
-			return i;
+		//	세션 검사가 일치하는지 비교한다
+		//	세션 검사가 다를 경우 패턴을 비교할 필요 없다
+		if( compareSession( i, p ) != 0 ){
+			if( m_astRules[i].count == 0 ){
+				return i;
+			}
 		}
 
 		if( m_astRules[i].count == 0 )
@@ -232,17 +252,18 @@ int IpsMatch::ruleFilter(packet_t *p, u_char *pdata){
 				match = 1;
 			}
 		}
-
+		
 		if( match ){
 
 			//	rule중에 행동 탐지 옵션이 없는 것은 패턴만 탐지
 			if( m_astRules[i].base_time == 0 || m_astRules[i].base_limit == 0 ){
 				return i;
 			}
-			
+
 			session_t *be_session;
 			be_session = sess.getSession( sess.makeSession(p)%MAX_SESSION_NUM);
 			time_t curTime = time(NULL);
+			
 			//	패턴 찾았으면 기준 시간 지났는지 확인
 			if( difftime( curTime,(be_session->behavior_time)) >= m_astRules[i].base_time ){
 				//	지났으면 Session의 cnt 초기화, time 초기화 후 cnt++
@@ -253,11 +274,11 @@ int IpsMatch::ruleFilter(packet_t *p, u_char *pdata){
 			//	안지났으면 Session의 cnt++
 			be_session->behavior_cnt++;
 			//	cnt가 기준 Cnt보다 크면 행동 패턴 공격 탐지
+			//TODO:	공격 탐지 후에 차단할 것
 			if( be_session->behavior_cnt > m_astRules[i].base_limit){
 				be_session->behavior_cnt = 1;
 				return i;
 			}
-			break;
 		}
 	}
 	return -1;
@@ -279,7 +300,7 @@ int IpsMatch::ruleFilter(packet_t *p, u_char *pdata){
  *		payload를 반환
  */
 
-int preBuildData(packet_t *p, u_char *pPacket, int nDataSize)
+int preBuildData(packet_t *p, u_char *pPacket, int nDataSize, int nOffset)
 {
     int i;
 	u_char *nocase;
@@ -290,11 +311,11 @@ int preBuildData(packet_t *p, u_char *pPacket, int nDataSize)
 
     for (i = 0 ; i < nDataSize; i++)
 	{
-		if( pPacket[i+54] >= 127 || pPacket[i+54] < ' ' ){
+		if( pPacket[i+nOffset] >= 127 || pPacket[i+nOffset] < ' ' ){
 			*(nocase+i) = ' ';
 			continue;
 		}
-		*(nocase+i) = pPacket[i+54];
+		*(nocase+i) = pPacket[i+nOffset];
 		// 알파벳 전부 소문자로
 		if( *(nocase+i) >= 65 && *(nocase+i) <= 90 ){
 			*(nocase+i) = *(nocase+i) + 32;
