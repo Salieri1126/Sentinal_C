@@ -7,6 +7,7 @@
 #include "packet.h"
 #include "dbms_ips.h"
 #include "policy.h"
+#include "session.h"
 
 #define MAX_REG_NUM 3
 /*
@@ -36,6 +37,7 @@ class IpsMatch {
 	
 	rule_t 		m_astRules[MAX_RULE_NUMBER];
 	int			m_ruleCnt;
+	u_int		m_astMatchSession[MAX_SESSION_NUM];		
 
 	private:
 
@@ -63,6 +65,7 @@ class IpsMatch {
 		void inValue(int nIndex, char *field, int value);
 		int compareSession(int nIndex, packet_t *p);
 		rule_t* getRule(int nIndex); 
+		void preBuildContent(char *pTmp, int nDataSize, char *pContent);
 };
 
 int preBuildData(packet_t *p, u_char *pPacket, int nDataSize, int nOffset);

@@ -64,7 +64,7 @@ static void init_program(int nType);
 void stop_processor(int sig);
 
 /*---- FUNCTIONS ------------------------------------------------------*/
-
+void* log_insert(void* element);
 /*! \brief
  *   dbms_ips_manager's main
  *  \param  argc : argument count,
@@ -160,6 +160,15 @@ int main(int argc, char *argv[])
 
 
 	// step-3.3 : Run main-thread & log-thread
+	
+	pthread_t log_thread;
+
+	if( pthread_create( &log_thread, NULL, log_insert, NULL) != 0 ){
+		printf("log_thread make Fail\n");
+		exit(0);
+		return -1;
+	}
+
 	if ( init_server_agent(&g_conf) != ERR_SUCCESS )
 	{
 		log_printf(IPS_MANAGER_NAME, "%s() %d: Can't execute program\n", __func__, __LINE__);
@@ -350,7 +359,6 @@ static void init_program(int nType)
  * \return void : none
  *
  */
-
 void stop_processor(int sig)
 {
 	signal(SIGPROF, SIG_IGN);
@@ -361,5 +369,20 @@ void stop_processor(int sig)
 	sleep(1);
 	exit(0);
 }
+
+void* log_insert(void* element){
+
+	while(1){
+		//	큐에 저장된 것이 없으면 대기
+		if( logs.is_empty_logQueue() ){
+			sleep(1);
+			continue;
+		}
+		//	큐에 저장된 것이 있으면 log 쿼리 날리기
+		logs.logDequeue();
+	}
+
+}
+
 
 /* End of program */

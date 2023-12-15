@@ -317,7 +317,7 @@ static int packet_filter(u_char *packet, packet_t *p, int nic_index)
 	if ( ruleIndex != -1 && p->reverse_flow == 0){
 		rule_t* match = rules.getRule(ruleIndex);
 		printf("(Detect_Name : %s) ", match->deName); 
-		logs.insert_log(packet, p, ruleIndex);
+		//logs.logEnqueue(packet, p, ruleIndex);
 		return ACTION_LOG;
 	}
 	

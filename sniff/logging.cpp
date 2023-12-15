@@ -76,6 +76,7 @@ int IpsLog::read_policy(){
 int IpsLog::create_policy(){
 	return 0;
 }
+
 int IpsLog::create_log(){
 
     /* send SQL query */
@@ -96,46 +97,52 @@ int IpsLog::create_log(){
     }
 
 	memset( query, 0, sizeof(query));
-    sprintf(query, "CREATE TABLE IF NOT EXISTS log_%04d%02d%02d (log_index INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, detected_no INT(6), detected_name VARCHAR(50), time TIMESTAMP, action INT(1), detail VARCHAR(255), src_ip VARCHAR(15), packet_bin VARBINARY(1520), level INT(1))", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday);
+    sprintf(query, "CREATE TABLE IF NOT EXISTS log_%04d%02d%02d"
+				" (log_index INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,"
+				"detected_no INT(6),"
+				"detected_name VARCHAR(50),"
+				" time TIMESTAMP, action INT(1),"
+				" detail VARCHAR(255),"
+				" src_ip VARCHAR(15),"
+				" packet_bin VARBINARY(3000),"
+				" level INT(1),"
+				" src_port int(5),"
+				" dst_ip VARCHAR(15))", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday);
 
     if (mysql_query(conn, query)) {
         fprintf(stderr, "%s\n", mysql_error(conn));
         return -1;
     }
-
+	
 	return 0;
 }
 
-int IpsLog::insert_log(u_char *packet, packet_t *p, int ruleIndex){
+int IpsLog::logEnqueue(u_char *packet, packet_t *p, int ruleIndex){
 
-	char query[0xFFF]="";
+	char query[0xFFFF]="";
 	time_t t = time(NULL);
 	struct tm tm = *localtime(&t);
 	struct in_addr *ip_src = (struct in_addr*)&p->sip;
+	struct in_addr *ip_dst = (struct in_addr*)&p->dip;
+	pthread_mutex_t m_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-	char hex[3040];
+	char hex[0xFFF];
 	bin_to_hex(packet, p->caplen, hex);
 	
 	rule_t* detectRule = rules.getRule(ruleIndex);
 
 	snprintf(query, sizeof(query), "INSERT INTO log_%04d%02d%02d"
-			"(detected_no, detected_name, time, action, detail, src_ip, packet_bin, level)"
-			"VALUES (%d, '%s', NOW(), %d, '%s', '%s', '%s', %d)", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, detectRule->rid, detectRule->deName, detectRule->action, "test detected", inet_ntoa(*ip_src), hex, detectRule->level);
+			"(detected_no, detected_name, time, action, detail, src_ip, packet_bin, level, src_port, dst_ip)"
+			"VALUES (%d, '%s', NOW(), %d, '%s', '%s', UNHEX('%s'), %d, %d, '%s')", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, detectRule->rid, detectRule->deName, detectRule->action, "test detected", inet_ntoa(*ip_src), hex, detectRule->level, p->sp, inet_ntoa(*ip_dst));
+	
+	pthread_mutex_lock(&m_mutex);
+	m_queLog.push(query);
+	pthread_mutex_unlock(&m_mutex);
 
 	if (mysql_query(conn, query)) {
 	   	fprintf(stderr, "%s\n", mysql_error(conn));
     	return -1;
 	}
-
-	memset( query, 0 , sizeof(query));
-
-	snprintf(query, sizeof(query),  "UPDATE log_%04d%02d%02d set packet_bin = UNHEX(packet_bin) where log_index = (select count(*) from log_%04d%02d%02d)", tm.tm_year + 1900, tm.tm_mon+1, tm.tm_mday, tm.tm_year+1900, tm.tm_mon+1, tm.tm_mday);
-
-     if (mysql_query(conn, query)) {
-         fprintf(stderr, "%s\n", mysql_error(conn));
-         return -1;
-     }
-
 
 	return 0;
 }
@@ -152,4 +159,78 @@ static void bin_to_hex(const u_char *bin, size_t len, char *out) {
         sprintf(out + (i * 2), "%02X", bin[i]);
     }
 }
+
 //TODO : logging thread에서 로그를 실행해야 할 함수 추가
+void IpsLog::logDequeue(){
+	
+	pthread_mutex_t m_mutex = PTHREAD_MUTEX_INITIALIZER;
+	
+	char query[0xFFFF] = "";
+	
+	pthread_mutex_lock(&m_mutex);
+	memcpy( query, m_queLog.front() ,sizeof(m_queLog.front())-1);
+	pthread_mutex_unlock(&m_mutex);
+
+	if (mysql_query(conn, query)) {
+		printf("%s : %d\n", __func__, __LINE__);
+	   	fprintf(stderr, "%s\n", mysql_error(conn));
+    	return;
+	}
+
+	pthread_mutex_lock(&m_mutex);
+	m_queLog.pop();
+	pthread_mutex_unlock(&m_mutex);
+
+	return;
+}
+
+int IpsLog::is_empty_logQueue(){
+
+	if( m_queLog.empty() )
+		return 1;
+
+	return 0;
+}
+
+void IpsLog::init(logQueue_t *Q)
+{
+	Q->rear = Q->front = 0;
+}
+
+int IpsLog::is_empty(logQueue_t *Q)
+{
+	return Q->front == Q->rear;
+}
+
+int IpsLog::is_full(logQueue_t *Q)
+{
+	return Q->front == (Q->rear + 1) % MAX_LOG_SIZE;
+}
+
+void IpsLog::enqueue(logQueue_t *Q, char *query)
+{
+	query = logQuery
+	
+	if (is_full(Q))
+		return;
+	else
+	{
+		Q->rear = (Q->rear + 1) % SIZE;
+
+    	Q->data[Q->rear] = e;
+	}
+}
+
+char* dequeue(QueueType *Q)
+{
+  if (is_empty(Q))
+  {
+    printf("Empty\n");
+    return 0;
+  }
+  else
+  {
+    Q->front = (Q->front + 1) % SIZE;
+    return Q->data[Q->front];
+  }
+}
