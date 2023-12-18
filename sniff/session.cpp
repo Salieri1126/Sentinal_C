@@ -2,6 +2,7 @@
 #include "match.h"
 
 #define MAX_SES_TIME 86400
+
 /*
  *!\brief
  *		세션 확인 함수
@@ -27,6 +28,7 @@ int IpsSession::checkSession(packet_t *p){
 	
 	u_int nIndex = makeSession(p) % MAX_SESSION_NUM;
 
+	
 	// 관리중인 세션이면 s_time이 0일수 없으므로 0이면 세션 추가
 	if( m_astSession[nIndex].s_time == 0 ) {
 		if( p->flow == 1 ){
@@ -70,12 +72,25 @@ int IpsSession::delSession(packet_t *p, int nIndex){
 	if( (p->tcph->th_flags & R_FIN) ){
 		if( difftime( curTime, m_astSession[nIndex].fin_time ) > 120 ){
 			m_astSession[nIndex].fin_time = time(NULL);
+			m_astFinSession[nIndex] = 1;
+		}
+		pthread_t delSessionThread;
+
+		if( pthread_create( &delSessionThread, NULL, initSession, (void*)&nIndex) != 0 ){
+			printf("FIN Session Not Delete");
+			return -1;
 		}
 	}
 
 	memset(&m_astSession[nIndex], 0, sizeof(session_t));
 
 	return 0;
+}
+
+static void* IpsSession::initSession(void* index){
+	sleep(120);
+	
+	memset(&m_astSession[*index], 0, sizeof(session_t));
 }
 /*
  *!\brief

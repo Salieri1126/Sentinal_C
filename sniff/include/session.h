@@ -43,6 +43,7 @@ typedef struct{
 class IpsSession {
 
 	session_t			m_astSession[MAX_SESSION_NUM];
+	u_int				m_astFinSession[MAX_SESSION_NUM];
 
 	private :
 
@@ -50,6 +51,7 @@ class IpsSession {
 	public :
 		IpsSession(){
 			memset( m_astSession, 0, sizeof(session_t) );
+			memset( m_astFinSession, 0, sizeof(u_int) );
 		}
 
 		~IpsSession(){
@@ -64,6 +66,7 @@ class IpsSession {
 		int delSession(packet_t *p, int nIndex);
 		static void* printSessionWrapper(void* context);
 		int existSession();
+		static void* initSession(void* index);
 };
 
 #endif
