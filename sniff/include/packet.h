@@ -187,6 +187,7 @@ typedef struct
 	sniff_ip_t   *iph;             /**< ip header */
 	sniff_tcp_t  *tcph;            /**< tcp header */
 
+	short flow;						/**< -1 : 역방향 0:알수없음 1:순방향*/
 	short reverse_flow;            /**< 0:순방향, 1:역방향, -1: 알수 없음 */
 	u_int object_index;            /**< 탐지된 대상 서비스의 순번 */
 

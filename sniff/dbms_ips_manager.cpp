@@ -291,10 +291,15 @@ static void init_program(int nType)
 	}
 
 	if ( logs.connect_db() ) {
-		printf("connect Fail\n");
+		printf("connect Log Fail\n");
 		return;
 	}
 
+	if ( logs.conn_policy() ){
+		printf("connect Policy Fail\n");
+		return;
+	}
+	
 	if ( logs.create_log() ) {
 		printf("Don't create log_db\n");
 		return;

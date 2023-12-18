@@ -302,22 +302,24 @@ static int packet_filter(u_char *packet, packet_t *p, int nic_index)
 	if ( setFlow(p) == -1 )
 		return ACTION_PASS;
 
-	if ( g_conf.is_debug_mode && p->reverse_flow != -1 )
-		fprintf(stderr, "%s,%d: Flow(%d) %x:%d -> %x:%d dsize:%d\n", __func__, __LINE__, p->reverse_flow, p->sip, p->sp, p->dip, p->dp, p->dsize);
+	if ( g_conf.is_debug_mode && p->flow != 0 )
+		fprintf(stderr, "%s,%d: Flow(%d) %x:%d -> %x:%d dsize:%d\n", __func__, __LINE__, p->flow, p->sip, p->sp, p->dip, p->dp, p->dsize);
 
 	//	세션 확인
 	if( sess.checkSession(p) ) 
 		return ACTION_PASS;
 	
 	preBuildData(p, packet, p->dsize, p->caplen - p->dsize);
-
+	
 	//	룰 매칭 확인
-	//	TODO:logging thread 실행
 	int ruleIndex = rules.ruleFilter(p, p->nocase);
-	if ( ruleIndex != -1 && p->reverse_flow == 0){
+	if ( ruleIndex != -1 && p->flow == 1){
+		if( rules.is_check_matchSession(p, ruleIndex) ){
+			return ACTION_PASS;
+		}
 		rule_t* match = rules.getRule(ruleIndex);
 		printf("(Detect_Name : %s) ", match->deName); 
-		//logs.logEnqueue(packet, p, ruleIndex);
+		logs.logEnqueue(packet, p, ruleIndex);
 		return ACTION_LOG;
 	}
 	
@@ -330,9 +332,9 @@ static int packet_filter(u_char *packet, packet_t *p, int nic_index)
  *	\param packet_t* p : 캡쳐 패킷
  *	\return int : 0 설정완료, 1 설정실패
  *	\detail
- *		순방향 : DB로 들어오는 패킷 reverse_flow = 0
- *		역방향 : DB에서 나가는 패킷 reverse_flow = 1
- *		DB와 관련없는 패킷은 reverse_flow = -1
+ *		순방향 : DB로 들어오는 패킷 flow = 1
+ *		역방향 : DB에서 나가는 패킷 flow = -1
+ *		DB와 관련없는 패킷은 flow = 0
  */
 static int setFlow(packet_t *p){
 	
@@ -340,18 +342,18 @@ static int setFlow(packet_t *p){
 		return -1;
 
 	if( is_dbPort(p->sp)){
-		p->reverse_flow = 1;
+		p->flow = -1;
 		return 0;
 	}
 
 	if( is_dbPort(p->dp) ){
-		p->reverse_flow = 0;
+		p->flow = 1;
 		return 0;
 	}
 
-	p->reverse_flow = -1;
+	p->flow = 0;
 	
-	return -1;
+	return 1;
 }
 
 /*

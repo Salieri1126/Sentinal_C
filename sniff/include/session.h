@@ -23,6 +23,7 @@ typedef struct{
 
 	time_t			s_time;
 	time_t 			e_time;
+	time_t			fin_time;
 	u_int			session_cnt;
 	u_int			behavior_cnt;
 	time_t			behavior_time;
@@ -60,7 +61,7 @@ class IpsSession {
 		session_t* getSession(int nIndex);
 		u_int makeSession(packet_t *p);
 		int checkAttack(packet_t *p);
-		int delSession(int nIndex);
+		int delSession(packet_t *p, int nIndex);
 		static void* printSessionWrapper(void* context);
 		int existSession();
 };

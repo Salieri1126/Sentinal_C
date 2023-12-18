@@ -11,7 +11,7 @@
 
 #define MAX_IPADD_LEN 15
 #define MAX_PORT_LEN 5
-#define MAX_LOG_SIZE 10
+#define MAX_LOG_SIZE 0xFF
 
 typedef struct {
 
@@ -36,9 +36,8 @@ class IpsLog {
 
 	log_db_info 	l_info;
 	MYSQL 			*conn;
-	logQueue_t		m_logQueue;
+	logQueue_t		m_queLog;
 	
-
 	private:
 	
 	public:
@@ -62,6 +61,11 @@ class IpsLog {
 		int create_policy();
 		void logDequeue();
 		int is_empty_logQueue();
+		void init(logQueue_t *Q);
+		int is_empty(logQueue_t *Q);
+		int is_full(logQueue_t *Q);
+		void enqueue(logQueue_t *Q, char *query);
+		char* dequeue(logQueue_t *Q);
 };
 
 

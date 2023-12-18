@@ -22,31 +22,30 @@ int IpsSession::checkSession(packet_t *p){
 
 	time_t curTime = time(NULL);
 
-	if( !p || p->reverse_flow == -1 )
+	if( !p || p->flow == 0 )
 		return -1;
 	
 	u_int nIndex = makeSession(p) % MAX_SESSION_NUM;
 
 	// 관리중인 세션이면 s_time이 0일수 없으므로 0이면 세션 추가
 	if( m_astSession[nIndex].s_time == 0 ) {
-		if( p->reverse_flow == 0 && (p->tcph->th_flags & R_SYN) ){
+		if( p->flow == 1 ){
 			if( addSession(p, nIndex) ){
 				printf("Session Add Fail!\n");
 				return -1;
 			}
 		}
-		// TODO : 관리중인 세션이 아닌데 SYN패킷이 아닌경우 새로운 세션 생성
 		return 0;
 	}
 	
 	// 관리중인 세션 중 기준 시간(1시간)이 지나면 삭제
 	if ( difftime(curTime, m_astSession[nIndex].e_time) > MAX_SES_TIME ){
-		delSession(nIndex);
+		delSession(p, nIndex);
 	}
 
 	// 세션 종료
 	if( ((p->tcph->th_flags & R_FIN) || (p->tcph->th_flags & R_RST)) ) {
-		delSession(nIndex);
+		delSession(p, nIndex);
 		return 0;
 	}
 
@@ -62,7 +61,17 @@ int IpsSession::checkSession(packet_t *p){
 	return 0;
 }
 
-int IpsSession::delSession(int nIndex){
+int IpsSession::delSession(packet_t *p, int nIndex){
+
+	time_t curTime = time(NULL);
+	
+	//	FIN이면 2분이 지났으면 fin_time 초기화
+	//	FIN인데 2분이 안지났으면 2분 후에 삭제
+	if( (p->tcph->th_flags & R_FIN) ){
+		if( difftime( curTime, m_astSession[nIndex].fin_time ) > 120 ){
+			m_astSession[nIndex].fin_time = time(NULL);
+		}
+	}
 
 	memset(&m_astSession[nIndex], 0, sizeof(session_t));
 
@@ -97,6 +106,10 @@ int IpsSession::addSession(packet_t *p, int nIndex){
 
 	if( !p )
 		return -1;
+
+	if( m_astSession[nIndex].fin_time != 0 ){
+		return 0;
+	}
 
 	m_astSession[nIndex].p_session.sip = p->sip;
 	m_astSession[nIndex].p_session.dip = p->dip;

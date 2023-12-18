@@ -136,13 +136,8 @@ int IpsLog::logEnqueue(u_char *packet, packet_t *p, int ruleIndex){
 			"VALUES (%d, '%s', NOW(), %d, '%s', '%s', UNHEX('%s'), %d, %d, '%s')", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, detectRule->rid, detectRule->deName, detectRule->action, "test detected", inet_ntoa(*ip_src), hex, detectRule->level, p->sp, inet_ntoa(*ip_dst));
 	
 	pthread_mutex_lock(&m_mutex);
-	m_queLog.push(query);
+	enqueue(&m_queLog, query);
 	pthread_mutex_unlock(&m_mutex);
-
-	if (mysql_query(conn, query)) {
-	   	fprintf(stderr, "%s\n", mysql_error(conn));
-    	return -1;
-	}
 
 	return 0;
 }
@@ -166,28 +161,27 @@ void IpsLog::logDequeue(){
 	pthread_mutex_t m_mutex = PTHREAD_MUTEX_INITIALIZER;
 	
 	char query[0xFFFF] = "";
+	char *pQuery;
 	
 	pthread_mutex_lock(&m_mutex);
-	memcpy( query, m_queLog.front() ,sizeof(m_queLog.front())-1);
+	pQuery = dequeue(&m_queLog);
 	pthread_mutex_unlock(&m_mutex);
 
+	memcpy(query, pQuery, strlen(pQuery));
+
 	if (mysql_query(conn, query)) {
-		printf("%s : %d\n", __func__, __LINE__);
 	   	fprintf(stderr, "%s\n", mysql_error(conn));
     	return;
 	}
-
-	pthread_mutex_lock(&m_mutex);
-	m_queLog.pop();
-	pthread_mutex_unlock(&m_mutex);
 
 	return;
 }
 
 int IpsLog::is_empty_logQueue(){
 
-	if( m_queLog.empty() )
+	if( is_empty(&m_queLog) ){
 		return 1;
+	}
 
 	return 0;
 }
@@ -209,28 +203,27 @@ int IpsLog::is_full(logQueue_t *Q)
 
 void IpsLog::enqueue(logQueue_t *Q, char *query)
 {
-	query = logQuery
-	
 	if (is_full(Q))
 		return;
 	else
 	{
-		Q->rear = (Q->rear + 1) % SIZE;
+		Q->rear = (Q->rear + 1) % MAX_LOG_SIZE;
 
-    	Q->data[Q->rear] = e;
+    	memcpy( Q->logQuery[Q->rear], query, strlen(query));
 	}
 }
 
-char* dequeue(QueueType *Q)
+char* IpsLog::dequeue(logQueue_t *Q)
 {
-  if (is_empty(Q))
-  {
-    printf("Empty\n");
-    return 0;
-  }
-  else
-  {
-    Q->front = (Q->front + 1) % SIZE;
-    return Q->data[Q->front];
-  }
+  	if (is_empty(Q))
+  	{
+    	printf("Empty\n");
+  		return 0;
+  	}
+
+  	else
+  	{
+		Q->front = (Q->front + 1) % MAX_LOG_SIZE;
+	    return Q->logQuery[Q->front];
+	}
 }

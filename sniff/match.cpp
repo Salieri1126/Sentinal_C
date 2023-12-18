@@ -5,13 +5,20 @@
 #include "session.h"
 
 char *rule_field_name[] {
-	"rid",
-	"deName",
-	"srcIp",
-	"srcPort",
+	"dNum",
+	"dName",
+	"sIP",
+	"sPort",
+	"to_sPort",
+	"to_sIP",
 	"content",
 	"base_time",
-	"base_limit"
+	"base_count",
+	"dIP",
+	"dPort",
+	"base_size",
+	"action",
+	"level"
 };
 
 extern IpsSession sess;
@@ -107,11 +114,16 @@ int IpsMatch::setRules(char *ruleLine, char *field, int nIndex){
 
 	field_value_pos = strstr(field_pos, "=")+1;
 
-	separator_pos = strstr(field_value_pos, ":");
+	if( !strcmp(field, "content") ){
+		separator_pos = NULL;
+	}
+	else{
+		separator_pos = strstr(field_value_pos, " ");
+	}
 
-	memcpy(szValue, field_value_pos, separator_pos == NULL ? strlen(field_value_pos) : strlen(field_value_pos)-strlen(separator_pos));
 
-	strim_both(szValue);
+	memcpy(szValue, field_value_pos, separator_pos == NULL ? strlen(field_value_pos)+1 : strlen(field_value_pos)-strlen(separator_pos)+1);
+
 	//	필드별로 맞춰서 넣기
 	convertValue(field, szValue, nIndex);
 
@@ -123,20 +135,22 @@ int IpsMatch::convertValue(char *field, char *szValue, int nIndex){
 	if( !field || !szValue )
 		return 1;
 
-	if(!strcmp(field, "rid") || !strcmp(field, "srcPort") || !strcmp(field, "base_limit") || !strcmp(field, "base_time")){
+	if(!strcmp(field, "dNum") || !strcmp(field, "sPort") || !strcmp(field, "base_count") || !strcmp(field, "base_time")
+			|| !strcmp(field, "to_sPort") ){
 		if( !strcmp(szValue, "any") )
 			szValue = "0";
 		inValue(nIndex, field, atoi(szValue));
 	}
 
-	if ( !strcmp(field, "srcIp") ){
+	if ( !strcmp(field, "sIP") || !strcmp(field, "dIP") || !strcmp(field, "to_sIP") ){
 		if( !strcmp(szValue, "any") ){
 			szValue = "0";
 		}
-		m_astRules[nIndex].srcIp = inet_addr(szValue);
+		inIPValue(nIndex, field, inet_addr(szValue));
 	}
 
-	if( !strcmp(field, "deName") ){
+	if( !strcmp(field, "dName") ){
+		strim_both(szValue);
 		memcpy( m_astRules[nIndex].deName, szValue, strlen(szValue));
 	}
 
@@ -149,29 +163,66 @@ int IpsMatch::convertValue(char *field, char *szValue, int nIndex){
 			memset( tmpContent, 0, sizeof(tmpContent) );
 			memcpy( tmpContent, szValue, strlen(szValue)-strlen(conSepPos));
 			szValue = szValue + strlen(tmpContent)+1;
-			strim_both(tmpContent);
+			cutdp_both(tmpContent);
+			if( strstr(tmpContent, "\\") != NULL ){
+				memcpy( m_astRules[nIndex].content[m_astRules[nIndex].count++], tmpContent, strlen(tmpContent) );
+				continue;
+			}
 			preBuildContent( tmpContent, sizeof(tmpContent) , m_astRules[nIndex].content[m_astRules[nIndex].count++]);
 		}
-		strim_both(szValue);
+
+		cutdp_both(szValue);
+		if( strstr(szValue, "\\") != NULL ){
+			memcpy( m_astRules[nIndex].content[m_astRules[nIndex].count++], szValue, strlen(szValue)+1 );
+			return 0;
+		}
 		preBuildContent( szValue, strlen(szValue), m_astRules[nIndex].content[m_astRules[nIndex].count++] );
 	}
 
 	return 0;
 }
 
+void IpsMatch::cutdp_both(char *text){
+
+	int i = strlen(text);
+	while( *(text+i) != '\"'){
+		i--;
+	}
+	*(text+i) = '\0';
+
+	if( *(text) == '\"' ){
+		memcpy( text, text+1, strlen(text) );
+	}
+
+}
+void IpsMatch::inIPValue(int nIndex, char *field, u_int value){
+
+	if( !strcmp(field, "sIP") )
+		m_astRules[nIndex].srcIp = value;
+
+	if( !strcmp(field, "dIP") )
+		m_astRules[nIndex].dstIp = value;
+	
+	if( !strcmp(field, "to_sIP") )
+		m_astRules[nIndex].to_srcIp = value;
+}
+
 void IpsMatch::inValue(int nIndex, char *field, int value){
 
-	if( !strcmp(field, "rid") )
+	if( !strcmp(field, "dNum") )
 		m_astRules[nIndex].rid = value;
 
-	if(	!strcmp(field, "srcPort") )
+	if(	!strcmp(field, "sPort") )
 		m_astRules[nIndex].srcPort = value;
 
-	if( !strcmp(field, "base_limit") )
+	if( !strcmp(field, "base_count") )
 		m_astRules[nIndex].base_limit = value;
 
 	if ( !strcmp(field, "base_time") )
 		m_astRules[nIndex].base_time = value;
+
+	if ( !strcmp(field, "to_sPort") )
+		m_astRules[nIndex].to_srcPort = value;
 }
 
 /*
@@ -192,7 +243,6 @@ int IpsMatch::is_compile_rule(){
 			continue;
 
 		for(int j = 0 ; j < m_astRules[i].count; j++){
-	
 			if ( regcomp(&(m_astRules[i].regex[j]), m_astRules[i].content[j], (REG_ICASE)) != 0 ) {
 				return 0;
 			}
@@ -225,15 +275,34 @@ void IpsMatch::preBuildContent( char *pTmp, int nDataSize, char *pContent){
 }
 
 int IpsMatch::compareSession(int nIndex, packet_t *p){
-		
+
+	
+	//	port가 범위일경우
+	if( m_astRules[nIndex].to_srcPort != 0 ){
+		for( u_short i = m_astRules[nIndex].srcPort ; i <= m_astRules[nIndex].to_srcPort ; i++ ){
+			if( i == p->sp ){
+				return 1;
+			}
+		}
+	}
+	
+	//	ip가 범위일경우
+	if( m_astRules[nIndex].to_srcIp != 0 ){
+		for( u_int i = m_astRules[nIndex].srcIp ; i <= m_astRules[nIndex].to_srcIp ; i++ ){
+			if( i == p->sip ){
+				return 1;
+			}
+		}
+	}
+
 	// port만 설정되어있는 경우
-	if( m_astRules[nIndex].srcPort && m_astRules[nIndex].srcPort == p->sp){
-		return -1;
+	if( m_astRules[nIndex].srcPort && (m_astRules[nIndex].srcPort == p->sp) ){
+		return 1;
 	}
 	
 	//	ip만 설정되어있는 경우
-	if( m_astRules[nIndex].srcIp && m_astRules[nIndex].srcIp == p->sip ){
-		return -1;
+	if( m_astRules[nIndex].srcIp && (m_astRules[nIndex].srcIp == p->sip) ){
+		return 1;
 	}
 
 	return 0;	
@@ -256,7 +325,7 @@ int IpsMatch::ruleFilter(packet_t *p, u_char *pdata){
 
 	int match = 0;
 	
-	if(p->reverse_flow == 1)
+	if(p->flow == 0)
 		return -1;
 
 	for(int i = 0 ; i < m_ruleCnt ; i++){
@@ -264,18 +333,21 @@ int IpsMatch::ruleFilter(packet_t *p, u_char *pdata){
 		match = 0;
 		//	세션 검사가 일치하는지 비교한다
 		//	세션 검사가 다를 경우 패턴을 비교할 필요 없다
-		if( compareSession( i, p ) != 0 ){
-			if( m_astRules[i].count == 0 ){
-				return i;
+		if( m_astRules[i].srcPort != 0 || m_astRules[i].srcIp != 0) {
+			if( compareSession(i,p) != 0){
+				if( m_astRules[i].count == 0 ){
+					return i;
+				}
 			}
 		}
 
 		for( int j = 0 ; j < m_astRules[i].count ; j++){
 			if( regexec(&(m_astRules[i].regex[j]), (char *)pdata, 0, NULL, 0) == 0 ){
-				match = 1;
+				match++;
 			}
 		}
-		if( match ){
+		
+		if( match != 0 && match == m_astRules[i].count ){
 
 			//	rule중에 행동 탐지 옵션이 없는 것은 패턴만 탐지
 			if( m_astRules[i].base_time == 0 || m_astRules[i].base_limit == 0 ){
@@ -298,12 +370,34 @@ int IpsMatch::ruleFilter(packet_t *p, u_char *pdata){
 			//	cnt가 기준 Cnt보다 크면 행동 패턴 공격 탐지
 			//TODO:	공격 탐지 후에 차단할 것
 			if( be_session->behavior_cnt == m_astRules[i].base_limit){
-				be_session->behavior_cnt = 1;
 				return i;
 			}
 		}
 	}
 	return -1;
+}
+
+int IpsMatch::is_check_matchSession(packet_t *p, int nIndex){
+	
+	u_int sessionInfo = sess.makeSession(p);
+	u_int sessionIndex = sessionInfo%MAX_SESSION_NUM;
+	time_t curTime = time(NULL);
+	
+	if( difftime( curTime, m_astMatchSession[sessionIndex].matchTime ) <= 5 ){
+		if( m_astRules[nIndex].rid == m_astMatchSession[sessionIndex].rid ){
+			return 1;
+		}
+
+		if( sessionInfo == m_astMatchSession[sessionIndex].sessionInfo ){
+			return 1;	
+		}
+	}
+	
+	m_astMatchSession[sessionIndex].rid = m_astRules[nIndex].rid;
+	m_astMatchSession[sessionIndex].sessionInfo = sessionInfo;
+	m_astMatchSession[sessionIndex].matchTime = time(NULL);
+
+	return 0;
 }
 
 /*

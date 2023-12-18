@@ -28,16 +28,24 @@ typedef struct {
 	unsigned int	action;
 	unsigned int	level;
 	regex_t			regex[MAX_REG_NUM];								// 정규식
+	unsigned int	dstIp;
 
 	unsigned int base_limit;										// 제한 수
 	unsigned int base_time;											// 기준 초
 }rule_t;
 
+typedef struct{
+
+	u_int			sessionInfo;
+	u_int			rid;
+	time_t			matchTime;
+}matchSession_t;
+
 class IpsMatch {
 	
-	rule_t 		m_astRules[MAX_RULE_NUMBER];
-	int			m_ruleCnt;
-	u_int		m_astMatchSession[MAX_SESSION_NUM];		
+	rule_t 				m_astRules[MAX_RULE_NUMBER];
+	int					m_ruleCnt;
+	matchSession_t		m_astMatchSession[MAX_SESSION_NUM];		
 
 	private:
 
@@ -46,6 +54,7 @@ class IpsMatch {
 		IpsMatch(){
 			memset(m_astRules, 0, sizeof(m_astRules));
 			m_ruleCnt = 0;
+			memset(m_astMatchSession, 0, sizeof(m_astMatchSession));
 		}
 
 		~IpsMatch(){
@@ -66,6 +75,9 @@ class IpsMatch {
 		int compareSession(int nIndex, packet_t *p);
 		rule_t* getRule(int nIndex); 
 		void preBuildContent(char *pTmp, int nDataSize, char *pContent);
+		int is_check_matchSession(packet_t *p, int nIndex);
+		void inIPValue(int nIndex, char *field, u_int value);
+		void cutdp_both(char *text);
 };
 
 int preBuildData(packet_t *p, u_char *pPacket, int nDataSize, int nOffset);
