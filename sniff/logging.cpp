@@ -53,12 +53,13 @@ int IpsLog::conn_policy(){
 	sprintf(query, "use S_ips_policy_db");
 
     if (mysql_query(conn, query)) {
-        fprintf(stderr, "%s\n", mysql_error(conn));
 		if( create_policy() ){
 			return -1;
 		}
-        return -1;
     }
+
+	create_policy();
+
 	return 0;
 }
 
@@ -67,6 +68,23 @@ int IpsLog::conn_policy(){
  */
 int IpsLog::read_policy(){
 
+	MYSQL_RES *result;
+
+	if( mysql_query(conn, "SELECT * FROM ips_policy") ){
+        fprintf(stderr, "%s\n", mysql_error(conn));
+		create_policy();
+        return -1;
+	}
+
+	result = mysql_store_result(conn);
+	if( result == NULL ){
+		fprintf(stderr, "mysql_store_result() failed\n");
+        mysql_close(conn);
+        return -1;
+	}
+
+	rules.is_read_rules(result);
+
 	return 0;
 }
 
@@ -74,6 +92,48 @@ int IpsLog::read_policy(){
  *	정책 DB없을 경우 DB와 테이블을 생성하는 함수
  */
 int IpsLog::create_policy(){
+
+    /* send SQL query */
+    if (mysql_query(conn, "CREATE DATABASE IF NOT EXISTS S_ips_policy_db")) {
+        fprintf(stderr, "%s\n", mysql_error(conn));
+        return -1;
+    }
+
+	char query[1024];
+
+	sprintf(query, "use S_ips_policy_db");
+
+    if (mysql_query(conn, query)) {
+        fprintf(stderr, "%s\n", mysql_error(conn));
+        return -1;
+    }
+
+	memset( query, 0, sizeof(query));
+    sprintf(query, "CREATE TABLE IF NOT EXISTS ips_policy"
+				" (detected_no INT(6) NOT NULL AUTO_INCREMENT PRIMARY KEY,"
+				"detected_name VARCHAR(50) NOT NULL,"
+				"content1 VARCHAR(255),"
+				"content2 VARCHAR(255),"
+				"content3 VARCHAR(255),"
+				"enable INT(1) NOT NULL default 0,"
+				"src_ip VARCHAR(15) default 0,"
+				"src_port int(5) default 0,"
+				"action INT(1) NOT NULL default 0,"
+				"level INT(1) NOT NULL default 0,"
+				"base_time INT(11) default 0,"
+				"base_limit INT(11) default 0,"
+				"end_time DATE NOT NULL,"
+				"detail VARCHAR(255),"
+				"to_sip VARCHAR(15) default 0,"
+				"to_sp INT(5) default 0,"
+				"dst_ip VARCHAR(15) default 0,"
+				"base_size INT(11) default 0) AUTO_INCREMENT = 100001");
+
+    if (mysql_query(conn, query)) {
+        fprintf(stderr, "%s\n", mysql_error(conn));
+        return -1;
+    }
+	
 	return 0;
 }
 
@@ -99,17 +159,16 @@ int IpsLog::create_log(){
 	memset( query, 0, sizeof(query));
     sprintf(query, "CREATE TABLE IF NOT EXISTS log_%04d%02d%02d"
 				" (log_index INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,"
-				"detected_no INT(6),"
-				"detected_name VARCHAR(50),"
-				" time TIMESTAMP, action INT(1),"
-				" detail VARCHAR(255),"
-				" src_ip VARCHAR(15),"
-				" packet_bin VARBINARY(3000),"
-				" level INT(1),"
-				" src_port int(5),"
-				" dst_ip VARCHAR(15))", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday);
-
-    if (mysql_query(conn, query)) {
+				"detected_no INT(6) NOT NULL,"
+				"detected_name VARCHAR(50) NOT NULL,"
+				" time TIMESTAMP, action INT(1) NOT NULL,"
+				" src_ip VARCHAR(15) NOT NULL,"
+				" packet_bin VARBINARY(3000) NOT NULL,"
+				" level INT(1) NOT NULL,"
+				" src_port int(5) NOT NULL,"
+				" dst_ip VARCHAR(15) NOT NULL)", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday);
+    
+	if (mysql_query(conn, query)) {
         fprintf(stderr, "%s\n", mysql_error(conn));
         return -1;
     }
@@ -155,7 +214,6 @@ static void bin_to_hex(const u_char *bin, size_t len, char *out) {
     }
 }
 
-//TODO : logging thread에서 로그를 실행해야 할 함수 추가
 void IpsLog::logDequeue(){
 	
 	pthread_mutex_t m_mutex = PTHREAD_MUTEX_INITIALIZER;

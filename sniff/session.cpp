@@ -1,7 +1,9 @@
 #include "session.h"
 #include "match.h"
 
-#define MAX_SES_TIME 86400
+#define MAX_SESSION_TIME 86400
+
+void* finDelSession(void* index);
 
 /*
  *!\brief
@@ -18,7 +20,6 @@
  * 			- FIN or RST 패킷이 아닐경우 세션 cnt++
  * 		- 관리 중인 세션이 아닐 경우 세션 추가
  */
-//TODO:	SYN패킷이 아닌 연결중에 탐지 시스템이 켜졌을때 새로운 세션 생성
 int IpsSession::checkSession(packet_t *p){
 
 	time_t curTime = time(NULL);
@@ -28,10 +29,11 @@ int IpsSession::checkSession(packet_t *p){
 	
 	u_int nIndex = makeSession(p) % MAX_SESSION_NUM;
 
-	
 	// 관리중인 세션이면 s_time이 0일수 없으므로 0이면 세션 추가
+	// 관리중인 세션인지 확인
 	if( m_astSession[nIndex].s_time == 0 ) {
-		if( p->flow == 1 ){
+		if( (p->flow == 1)){
+			// 관리 중인 세션이 아니면 세션 추가
 			if( addSession(p, nIndex) ){
 				printf("Session Add Fail!\n");
 				return -1;
@@ -39,18 +41,48 @@ int IpsSession::checkSession(packet_t *p){
 		}
 		return 0;
 	}
-	
-	// 관리중인 세션 중 기준 시간(1시간)이 지나면 삭제
-	if ( difftime(curTime, m_astSession[nIndex].e_time) > MAX_SES_TIME ){
-		delSession(p, nIndex);
+
+	// FIXME:1시간지났으면 삭제는 thread로 관리?
+	// 관리중인 세션 중 기준시간(1시간)이 지났으면 세션 삭제
+	// 시간이 지났는데 SYN 패킷이라면 세션 초기화
+	// 시간이 지났는데 SYN 패킷이 아니라면 세션 초기화
+	if( difftime( curTime, m_astSession[nIndex].e_time ) > MAX_SESSION_TIME ){
+		delSession(nIndex);
+		addSession(p, nIndex);
 	}
 
-	// 세션 종료
-	if( ((p->tcph->th_flags & R_FIN) || (p->tcph->th_flags & R_RST)) ) {
-		delSession(p, nIndex);
+	// 관리중인 세션 중 RST 패킷이 들어오면 세션 삭제
+	if( p->tcph->th_flags & R_RST ) {
+		delSession(nIndex);
 		return 0;
 	}
 
+	// 관리중인 세션 중 FIN 패킷이 들어오면 FIN LIST에 세션 저장
+	if( p->tcph->th_flags & R_FIN ) {
+		m_astFinSession[nIndex].fin_time = time(NULL);
+		m_astFinSession[nIndex].fin_count = 1;
+		return 0;
+	}
+
+	// 관리 중인 세션 중 FIN LIST에 존재하면 FIN이 들어왔던 시간이 지났는지 확인
+	// 시간이 지났는데 SYN 패킷이라면 FIN LIST 삭제하고 addSession
+	// 시간이 지났는데 SYN 패킷이 아니라면 FIN LIST 삭제하고 delSession
+	if( m_astFinSession[nIndex].fin_count != 0 ){
+		if( difftime(curTime, m_astFinSession[nIndex].fin_time) > 120 ){
+			
+			memset( &m_astFinSession[nIndex], 0, sizeof(finSession_t) );
+			
+			if( p->tcph->th_flags & R_SYN ){
+				addSession(p, nIndex);
+				return 0;
+			}
+			
+			delSession(nIndex);
+			return 0;
+		}
+	}
+
+	// 관리 중인 세션이면서 RST과 FIN이 아닐경우 세션에 카운트 추가, 세션 마지막 시간 최신화
 	m_astSession[nIndex].session_cnt++;
 	m_astSession[nIndex].e_time = time(NULL);
 
@@ -63,35 +95,13 @@ int IpsSession::checkSession(packet_t *p){
 	return 0;
 }
 
-int IpsSession::delSession(packet_t *p, int nIndex){
-
-	time_t curTime = time(NULL);
-	
-	//	FIN이면 2분이 지났으면 fin_time 초기화
-	//	FIN인데 2분이 안지났으면 2분 후에 삭제
-	if( (p->tcph->th_flags & R_FIN) ){
-		if( difftime( curTime, m_astSession[nIndex].fin_time ) > 120 ){
-			m_astSession[nIndex].fin_time = time(NULL);
-			m_astFinSession[nIndex] = 1;
-		}
-		pthread_t delSessionThread;
-
-		if( pthread_create( &delSessionThread, NULL, initSession, (void*)&nIndex) != 0 ){
-			printf("FIN Session Not Delete");
-			return -1;
-		}
-	}
+int IpsSession::delSession(int nIndex){
 
 	memset(&m_astSession[nIndex], 0, sizeof(session_t));
 
 	return 0;
 }
 
-static void* IpsSession::initSession(void* index){
-	sleep(120);
-	
-	memset(&m_astSession[*index], 0, sizeof(session_t));
-}
 /*
  *!\brief
  *	DDOS공격, SCAN공격, FLOODING공격에 대한 확인 함수
@@ -119,10 +129,11 @@ int IpsSession::checkAttack(packet_t *p){
  */
 int IpsSession::addSession(packet_t *p, int nIndex){
 
-	if( !p )
+	if( !p || nIndex < 0)
 		return -1;
 
-	if( m_astSession[nIndex].fin_time != 0 ){
+	// 세션 추가 전에 Fin List에 존재하는 세션인지 확인
+	if( m_astFinSession[nIndex].fin_count != 0 ){
 		return 0;
 	}
 

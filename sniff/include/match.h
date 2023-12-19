@@ -21,17 +21,19 @@ typedef struct {
 	unsigned int	rid;											// 탐지 룰 번호
 	char			deName[MAX_STR_LEN];							// 탐지 룰 이름
 	unsigned int	srcIp;											// 탐지 IP
-	unsigned int	to_srcIp;
+	unsigned int	to_srcIp;										// 범위 기반시 마지막 IP
 	unsigned short	srcPort;										// 탐지 PORT
-	unsigned short	to_srcPort;
+	unsigned short	to_srcPort;										// 범위 기반시 마지막 Port
 	char			content[MAX_REG_NUM][MAX_RULE_STR_LEN];			// 탐지 룰 content[탐지 룰 개수][탐지 룰 형식]
-	unsigned int	action;
-	unsigned int	level;
+	unsigned int	action;											// 행동유형
+	unsigned int	level;											// 위험순위
+	char			detail[MAX_STR_LEN];
 	regex_t			regex[MAX_REG_NUM];								// 정규식
-	unsigned int	dstIp;
+	unsigned int	dstIp;											// 탐지대상 IP
 
-	unsigned int base_limit;										// 제한 수
-	unsigned int base_time;											// 기준 초
+	unsigned int	base_size;										// 제한 사이즈 
+	unsigned int 	base_limit;										// 제한 수
+	unsigned int 	base_time;										// 기준 초
 }rule_t;
 
 typedef struct{
@@ -65,20 +67,24 @@ class IpsMatch {
 			}
 		}
 		
-		int is_read_rules(char *fileName);
+		int is_read_rules(MYSQL_RES *result);
 		int is_compile_rule();
 		int ruleFilter(packet_t *p, u_char *pdata);
 		void printf_rules();
-		int setRules(char *ruleLine, char *field, int nIndex);
+		int setRules(int e_field_name, char *value, int nIndex);
 		int convertValue(char *field, char *szValue, int nIndex);
-		void inValue(int nIndex, char *field, int value);
 		int compareSession(int nIndex, packet_t *p);
 		rule_t* getRule(int nIndex); 
 		void preBuildContent(char *pTmp, int nDataSize, char *pContent);
 		int is_check_matchSession(packet_t *p, int nIndex);
-		void inIPValue(int nIndex, char *field, u_int value);
-		void cutdp_both(char *text);
+		void inValue(int nIndex, int e_field_name, int value);
+		void inIPValue(int nIndex, int e_field_name, u_int value);
+		void inStrValue(int nIndex, int e_field_name, char *value);
+		void inContentValue(int nIndex, int e_field_name, char *value);
+		int sessionFilter(packet_t *p);
 };
 
 int preBuildData(packet_t *p, u_char *pPacket, int nDataSize, int nOffset);
+void decoding(const char *utf8, char *reseult);
+
 #endif

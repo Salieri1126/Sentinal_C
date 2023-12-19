@@ -302,23 +302,36 @@ static int packet_filter(u_char *packet, packet_t *p, int nic_index)
 	if ( setFlow(p) == -1 )
 		return ACTION_PASS;
 
+	int ruleIndex = -1;
+
 	if ( g_conf.is_debug_mode && p->flow != 0 )
 		fprintf(stderr, "%s,%d: Flow(%d) %x:%d -> %x:%d dsize:%d\n", __func__, __LINE__, p->flow, p->sip, p->sp, p->dip, p->dp, p->dsize);
 
 	//	세션 확인
 	if( sess.checkSession(p) ) 
 		return ACTION_PASS;
-	
+
+	//	룰 중에 content가 없는 IP와 PORT를 먼저 비교하여 차단
+	ruleIndex = rules.sessionFilter(p);
+	if ( ruleIndex != -1 && p->flow == 1 ){
+		if(rules.is_check_matchSession(p, ruleIndex) ){
+			return ACTION_PASS;
+		}
+		printf("(Detected_Name : %s)  ", (rules.getRule(ruleIndex))->deName);
+		logs.logEnqueue(packet, p, ruleIndex);
+		return ACTION_LOG;
+	}
+
 	preBuildData(p, packet, p->dsize, p->caplen - p->dsize);
 	
 	//	룰 매칭 확인
-	int ruleIndex = rules.ruleFilter(p, p->nocase);
+	ruleIndex = rules.ruleFilter(p, p->nocase);
 	if ( ruleIndex != -1 && p->flow == 1){
 		if( rules.is_check_matchSession(p, ruleIndex) ){
 			return ACTION_PASS;
 		}
 		rule_t* match = rules.getRule(ruleIndex);
-		printf("(Detect_Name : %s) ", match->deName); 
+		printf("(Detected_Name : %s) ", match->deName); 
 		logs.logEnqueue(packet, p, ruleIndex);
 		return ACTION_LOG;
 	}
@@ -368,13 +381,37 @@ static int is_dbPort(u_short port){
 		case 156:
 		case 1433:
 		case 1521:
+		case 1526:
+		case 1527:
+		case 2181:
 		case 3306:
+		case 5000:
 		case 5432:
+		case 5984:
 		case 6379:
+		case 7000:
+		case 7001:
+		case 7199:
+		case 8080:
+		case 8085:
 		case 8629:
+		case 8888:
+		case 9042:
+		case 9090:
+		case 9095:
+		case 9160:
 		case 11211:
 		case 27017:
+		case 27018:
+		case 27019:
+		case 28017:
 		case 50000:
+		case 60000:
+		case 60010:
+		case 60020:
+		case 60030:
+		case 61620:
+		case 61621:
 			return 1;
 
 	}

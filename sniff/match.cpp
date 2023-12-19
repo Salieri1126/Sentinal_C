@@ -5,21 +5,48 @@
 #include "session.h"
 
 char *rule_field_name[] {
-	"dNum",
-	"dName",
-	"sIP",
-	"sPort",
-	"to_sPort",
-	"to_sIP",
-	"content",
-	"base_time",
-	"base_count",
-	"dIP",
-	"dPort",
-	"base_size",
+	"detected_no",
+	"detected_name",
+	"content1",
+	"content2",
+	"content3",
+	"enable",
+	"src_ip",
+	"src_port",
 	"action",
-	"level"
+	"level",
+	"base_time",
+	"base_limit",
+	"end_time",
+	"detail",
+	"to_sip",
+	"to_sp",
+	"dst_ip",
+	"base_size"
 };
+
+typedef enum {
+
+	detected_no = 0,
+	detected_name,
+	content1,
+	content2,
+	content3,
+	enable,
+	src_ip,
+	src_port,
+	action,
+	level,
+	base_time,
+	base_limit,
+	end_time,
+	detail,
+	to_sip,
+	to_sp,
+	dst_ip,
+	base_size
+
+} e_field_name;
 
 extern IpsSession sess;
 
@@ -35,7 +62,7 @@ void preBuildContent( char *pContent, int nDataSize );
  *	\detail
  *		룰 ID가 없으면 룰을 적용시키지 않음
  */
-int IpsMatch::is_read_rules(char *fileName){
+int IpsMatch::is_read_rules(MYSQL_RES* result){
 
 	/*
 	 *	rfp 		파일 포인터
@@ -43,48 +70,42 @@ int IpsMatch::is_read_rules(char *fileName){
 	 *	index		field별로 자르기 위한 주소
 	 *	ruleCount	룰의 index
 	 */
-	FILE *rfp = NULL;
-	char ruleBuf[MAX_STR_LEN];
-	char *index = NULL;
-	int ruleCount = 0;
+	MYSQL_ROW row;
 	int nRuleFieldSize = 0;
 
 	nRuleFieldSize = sizeof(rule_field_name) / sizeof(rule_field_name[0]);
-	//	파일 열기
-	rfp = fopen(fileName, "r");
-	if(!rfp){
-		printf("Rule File not Found\n");
-		return 1;
-	}
 
 	//	룰 읽기
-	while( fgets( ruleBuf, sizeof(ruleBuf)-1, rfp) != NULL ){
+	while( (row = mysql_fetch_row(result)) != NULL ){
 
 		int i = 0;
-		index = ruleBuf;
 
-		//	룰이 적혀진 줄에서 앞부분 공백 제거
-		while ( *index != '\0' && ( *index == '\t' || *index == ' ' ) ){
-			index++;
-		}
-
-		//	룰이 적혀진 줄에 # 주석처리된 줄과 빈 줄 제외
-		if( *index == '#' || strlen( index ) < 1 )
+		// enable이 0이면 룰 읽지 않음
+		if( atoi(row[5]) == 0 ){
 			continue;
-
-		//	룰이 적혀진 줄에서 가져오기
-		for( i = 0 ; i < nRuleFieldSize ; i++){
-			if( setRules(index, rule_field_name[i], ruleCount) ){
-				m_ruleCnt++;
-				continue;
-			}
 		}
+		
+		// 룰 Line의 값을 필드별로 찾아서 변환하여 입력
+		for( i = 0 ; i < nRuleFieldSize ; i++){
+			setRules(i, row[i], m_ruleCnt ); 
+		}
+
 		//	다음 룰 담을 공간이동
-		ruleCount++;
+		m_ruleCnt++;
 	}
 	return 1;
 }
 
+int IpsMatch::sessionFilter(packet_t *p){
+
+	for( int i = 0 ; i < m_ruleCnt ; i++ ){
+		if( compareSession(i, p) > 0 ){
+			return i;
+		}
+	}
+
+	return -1;
+}
 /*
  *! \brief
  *		룰 파일에서 룰을 가져오기 위한 함수
@@ -97,91 +118,106 @@ int IpsMatch::is_read_rules(char *fileName){
  *	\detail
  *		룰의 ID번호가 존재하지 않으면 그 룰은 없는 룰
  */
-int IpsMatch::setRules(char *ruleLine, char *field, int nIndex){
+int IpsMatch::setRules(int e_field_name, char *value, int nIndex){
 
-	if( !ruleLine || !field )
-		return 1;
+	if( !value || e_field_name < 0 || nIndex < 0 )
+		return -1;
 
-	char szValue[MAX_STR_LEN] = "";
-	char *field_pos = NULL;
-	char *field_value_pos = NULL;
-	char *separator_pos = NULL;
+	switch ( e_field_name ){
 
-	field_pos = strstr(ruleLine, field);
-
-	if(field_pos == NULL)
-		return 1;
-
-	field_value_pos = strstr(field_pos, "=")+1;
-
-	if( !strcmp(field, "content") ){
-		separator_pos = NULL;
-	}
-	else{
-		separator_pos = strstr(field_value_pos, " ");
-	}
-
-
-	memcpy(szValue, field_value_pos, separator_pos == NULL ? strlen(field_value_pos)+1 : strlen(field_value_pos)-strlen(separator_pos)+1);
-
-	//	필드별로 맞춰서 넣기
-	convertValue(field, szValue, nIndex);
-
-	return 0;
-}
-
-int IpsMatch::convertValue(char *field, char *szValue, int nIndex){
-
-	if( !field || !szValue )
-		return 1;
-
-	if(!strcmp(field, "dNum") || !strcmp(field, "sPort") || !strcmp(field, "base_count") || !strcmp(field, "base_time")
-			|| !strcmp(field, "to_sPort") ){
-		if( !strcmp(szValue, "any") )
-			szValue = "0";
-		inValue(nIndex, field, atoi(szValue));
-	}
-
-	if ( !strcmp(field, "sIP") || !strcmp(field, "dIP") || !strcmp(field, "to_sIP") ){
-		if( !strcmp(szValue, "any") ){
-			szValue = "0";
-		}
-		inIPValue(nIndex, field, inet_addr(szValue));
-	}
-
-	if( !strcmp(field, "dName") ){
-		strim_both(szValue);
-		memcpy( m_astRules[nIndex].deName, szValue, strlen(szValue));
-	}
-
-	if( !strcmp(field, "content") ){
-
-		char *conSepPos = NULL;
-		char tmpContent[MAX_STR_LEN] = "";
-
-		while( (conSepPos = strstr( szValue, ",") ) != NULL){
-			memset( tmpContent, 0, sizeof(tmpContent) );
-			memcpy( tmpContent, szValue, strlen(szValue)-strlen(conSepPos));
-			szValue = szValue + strlen(tmpContent)+1;
-			cutdp_both(tmpContent);
-			if( strstr(tmpContent, "\\") != NULL ){
-				memcpy( m_astRules[nIndex].content[m_astRules[nIndex].count++], tmpContent, strlen(tmpContent) );
-				continue;
-			}
-			preBuildContent( tmpContent, sizeof(tmpContent) , m_astRules[nIndex].content[m_astRules[nIndex].count++]);
-		}
-
-		cutdp_both(szValue);
-		if( strstr(szValue, "\\") != NULL ){
-			memcpy( m_astRules[nIndex].content[m_astRules[nIndex].count++], szValue, strlen(szValue)+1 );
+		//	일반 숫자
+		case detected_no:
+		case src_port:
+		case action:
+		case level:
+		case base_time:
+		case base_limit:
+		case to_sp:
+		case base_size:
+			inValue(nIndex, e_field_name, atoi(value));
 			return 0;
-		}
-		preBuildContent( szValue, strlen(szValue), m_astRules[nIndex].content[m_astRules[nIndex].count++] );
+
+		//	IP유형
+		case src_ip:
+		case to_sip:
+		case dst_ip:
+			inIPValue(nIndex, e_field_name, inet_addr(value));
+			return 0;
+
+		//	일반 text
+		case detected_name:
+		case detail:
+			inStrValue(nIndex, e_field_name, value);
+		
+		//	인코딩된 text
+		case content1:
+		case content2:
+		case content3:
+			inContentValue(nIndex, e_field_name, value);
 	}
 
 	return 0;
 }
 
+void decoding(const char *input, char *output) {
+	
+	size_t len = strlen(input);
+    size_t j = 0;
+
+    for (size_t i = 0; i < len; ++i) {
+        if (input[i] == '+') {
+            output[j++] = ' ';
+        } else if (input[i] == '%' && i + 2 < len) {
+            int hex_value;
+            sscanf(input + i + 1, "%2x", &hex_value);
+            output[j++] = (char)hex_value;
+            i += 2;
+        } else {
+            output[j++] = input[i];
+        }
+    }
+
+    output[j] = '\0';
+}
+
+void IpsMatch::inContentValue(int nIndex, int e_field_name, char *value){
+
+	char pTmp[MAX_STR_LEN] = "";
+
+	switch( e_field_name ){
+		
+		case content1:
+			decoding(value, pTmp);
+			preBuildContent( pTmp, strlen(pTmp), m_astRules[nIndex].content[0] ); 
+			m_astRules[nIndex].count = 1;
+			return;
+		
+		case content2:
+			decoding(value, pTmp);
+			preBuildContent( pTmp, strlen(pTmp), m_astRules[nIndex].content[1] ); 
+			m_astRules[nIndex].count++;
+			return;
+
+		case content3:
+			decoding(value, pTmp);
+			preBuildContent( pTmp, strlen(pTmp), m_astRules[nIndex].content[2] ); 
+			m_astRules[nIndex].count++;
+			return;
+
+	}
+}
+
+void IpsMatch::inStrValue(int nIndex, int e_field_name, char *value){
+
+	switch( e_field_name ){
+		
+		case detected_name:
+			memcpy( m_astRules[nIndex].deName, value, strlen(value) ); 
+			return;
+	}
+}
+
+/*
 void IpsMatch::cutdp_both(char *text){
 
 	int i = strlen(text);
@@ -195,34 +231,61 @@ void IpsMatch::cutdp_both(char *text){
 	}
 
 }
-void IpsMatch::inIPValue(int nIndex, char *field, u_int value){
+*/
 
-	if( !strcmp(field, "sIP") )
-		m_astRules[nIndex].srcIp = value;
+void IpsMatch::inIPValue(int nIndex, int e_field_name, u_int value){
 
-	if( !strcmp(field, "dIP") )
-		m_astRules[nIndex].dstIp = value;
+	switch ( e_field_name ){
+		
+		case src_ip:
+			m_astRules[nIndex].srcIp = value;
+			return;
+
+		case dst_ip:
+			m_astRules[nIndex].dstIp = value;
+			return;
 	
-	if( !strcmp(field, "to_sIP") )
-		m_astRules[nIndex].to_srcIp = value;
+		case to_sip:
+			m_astRules[nIndex].to_srcIp = value;
+
+	}
 }
 
-void IpsMatch::inValue(int nIndex, char *field, int value){
+void IpsMatch::inValue(int nIndex, int e_field_name, int value){
 
-	if( !strcmp(field, "dNum") )
-		m_astRules[nIndex].rid = value;
+	switch( e_field_name ) {
+		
+		case detected_no:
+			m_astRules[nIndex].rid = value;
+			return;
 
-	if(	!strcmp(field, "sPort") )
-		m_astRules[nIndex].srcPort = value;
+		case src_port:
+			m_astRules[nIndex].srcPort = value;
+			return;
 
-	if( !strcmp(field, "base_count") )
-		m_astRules[nIndex].base_limit = value;
+		case base_limit:
+			m_astRules[nIndex].base_limit = value;
+			return;
 
-	if ( !strcmp(field, "base_time") )
-		m_astRules[nIndex].base_time = value;
+		case base_time:
+			m_astRules[nIndex].base_time = value;
+			return;
 
-	if ( !strcmp(field, "to_sPort") )
-		m_astRules[nIndex].to_srcPort = value;
+		case to_sp:
+			m_astRules[nIndex].to_srcPort = value;
+			return;
+
+		case action:
+			m_astRules[nIndex].action = value;
+			return;
+	
+		case level:
+			m_astRules[nIndex].level = value;
+			return;
+
+		case base_size:
+			m_astRules[nIndex].base_size = value;
+	}
 }
 
 /*
@@ -258,13 +321,11 @@ void IpsMatch::preBuildContent( char *pTmp, int nDataSize, char *pContent){
 	char conTemp[MAX_STR_LEN] = "";
 
 	for(i = 0, j = 0 ; i < nDataSize ; i++,j++){
-		if( (*(pTmp+i) >= 33 && *(pTmp+i) <= 47)
-		 	|| (*(pTmp+i) >= 58 && *(pTmp+i) <= 64) 
-		 	|| (*(pTmp+i) >= 123 && *(pTmp+i) <= 126 )){
+		if( *(pTmp+i) < 32 || (*(pTmp+i) >= 33	&& *(pTmp+i) <= 47) || (*(pTmp+i) >= 58 && *(pTmp+i) <= 64) ||
+ 			*(pTmp+i) == 91 || (*(pTmp+i) >= 93 && *(pTmp+i) <= 96) || *(pTmp+i) >= 123){
 			conTemp[j++] = '\\';
 			conTemp[j] = *(pContent+i);
 		}
-		
 		conTemp[j] = *(pTmp+i);
 	}
 	conTemp[j] = '\0';
@@ -276,7 +337,11 @@ void IpsMatch::preBuildContent( char *pTmp, int nDataSize, char *pContent){
 
 int IpsMatch::compareSession(int nIndex, packet_t *p){
 
-	
+	//	content가 있으면 세션 확인은 나중에
+	if( m_astRules[nIndex].count > 0 ){
+		return -1;
+	}
+
 	//	port가 범위일경우
 	if( m_astRules[nIndex].to_srcPort != 0 ){
 		for( u_short i = m_astRules[nIndex].srcPort ; i <= m_astRules[nIndex].to_srcPort ; i++ ){
@@ -383,7 +448,7 @@ int IpsMatch::is_check_matchSession(packet_t *p, int nIndex){
 	u_int sessionIndex = sessionInfo%MAX_SESSION_NUM;
 	time_t curTime = time(NULL);
 	
-	if( difftime( curTime, m_astMatchSession[sessionIndex].matchTime ) <= 5 ){
+	if( difftime( curTime, m_astMatchSession[sessionIndex].matchTime ) <= 60 ){
 		if( m_astRules[nIndex].rid == m_astMatchSession[sessionIndex].rid ){
 			return 1;
 		}

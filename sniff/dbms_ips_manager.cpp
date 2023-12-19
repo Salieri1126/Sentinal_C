@@ -268,15 +268,7 @@ static void init_program(int nType)
 	//	위에서 rule_t rules 구조체 전역변수로 선언
 	//
 	//	231121 전역변수로 클래스를 선언하고 여기서 룰을 따로 읽기
-	if( !rules.is_read_rules( g_conf.rule_file_name ) ){
-		printf("Don't read rules\n");
-		return;
-	}
 
-	if( !rules.is_compile_rule() ){
-		printf("Compile Fail!\n");
-		return;
-	}
 	
 	// 		prac-3 : compile 하기
 	// 		prac-4 : contentsFilter 작성하기
@@ -299,12 +291,22 @@ static void init_program(int nType)
 		printf("connect Policy Fail\n");
 		return;
 	}
-	
+
+	if( logs.read_policy() ){
+		printf("read Policy Fail\n");
+		return;
+	}
 	if ( logs.create_log() ) {
 		printf("Don't create log_db\n");
 		return;
 	}
 
+	if( !rules.is_compile_rule() ){
+		printf("Compile Fail!\n");
+		return;
+	}
+
+	//rules.printf_rules();
 	///////////////////////////////////////////////////
 	// step-2 : get db-scan cycle
 	if ( get_dump_conf(IPS_MANAGER_CONF, "DBSCAN_CYCLE", szBuf, sizeof(szBuf)-1) == ERR_SUCCESS && isdigit(*szBuf) )

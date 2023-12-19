@@ -23,13 +23,19 @@ typedef struct{
 
 	time_t			s_time;
 	time_t 			e_time;
-	time_t			fin_time;
 	u_int			session_cnt;
 	u_int			behavior_cnt;
 	time_t			behavior_time;
 	u_int			data_size;
 
 }session_t;
+
+typedef struct{
+
+	time_t			fin_time;
+	short			fin_count;
+
+}finSession_t;
 /*
  *	mem : 세션의 수, 세션 구조체의 자료구조
  *	생성자, 소멸자
@@ -43,7 +49,7 @@ typedef struct{
 class IpsSession {
 
 	session_t			m_astSession[MAX_SESSION_NUM];
-	u_int				m_astFinSession[MAX_SESSION_NUM];
+	finSession_t		m_astFinSession[MAX_SESSION_NUM];
 
 	private :
 
@@ -63,10 +69,9 @@ class IpsSession {
 		session_t* getSession(int nIndex);
 		u_int makeSession(packet_t *p);
 		int checkAttack(packet_t *p);
-		int delSession(packet_t *p, int nIndex);
+		int delSession(int nIndex);
 		static void* printSessionWrapper(void* context);
 		int existSession();
-		static void* initSession(void* index);
 };
 
 #endif
