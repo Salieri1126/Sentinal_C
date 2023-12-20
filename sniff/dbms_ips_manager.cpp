@@ -161,10 +161,17 @@ int main(int argc, char *argv[])
 
 	// step-3.3 : Run main-thread & log-thread
 	
+	pthread_t updatePolicy_thread;
 	pthread_t log_thread;
 
 	if( pthread_create( &log_thread, NULL, log_insert, NULL) != 0 ){
 		printf("log_thread make Fail\n");
+		exit(0);
+		return -1;
+	}
+
+	if( pthread_create( &updatePolicy_thread, NULL, update_policy, NULL) != ){
+		printf("update Listen Fail\n");
 		exit(0);
 		return -1;
 	}
@@ -379,6 +386,8 @@ void stop_processor(int sig)
 
 void* log_insert(void* element){
 
+	pthread_mutex_t log_mutex = PTHREAD_MUTEX_INITIALIZER;
+	
 	while(1){
 		//	큐에 저장된 것이 없으면 대기
 		if( logs.is_empty_logQueue() ){
@@ -386,10 +395,27 @@ void* log_insert(void* element){
 			continue;
 		}
 		//	큐에 저장된 것이 있으면 log 쿼리 날리기
+		pthread_mutex_lock(&log_mutex);
 		logs.logDequeue();
+		pthread_mutex_unlock(&log_mutex);
 	}
 
 }
 
+void* update_policy(void* element){
+	
+	pthread_mutex_t policy_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+	while(1){
+	
+			
+		
+		pthread_mutex_lock(&policy_mutex);
+		logs.create_policy();
+		logs.read_policy();
+		rules.is_compile_rules();
+		pthread_mutex_unlock(&policy_mutex);
+	}
+}
 
 /* End of program */

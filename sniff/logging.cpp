@@ -185,14 +185,19 @@ int IpsLog::logEnqueue(u_char *packet, packet_t *p, int ruleIndex){
 	struct in_addr *ip_dst = (struct in_addr*)&p->dip;
 	pthread_mutex_t m_mutex = PTHREAD_MUTEX_INITIALIZER;
 
+	char strSrcIp[16] = "";
+	char strDstIp[16] = "";
+	memcpy( strSrcIp, inet_ntoa(*ip_src), sizeof(strSrcIp)-1 );
+	memcpy( strDstIp, inet_ntoa(*ip_dst), sizeof(strDstIp)-1 );
+
 	char hex[0xFFF];
 	bin_to_hex(packet, p->caplen, hex);
 	
 	rule_t* detectRule = rules.getRule(ruleIndex);
 
 	snprintf(query, sizeof(query), "INSERT INTO log_%04d%02d%02d"
-			"(detected_no, detected_name, time, action, detail, src_ip, packet_bin, level, src_port, dst_ip)"
-			"VALUES (%d, '%s', NOW(), %d, '%s', '%s', UNHEX('%s'), %d, %d, '%s')", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, detectRule->rid, detectRule->deName, detectRule->action, "test detected", inet_ntoa(*ip_src), hex, detectRule->level, p->sp, inet_ntoa(*ip_dst));
+			"(detected_no, detected_name, time, action, src_ip, packet_bin, level, src_port, dst_ip)"
+			"VALUES (%d, '%s', NOW(), %d, '%s', UNHEX('%s'), %d, %d, '%s')", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, detectRule->rid, detectRule->deName, detectRule->action, strSrcIp, hex, detectRule->level, p->sp, strDstIp);
 	
 	pthread_mutex_lock(&m_mutex);
 	enqueue(&m_queLog, query);

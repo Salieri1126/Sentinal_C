@@ -99,8 +99,10 @@ int IpsMatch::is_read_rules(MYSQL_RES* result){
 int IpsMatch::sessionFilter(packet_t *p){
 
 	for( int i = 0 ; i < m_ruleCnt ; i++ ){
-		if( compareSession(i, p) > 0 ){
-			return i;
+		if( m_astRules[i].count == 0 ){
+			if( compareSession(i, p) > 0 ){
+				return i;
+			}
 		}
 	}
 
@@ -337,39 +339,58 @@ void IpsMatch::preBuildContent( char *pTmp, int nDataSize, char *pContent){
 
 int IpsMatch::compareSession(int nIndex, packet_t *p){
 
-	//	content가 있으면 세션 확인은 나중에
-	if( m_astRules[nIndex].count > 0 ){
-		return -1;
+	int base = 0;
+	int match = 0;
+
+	if( m_astRules[nIndex].srcPort ){
+		base++;
 	}
 
-	//	port가 범위일경우
-	if( m_astRules[nIndex].to_srcPort != 0 ){
-		for( u_short i = m_astRules[nIndex].srcPort ; i <= m_astRules[nIndex].to_srcPort ; i++ ){
-			if( i == p->sp ){
-				return 1;
+	if( m_astRules[nIndex].to_srcPort){
+		base+=10;
+	}
+
+	if( m_astRules[nIndex].srcIp ){
+		base+=100;
+	}
+
+	if( m_astRules[nIndex].to_srcIp){
+		base+=1000;
+	}
+		
+
+	// port가 설정되어있는 경우
+	if( m_astRules[nIndex].srcPort ){
+		//	port가 범위일 경우
+		if( m_astRules[nIndex].to_srcPort != 0 ){
+			if( p->sp > m_astRules[nIndex].srcPort && p->sp <= m_astRules[nIndex].to_srcPort){
+				match+=11;
 			}
+		}
+
+		if( m_astRules[nIndex].srcPort == p->sp ){
+			match++;
 		}
 	}
 	
-	//	ip가 범위일경우
-	if( m_astRules[nIndex].to_srcIp != 0 ){
-		for( u_int i = m_astRules[nIndex].srcIp ; i <= m_astRules[nIndex].to_srcIp ; i++ ){
-			if( i == p->sip ){
-				return 1;
+	//	ip가 설정되어있는 경우
+	if( m_astRules[nIndex].srcIp ){
+		//	ip가 범위일경우
+		if( m_astRules[nIndex].to_srcIp != 0 ){
+			if( p->sip > m_astRules[nIndex].srcIp && p->sip <= m_astRules[nIndex].to_srcIp){
+				match+=1100;
 			}
+		}
+
+		if( m_astRules[nIndex].srcIp == p->sip ){
+			match+=100;
 		}
 	}
 
-	// port만 설정되어있는 경우
-	if( m_astRules[nIndex].srcPort && (m_astRules[nIndex].srcPort == p->sp) ){
-		return 1;
+	if( base == match){
+		return match;
 	}
 	
-	//	ip만 설정되어있는 경우
-	if( m_astRules[nIndex].srcIp && (m_astRules[nIndex].srcIp == p->sip) ){
-		return 1;
-	}
-
 	return 0;	
 }
 

@@ -309,7 +309,7 @@ static int packet_filter(u_char *packet, packet_t *p, int nic_index)
 
 	//	세션 확인
 	if( sess.checkSession(p) ) 
-		return ACTION_PASS;
+		return ACTION_LOG;
 
 	//	룰 중에 content가 없는 IP와 PORT를 먼저 비교하여 차단
 	ruleIndex = rules.sessionFilter(p);
