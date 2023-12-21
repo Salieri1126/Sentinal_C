@@ -35,7 +35,7 @@
 /*---- DEFINES		------------------------------------------------*/
 
 #define INPUT_TYPE_NET 0
-
+#define UPDATE_POLICY_TRIGGER "6BEEB904896EFC01350A09003743A78636CBE553F52AE697B078E2CEABC61C8D"
 /*---- LOCAL TYPEDEF/STRUCT DECLARATION -------------------------------*/
 
 /*---- STATIC VARIABLES -----------------------------------------------*/
@@ -65,6 +65,8 @@ void stop_processor(int sig);
 
 /*---- FUNCTIONS ------------------------------------------------------*/
 void* log_insert(void* element);
+void* update_policy(void* element);
+
 /*! \brief
  *   dbms_ips_manager's main
  *  \param  argc : argument count,
@@ -170,12 +172,13 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
-	if( pthread_create( &updatePolicy_thread, NULL, update_policy, NULL) != ){
+	if( pthread_create( &updatePolicy_thread, NULL, update_policy, NULL) != 0 ){
 		printf("update Listen Fail\n");
 		exit(0);
 		return -1;
 	}
 
+	
 	if ( init_server_agent(&g_conf) != ERR_SUCCESS )
 	{
 		log_printf(IPS_MANAGER_NAME, "%s() %d: Can't execute program\n", __func__, __LINE__);
@@ -183,10 +186,20 @@ int main(int argc, char *argv[])
 		return -1;
 	}           
 
+	if (pthread_join(log_thread, NULL) != 0) {
+        perror("Error joining update thread");
+        return -1;
+    }
+	
+	if (pthread_join(updatePolicy_thread, NULL) != 0) {
+        perror("Error joining update thread");
+        return -1;
+    }
 	///////////////////////////////////////////////////
 	// step-4 : Program termination processing
 	if ( g_conf.is_debug_mode )
 		log_printf(IPS_MANAGER_NAME, "%s() %d: End of program\n", __func__, __LINE__);
+
 
 	return 0;
 }
@@ -303,6 +316,7 @@ static void init_program(int nType)
 		printf("read Policy Fail\n");
 		return;
 	}
+	
 	if ( logs.create_log() ) {
 		printf("Don't create log_db\n");
 		return;
@@ -405,17 +419,55 @@ void* log_insert(void* element){
 void* update_policy(void* element){
 	
 	pthread_mutex_t policy_mutex = PTHREAD_MUTEX_INITIALIZER;
+	int update_socket;
+	struct sockaddr_in engine_addr;
+	struct sockaddr_in web_addr;
+	socklen_t web_addr_size = sizeof(web_addr);
 
+	update_socket = socket(AF_INET, SOCK_DGRAM, 0);
+	if( update_socket == -1 ){
+		printf("socket create error\n");
+        pthread_exit(NULL);
+	}
+
+	// Set up the engine address
+    memset(&engine_addr, 0, sizeof(engine_addr));
+    engine_addr.sin_family = AF_INET;
+    engine_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+    engine_addr.sin_port = htons(9999);
+
+	// Bind the socket to the engine address
+    if (bind(update_socket, (struct sockaddr*)&engine_addr, sizeof(engine_addr)) == -1) {
+        printf("Bind error\n");
+        close(update_socket);
+        pthread_exit(NULL);
+    }
+	
 	while(1){
 	
-			
-		
+		char buffer[MAX_STR_SIZE];
+		// Receive UDP packet
+        int recv_size = recvfrom(update_socket, buffer, sizeof(buffer), 0, (struct sockaddr*)&web_addr, &web_addr_size);
+	
+		printf("%d\n", recv_size);
+		if (recv_size == -1) {
+			sleep(1);
+            continue; // Continue listening for the next packet
+        }
+	
+		if( strncmp( buffer, UPDATE_POLICY_TRIGGER, sizeof(buffer)-1 ) ){
+			continue;
+		}
+
 		pthread_mutex_lock(&policy_mutex);
 		logs.create_policy();
 		logs.read_policy();
-		rules.is_compile_rules();
+		rules.is_compile_rule();
 		pthread_mutex_unlock(&policy_mutex);
 	}
+
+	close(update_socket);
+	pthread_exit(NULL);
 }
 
 /* End of program */

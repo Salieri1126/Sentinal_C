@@ -766,6 +766,7 @@ uh_len	./include/packet.h	/^	u_int16_t uh_len;              \/**< payload length
 uh_sport	./include/packet.h	/^	u_int16_t uh_sport;            \/**< source port *\/$/;"	m	struct:__anon5
 unicode	./include/policy.h	/^	char    *unicode;                   \/**< 유니코드 패턴일 들어갈 자리 *\/$/;"	m	struct:__anon10
 unix_socket	./include/getdbinfo.h	/^	char unix_socket[80];  \/\/\/ Unix socket명.$/;"	m	struct:_CONFIGURE_SET2_T
+update_policy	./dbms_ips_manager.cpp	/^void* update_policy(void* element){$/;"	f
 update_session	./session.cpp	/^void IpsSession::update_session(packet_t *p, int nIndex){$/;"	f	class:IpsSession
 updated_alias_crc	./include/policy.h	/^	char updated_alias_crc[CRC_STR_SIZE];    \/**< 이미 배포된 그룹 정보 file의 CRC *\/$/;"	m	struct:__anon15
 updated_rule_crc	./include/policy.h	/^	char updated_rule_crc[CRC_STR_SIZE];     \/**< 이미 배포된 접속 정책 file의 CRC *\/$/;"	m	struct:__anon15

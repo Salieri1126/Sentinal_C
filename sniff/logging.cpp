@@ -58,8 +58,6 @@ int IpsLog::conn_policy(){
 		}
     }
 
-	create_policy();
-
 	return 0;
 }
 
@@ -226,6 +224,13 @@ void IpsLog::logDequeue(){
 	char query[0xFFFF] = "";
 	char *pQuery;
 	
+	sprintf(query, "use S_ips_log_db");
+
+    if (mysql_query(conn, query)) {
+        fprintf(stderr, "%s\n", mysql_error(conn));
+        return;
+    }
+
 	pthread_mutex_lock(&m_mutex);
 	pQuery = dequeue(&m_queLog);
 	pthread_mutex_unlock(&m_mutex);
