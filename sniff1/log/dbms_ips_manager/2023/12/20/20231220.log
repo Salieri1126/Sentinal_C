@@ -1,0 +1,132 @@
+[14:11:04] main()-82: START
+[14:11:04] init_program()-356
+[14:13:21] stop_processor()-374: signal=2
+[14:19:17] main()-82: START
+[14:19:17] init_program()-356
+[14:19:49] stop_processor()-374: signal=2
+[14:20:25] main()-82: START
+[14:20:25] init_program()-356
+[14:20:56] stop_processor()-374: signal=2
+[14:25:43] main()-82: START
+[14:25:43] init_program()-356
+[14:26:20] stop_processor()-374: signal=2
+[14:30:27] main()-82: START
+[14:30:27] init_program()-356
+[14:30:49] stop_processor()-374: signal=2
+[14:33:22] main()-82: START
+[14:33:22] init_program()-356
+[14:34:01] stop_processor()-374: signal=2
+[14:34:39] main()-82: START
+[14:34:39] init_program()-356
+[14:35:03] stop_processor()-374: signal=2
+[14:36:28] main()-82: START
+[14:36:28] init_program()-356
+[14:36:31] stop_processor()-374: signal=2
+[14:36:35] main()-82: START
+[14:36:35] init_program()-356
+[14:36:58] stop_processor()-374: signal=2
+[14:39:29] main()-82: START
+[14:39:29] init_program()-356
+[14:39:30] stop_processor()-374: signal=2
+[14:39:33] main()-82: START
+[14:39:33] init_program()-356
+[14:39:47] stop_processor()-374: signal=2
+[14:41:21] main()-82: START
+[14:41:21] init_program()-356
+[14:41:35] stop_processor()-374: signal=2
+[14:43:25] main()-82: START
+[14:43:25] init_program()-356
+[14:43:35] stop_processor()-374: signal=2
+[14:43:55] main()-82: START
+[14:43:55] init_program()-356
+[14:44:02] stop_processor()-374: signal=2
+[14:46:04] main()-82: START
+[14:46:04] init_program()-356
+[14:46:08] stop_processor()-374: signal=2
+[14:47:23] main()-82: START
+[14:47:23] init_program()-356
+[14:47:38] stop_processor()-374: signal=2
+[14:57:11] main()-82: START
+[14:57:11] init_program()-356
+[14:57:39] stop_processor()-374: signal=2
+[15:00:34] main()-82: START
+[15:00:34] init_program()-356
+[15:00:50] stop_processor()-374: signal=2
+[15:01:02] main()-82: START
+[15:01:02] init_program()-356
+[15:01:07] stop_processor()-374: signal=2
+[15:01:13] main()-82: START
+[15:01:13] init_program()-356
+[15:01:26] stop_processor()-374: signal=2
+[15:03:16] main()-82: START
+[15:03:16] init_program()-356
+[15:04:51] stop_processor()-374: signal=2
+[15:05:41] main()-82: START
+[15:05:41] init_program()-356
+[15:07:27] stop_processor()-374: signal=2
+[15:09:52] main()-82: START
+[15:09:52] init_program()-356
+[15:11:19] stop_processor()-374: signal=2
+[15:13:37] main()-82: START
+[15:13:37] init_program()-356
+[15:14:32] stop_processor()-374: signal=2
+[15:14:40] main()-82: START
+[15:14:40] init_program()-356
+[15:15:09] stop_processor()-374: signal=2
+[15:15:22] main()-82: START
+[15:15:22] init_program()-356
+[15:16:29] stop_processor()-374: signal=2
+[15:18:18] main()-82: START
+[15:18:18] init_program()-356
+[15:19:01] stop_processor()-374: signal=2
+[15:24:21] main()-82: START
+[15:24:21] init_program()-356
+[15:26:26] stop_processor()-374: signal=2
+[15:27:35] main()-82: START
+[15:27:35] init_program()-356
+[15:29:00] stop_processor()-374: signal=2
+[15:29:04] main()-82: START
+[15:29:04] init_program()-356
+[15:32:34] stop_processor()-374: signal=2
+[15:33:34] main()-82: START
+[15:33:34] init_program()-356
+[15:35:38] stop_processor()-374: signal=2
+[15:35:48] main()-82: START
+[15:35:48] init_program()-356
+[15:37:28] stop_processor()-374: signal=2
+[15:37:39] main()-82: START
+[15:37:39] init_program()-356
+[15:38:32] stop_processor()-374: signal=2
+[15:48:30] main()-82: START
+[15:48:30] init_program()-356
+[15:48:58] stop_processor()-374: signal=2
+[15:49:08] main()-82: START
+[15:49:08] init_program()-356
+[15:49:41] stop_processor()-374: signal=2
+[15:53:05] main()-82: START
+[15:53:05] init_program()-356
+[15:53:15] stop_processor()-374: signal=2
+[15:53:45] main()-82: START
+[15:53:45] init_program()-356
+[15:56:24] stop_processor()-374: signal=2
+[15:58:10] main()-82: START
+[15:58:10] init_program()-356
+[15:58:32] stop_processor()-374: signal=2
+[16:23:01] main()-82: START
+[16:23:01] init_program()-356
+[16:23:34] stop_processor()-374: signal=2
+[16:23:58] main()-82: START
+[16:23:58] init_program()-356
+[16:24:38] stop_processor()-374: signal=2
+[16:41:39] main()-82: START
+[16:41:39] init_program()-356
+[16:41:58] stop_processor()-374: signal=2
+[16:42:52] main()-82: START
+[16:42:52] init_program()-356
+[16:44:12] stop_processor()-374: signal=2
+[16:58:06] main()-82: START
+[16:58:06] init_program()-356
+[16:58:24] stop_processor()-374: signal=2
+[16:59:14] main()-82: START
+[16:59:14] init_program()-356
+[16:59:55] stop_processor()-374: signal=2

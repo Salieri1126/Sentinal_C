@@ -1,0 +1,176 @@
+[10:27:54] main()-82: START
+[10:30:19] main()-82: START
+[10:31:01] main()-82: START
+[10:31:10] main()-82: START
+[10:31:28] main()-82: START
+[10:32:38] main()-82: START
+[10:32:38] init_program()-331
+[10:35:55] main()-82: START
+[10:35:55] init_program()-331
+[10:53:23] main()-82: START
+[10:53:23] init_program()-331
+[11:17:20] main()-82: START
+[11:17:20] init_program()-331
+[11:17:31] main()-82: START
+[11:17:31] init_program()-331
+[11:19:17] main()-82: START
+[11:19:17] init_program()-331
+[11:19:38] main()-82: START
+[11:19:38] init_program()-331
+[11:22:03] main()-82: START
+[11:22:03] init_program()-331
+[11:40:12] main()-82: START
+[11:40:12] init_program()-331
+[11:48:51] main()-82: START
+[11:48:51] init_program()-331
+[12:10:30] main()-82: START
+[12:10:30] init_program()-331
+[12:30:47] main()-82: START
+[12:30:47] init_program()-331
+[13:50:17] main()-82: START
+[13:50:17] init_program()-331
+[13:56:26] main()-82: START
+[13:56:26] init_program()-331
+[13:59:21] main()-82: START
+[13:59:21] init_program()-331
+[15:22:28] main()-82: START
+[15:22:28] init_program()-331
+[15:23:17] main()-82: START
+[15:23:17] init_program()-331
+[15:25:36] main()-82: START
+[15:25:36] init_program()-331
+[15:27:33] main()-82: START
+[15:27:33] init_program()-331
+[15:30:57] main()-82: START
+[15:30:57] init_program()-331
+[15:31:20] main()-82: START
+[15:31:20] init_program()-331
+[15:31:24] main()-82: START
+[15:31:24] init_program()-331
+[15:32:32] main()-82: START
+[15:32:32] init_program()-331
+[15:33:59] main()-82: START
+[15:33:59] init_program()-331
+[15:34:19] main()-82: START
+[15:34:19] init_program()-331
+[15:34:23] main()-82: START
+[15:34:23] init_program()-331
+[15:36:12] main()-82: START
+[15:36:12] init_program()-331
+[15:37:29] main()-82: START
+[15:37:29] init_program()-331
+[15:43:34] main()-82: START
+[15:43:34] init_program()-331
+[15:44:05] main()-82: START
+[15:44:05] init_program()-331
+[15:45:37] main()-82: START
+[15:45:37] init_program()-331
+[15:46:40] main()-82: START
+[15:46:40] init_program()-331
+[15:47:37] main()-82: START
+[15:47:37] init_program()-331
+[15:51:25] main()-82: START
+[15:51:25] init_program()-331
+[15:52:18] main()-82: START
+[15:52:18] init_program()-331
+[15:53:16] main()-82: START
+[15:53:16] init_program()-331
+[15:54:21] main()-82: START
+[15:54:21] init_program()-331
+[15:56:29] main()-82: START
+[15:56:29] init_program()-331
+[15:58:27] main()-82: START
+[15:58:27] init_program()-331
+[16:02:05] main()-82: START
+[16:02:05] init_program()-331
+[16:03:42] main()-82: START
+[16:03:42] init_program()-331
+[16:04:57] main()-82: START
+[16:04:57] init_program()-331
+[16:05:00] main()-82: START
+[16:05:00] init_program()-331
+[16:05:49] main()-82: START
+[16:05:49] init_program()-331
+[16:07:07] main()-82: START
+[16:07:07] init_program()-331
+[16:08:43] main()-82: START
+[16:08:43] init_program()-331
+[16:09:26] main()-82: START
+[16:09:26] init_program()-331
+[16:10:54] main()-82: START
+[16:10:54] init_program()-331
+[16:10:56] main()-82: START
+[16:10:56] init_program()-331
+[16:11:34] main()-82: START
+[16:11:34] init_program()-331
+[16:12:02] main()-82: START
+[16:12:02] init_program()-331
+[16:15:29] main()-82: START
+[16:15:29] init_program()-331
+[16:15:36] main()-82: START
+[16:15:36] init_program()-331
+[16:29:38] main()-82: START
+[16:29:38] init_program()-338
+[16:29:54] stop_processor()-356: signal=2
+[16:30:17] main()-82: START
+[16:30:17] init_program()-338
+[16:30:57] stop_processor()-356: signal=2
+[16:31:05] main()-82: START
+[16:31:05] init_program()-338
+[16:31:14] stop_processor()-356: signal=2
+[16:31:48] main()-82: START
+[16:31:48] init_program()-338
+[16:31:53] stop_processor()-356: signal=2
+[16:32:47] main()-82: START
+[16:32:47] init_program()-338
+[16:33:07] stop_processor()-356: signal=2
+[16:34:02] main()-82: START
+[16:34:02] init_program()-338
+[16:34:31] stop_processor()-356: signal=2
+[16:37:38] main()-82: START
+[16:37:38] init_program()-338
+[16:37:46] stop_processor()-356: signal=2
+[16:38:26] main()-82: START
+[16:38:26] init_program()-338
+[16:39:30] stop_processor()-356: signal=2
+[16:39:49] main()-82: START
+[16:39:49] init_program()-338
+[16:40:38] stop_processor()-356: signal=2
+[16:41:07] main()-82: START
+[16:41:07] init_program()-338
+[16:41:10] stop_processor()-356: signal=2
+[16:45:09] main()-82: START
+[16:45:09] init_program()-338
+[16:46:35] stop_processor()-356: signal=10
+[16:58:27] main()-82: START
+[16:58:29] init_program()-338
+[16:59:35] stop_processor()-356: signal=10
+[17:01:37] main()-82: START
+[17:01:37] init_program()-338
+[17:05:12] stop_processor()-356: signal=10
+[17:06:58] main()-82: START
+[17:06:58] init_program()-338
+[17:08:31] stop_processor()-356: signal=10
+[17:11:23] main()-82: START
+[17:11:23] init_program()-338
+[17:13:14] stop_processor()-356: signal=2
+[17:14:54] main()-82: START
+[17:14:54] init_program()-339
+[17:15:33] stop_processor()-357: signal=2
+[17:15:51] main()-82: START
+[17:15:51] init_program()-339
+[17:15:53] stop_processor()-357: signal=2
+[17:15:59] main()-82: START
+[17:15:59] init_program()-339
+[17:16:00] stop_processor()-357: signal=2
+[17:16:34] main()-82: START
+[17:16:34] init_program()-339
+[17:16:48] stop_processor()-358: signal=2
+[17:32:51] main()-82: START
+[17:32:51] init_program()-339
+[17:33:11] stop_processor()-358: signal=2
+[17:37:20] main()-82: START
+[17:37:20] init_program()-339
+[17:40:20] stop_processor()-358: signal=2
+[17:44:34] main()-82: START
+[17:44:34] init_program()-339

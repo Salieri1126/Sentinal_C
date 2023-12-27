@@ -81,7 +81,9 @@ int IpsLog::read_policy(){
         return -1;
 	}
 
-	rules.is_read_rules(result);
+	if( !rules.is_read_rules(result) ){
+		printf("Fail!\n");
+	}
 
 	return 0;
 }
@@ -196,7 +198,7 @@ int IpsLog::logEnqueue(u_char *packet, packet_t *p, int ruleIndex){
 	snprintf(query, sizeof(query), "INSERT INTO log_%04d%02d%02d"
 			"(detected_no, detected_name, time, action, src_ip, packet_bin, level, src_port, dst_ip)"
 			"VALUES (%d, '%s', NOW(), %d, '%s', UNHEX('%s'), %d, %d, '%s')", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, detectRule->rid, detectRule->deName, detectRule->action, strSrcIp, hex, detectRule->level, p->sp, strDstIp);
-	
+
 	pthread_mutex_lock(&m_mutex);
 	enqueue(&m_queLog, query);
 	pthread_mutex_unlock(&m_mutex);

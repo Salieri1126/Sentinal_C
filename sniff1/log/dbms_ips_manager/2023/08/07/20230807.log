@@ -1,0 +1,28 @@
+[16:47:09] main()-90: START
+[16:47:17] main()-90: START
+[16:47:18] init_program()-463
+[16:47:18] main() 240: End of program
+[16:47:24] main()-90: START
+[16:47:25] init_program()-463
+[16:47:25] main() 240: End of program
+[16:47:52] main()-90: START
+[16:47:53] init_program()-463
+[16:47:53] main() 240: End of program
+[16:47:54] main()-90: START
+[16:47:55] init_program()-463
+[16:47:55] main() 240: End of program
+[16:48:29] main()-90: START
+[16:48:30] init_program()-463
+[16:48:30] main() 240: End of program
+[16:51:58] main()-90: START
+[16:51:59] init_program()-464
+[16:51:59] log_manager()-143: Access denied for user 'safeusr'@'localhost' (using password: YES)
+[16:51:59] main() 241: End of program
+[16:53:57] main()-90: START
+[16:53:58] init_program()-466
+[16:54:23] main()-90: START
+[16:54:23] stop_processor()-318: signal=2
+[16:55:08] main()-90: START
+[16:55:09] init_program()-466
+[16:56:16] main()-90: START
+[16:56:16] stop_processor()-318: signal=2

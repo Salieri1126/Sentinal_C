@@ -177,7 +177,6 @@ int main(int argc, char *argv[])
 		exit(0);
 		return -1;
 	}
-
 	
 	if ( init_server_agent(&g_conf) != ERR_SUCCESS )
 	{
@@ -327,7 +326,6 @@ static void init_program(int nType)
 		return;
 	}
 
-	//rules.printf_rules();
 	///////////////////////////////////////////////////
 	// step-2 : get db-scan cycle
 	if ( get_dump_conf(IPS_MANAGER_CONF, "DBSCAN_CYCLE", szBuf, sizeof(szBuf)-1) == ERR_SUCCESS && isdigit(*szBuf) )
@@ -418,7 +416,6 @@ void* log_insert(void* element){
 
 void* update_policy(void* element){
 	
-	pthread_mutex_t policy_mutex = PTHREAD_MUTEX_INITIALIZER;
 	int update_socket;
 	struct sockaddr_in engine_addr;
 	struct sockaddr_in web_addr;
@@ -434,7 +431,7 @@ void* update_policy(void* element){
     memset(&engine_addr, 0, sizeof(engine_addr));
     engine_addr.sin_family = AF_INET;
     engine_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    engine_addr.sin_port = htons(9999);
+    engine_addr.sin_port = htons(21113);
 
 	// Bind the socket to the engine address
     if (bind(update_socket, (struct sockaddr*)&engine_addr, sizeof(engine_addr)) == -1) {
@@ -449,7 +446,6 @@ void* update_policy(void* element){
 		// Receive UDP packet
         int recv_size = recvfrom(update_socket, buffer, sizeof(buffer), 0, (struct sockaddr*)&web_addr, &web_addr_size);
 	
-		printf("%d\n", recv_size);
 		if (recv_size == -1) {
 			sleep(1);
             continue; // Continue listening for the next packet
@@ -459,11 +455,14 @@ void* update_policy(void* element){
 			continue;
 		}
 
-		pthread_mutex_lock(&policy_mutex);
-		logs.create_policy();
+		pthread_mutex_lock(&g_conf.sync_mutex);
+		logs.conn_policy();
 		logs.read_policy();
 		rules.is_compile_rule();
-		pthread_mutex_unlock(&policy_mutex);
+		pthread_mutex_unlock(&g_conf.sync_mutex);
+
+		rules.printf_rules();
+		printf("Update Policy\n");
 	}
 
 	close(update_socket);

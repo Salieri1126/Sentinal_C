@@ -71,15 +71,16 @@ int IpsMatch::is_read_rules(MYSQL_RES* result){
 	 *	ruleCount	룰의 index
 	 */
 	MYSQL_ROW row;
+	m_ruleCnt = 0;
 	int nRuleFieldSize = 0;
-
+	memset( m_astRules, 0, sizeof(m_astRules) );
 	nRuleFieldSize = sizeof(rule_field_name) / sizeof(rule_field_name[0]);
 
 	//	룰 읽기
 	while( (row = mysql_fetch_row(result)) != NULL ){
 
 		int i = 0;
-
+		
 		// enable이 0이면 룰 읽지 않음
 		if( atoi(row[5]) == 0 ){
 			continue;
@@ -148,8 +149,8 @@ int IpsMatch::setRules(int e_field_name, char *value, int nIndex){
 
 		//	일반 text
 		case detected_name:
-		case detail:
 			inStrValue(nIndex, e_field_name, value);
+			return 0;
 		
 		//	인코딩된 text
 		case content1:
@@ -190,19 +191,37 @@ void IpsMatch::inContentValue(int nIndex, int e_field_name, char *value){
 		
 		case content1:
 			decoding(value, pTmp);
-			preBuildContent( pTmp, strlen(pTmp), m_astRules[nIndex].content[0] ); 
+			if( pTmp[0] == '^' ){
+				memcpy( m_astRules[nIndex].content[0], pTmp, sizeof(pTmp)-1 );
+			}
+			else{
+				preBuildContent( pTmp, strlen(pTmp), m_astRules[nIndex].content[0] ); 
+			}
+			
 			m_astRules[nIndex].count = 1;
 			return;
 		
 		case content2:
 			decoding(value, pTmp);
-			preBuildContent( pTmp, strlen(pTmp), m_astRules[nIndex].content[1] ); 
+			if( pTmp[0] == '^' ){
+				memcpy( m_astRules[nIndex].content[0], pTmp, sizeof(pTmp)-1 );
+			}
+			else{
+				preBuildContent( pTmp, strlen(pTmp), m_astRules[nIndex].content[1] ); 
+			}
+			
 			m_astRules[nIndex].count++;
 			return;
 
 		case content3:
 			decoding(value, pTmp);
-			preBuildContent( pTmp, strlen(pTmp), m_astRules[nIndex].content[2] ); 
+			if( pTmp[0] == '^' ){
+				memcpy( m_astRules[nIndex].content[0], pTmp, sizeof(pTmp)-1 );
+			}
+			else{
+				preBuildContent( pTmp, strlen(pTmp), m_astRules[nIndex].content[2] ); 
+			}
+			
 			m_astRules[nIndex].count++;
 			return;
 
@@ -505,8 +524,6 @@ int IpsMatch::is_check_matchSession(packet_t *p, int nIndex){
 int preBuildData(packet_t *p, u_char *pPacket, int nDataSize, int nOffset)
 {
     int i;
-	u_char *nocase;
-	nocase = p->nocase;
 
 	if( !p || !pPacket || nDataSize == 0 )
 		return -1;
@@ -514,22 +531,22 @@ int preBuildData(packet_t *p, u_char *pPacket, int nDataSize, int nOffset)
     for (i = 0 ; i < nDataSize; i++)
 	{
 		if( pPacket[i+nOffset] >= 127 || pPacket[i+nOffset] < ' ' ){
-			*(nocase+i) = ' ';
+			p->nocase[i] = ' ';
 			continue;
 		}
-		*(nocase+i) = pPacket[i+nOffset];
+		p->nocase[i] = pPacket[i+nOffset];
 		// 알파벳 전부 소문자로
-		if( *(nocase+i) >= 65 && *(nocase+i) <= 90 ){
-			*(nocase+i) = *(nocase+i) + 32;
+		if( p->nocase[i] >= 65 && p->nocase[i] <= 90 ){
+			p->nocase[i] = p->nocase[i] + 32;
 		}
     }
-	*(nocase+nDataSize) = '\0';
+	p->nocase[nDataSize] = '\0';
 
     // 연속적인 공백을 하나의 공백으로 바꿉니다.
 	for( i = 0 ; i < nDataSize ; i++ ){
-		if( *(nocase+i) == ' ' && *(nocase+(i+1)) == ' '){
+		if( p->nocase[i] == ' ' && p->nocase[i+1] == ' '){
 			for(int j = 0 ; j < nDataSize ; j++){
-				*(nocase+(i+j)) = *(nocase+(i+1+j));
+				p->nocase[i+j] = p->nocase[i+1+j];
 			}
 			i--;
 		}
@@ -550,9 +567,7 @@ int preBuildData(packet_t *p, u_char *pPacket, int nDataSize, int nOffset)
  */
 void IpsMatch::printf_rules(){
 	
-	for(int i = 0 ; i < MAX_RULE_NUMBER ; i++){
-		if(m_astRules[i].count == 0)
-			continue;
+	for(int i = 0 ; i < m_ruleCnt ; i++){
 		printf("rule[%d] rid : %d\n"
 				"rule[%d] deName : %s\n"
 				"rule[%d] srcIp : %x\n"

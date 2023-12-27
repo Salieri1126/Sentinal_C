@@ -1,0 +1,483 @@
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+ no time accumulated
+
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  Ts/call  Ts/call  name    
+  0.00      0.00     0.00  3384296     0.00     0.00  is_skip_port(unsigned short)
+  0.00      0.00     0.00  3367384     0.00     0.00  IpsMatch::compareSession(int, packet_t*)
+  0.00      0.00     0.00  2526604     0.00     0.00  is_dbPort(unsigned short)
+  0.00      0.00     0.00  2103366     0.00     0.00  IpsSession::makeSession(packet_t*)
+  0.00      0.00     0.00  1694420     0.00     0.00  decode_packet(packet_t*, int, unsigned char const*)
+  0.00      0.00     0.00  1694420     0.00     0.00  get_ipmac_from_ippkt(unsigned char const*, packet_t*)
+  0.00      0.00     0.00  1684851     0.00     0.00  packet_filter(unsigned char*, packet_t*, int)
+  0.00      0.00     0.00  1684851     0.00     0.00  setFlow(packet_t*)
+  0.00      0.00     0.00  1684851     0.00     0.00  IpsSession::checkSession(packet_t*)
+  0.00      0.00     0.00  1683692     0.00     0.00  preBuildData(packet_t*, unsigned char*, int, int)
+  0.00      0.00     0.00  1683692     0.00     0.00  IpsMatch::ruleFilter(packet_t*, unsigned char*)
+  0.00      0.00     0.00   840548     0.00     0.00  IpsSession::checkAttack(packet_t*)
+  0.00      0.00     0.00   419632     0.00     0.00  IpsSession::getSession(int)
+  0.00      0.00     0.00      154     0.00     0.00  IpsMatch::setRules(char*, char*, int)
+  0.00      0.00     0.00      147     0.00     0.00  IpsLog::is_empty(logQueue_t*)
+  0.00      0.00     0.00      105     0.00     0.00  IpsLog::is_empty_logQueue()
+  0.00      0.00     0.00       84     0.00     0.00  IpsMatch::getRule(int)
+  0.00      0.00     0.00       42     0.00     0.00  print_to_console(packet_t const*, unsigned char const*, int, int)
+  0.00      0.00     0.00       42     0.00     0.00  bin_to_hex(unsigned char const*, unsigned long, char*)
+  0.00      0.00     0.00       42     0.00     0.00  IpsLog::logDequeue()
+  0.00      0.00     0.00       42     0.00     0.00  IpsLog::logEnqueue(unsigned char*, packet_t*, int)
+  0.00      0.00     0.00       42     0.00     0.00  IpsLog::dequeue(logQueue_t*)
+  0.00      0.00     0.00       42     0.00     0.00  IpsLog::enqueue(logQueue_t*, char*)
+  0.00      0.00     0.00       42     0.00     0.00  IpsLog::is_full(logQueue_t*)
+  0.00      0.00     0.00       42     0.00     0.00  IpsMatch::is_check_matchSession(packet_t*, int)
+  0.00      0.00     0.00       40     0.00     0.00  IpsMatch::convertValue(char*, char*, int)
+  0.00      0.00     0.00       38     0.00     0.00  IpsSession::addSession(packet_t*, int)
+  0.00      0.00     0.00       24     0.00     0.00  strim_both(char*)
+  0.00      0.00     0.00       20     0.00     0.00  IpsMatch::inValue(int, char*, int)
+  0.00      0.00     0.00       12     0.00     0.00  IpsMatch::cutdp_both(char*)
+  0.00      0.00     0.00       11     0.00     0.00  get_dump_conf(char const*, char const*, char*, int)
+  0.00      0.00     0.00       11     0.00     0.00  IpsMatch::preBuildContent(char*, int, char*)
+  0.00      0.00     0.00        8     0.00     0.00  IpsSession::delSession(packet_t*, int)
+  0.00      0.00     0.00        5     0.00     0.00  IpsSession::existSession()
+  0.00      0.00     0.00        3     0.00     0.00  log_printf(char*, char const*, ...)
+  0.00      0.00     0.00        1     0.00     0.00  _GLOBAL__sub_I__Z16init_net_monitori
+  0.00      0.00     0.00        1     0.00     0.00  _GLOBAL__sub_I__ZN10IpsSession12checkSessionEP8packet_t
+  0.00      0.00     0.00        1     0.00     0.00  _GLOBAL__sub_I__ZN6IpsLog15is_read_logInfoEv
+  0.00      0.00     0.00        1     0.00     0.00  _GLOBAL__sub_I_g_conf
+  0.00      0.00     0.00        1     0.00     0.00  _GLOBAL__sub_I_g_license_string
+  0.00      0.00     0.00        1     0.00     0.00  _GLOBAL__sub_I_rule_field_name
+  0.00      0.00     0.00        1     0.00     0.00  getopt_long2(int, char**, char*, option2 const*, int*, char**)
+  0.00      0.00     0.00        1     0.00     0.00  init_net_monitor(int)
+  0.00      0.00     0.00        1     0.00     0.00  init_resetpacket(char const*)
+  0.00      0.00     0.00        1     0.00     0.00  init_server_agent(configure_t*)
+  0.00      0.00     0.00        1     0.00     0.00  __static_initialization_and_destruction_0(int, int)
+  0.00      0.00     0.00        1     0.00     0.00  __static_initialization_and_destruction_0(int, int)
+  0.00      0.00     0.00        1     0.00     0.00  __static_initialization_and_destruction_0(int, int)
+  0.00      0.00     0.00        1     0.00     0.00  __static_initialization_and_destruction_0(int, int)
+  0.00      0.00     0.00        1     0.00     0.00  __static_initialization_and_destruction_0(int, int)
+  0.00      0.00     0.00        1     0.00     0.00  __static_initialization_and_destruction_0(int, int)
+  0.00      0.00     0.00        1     0.00     0.00  strncpy2(char*, char const*, unsigned long)
+  0.00      0.00     0.00        1     0.00     0.00  init_program(int)
+  0.00      0.00     0.00        1     0.00     0.00  create_pcap_handler(char const*, char*)
+  0.00      0.00     0.00        1     0.00     0.00  IpsSession::printSession()
+  0.00      0.00     0.00        1     0.00     0.00  IpsSession::IpsSession()
+  0.00      0.00     0.00        1     0.00     0.00  IpsLog::connect_db()
+  0.00      0.00     0.00        1     0.00     0.00  IpsLog::create_log()
+  0.00      0.00     0.00        1     0.00     0.00  IpsLog::conn_policy()
+  0.00      0.00     0.00        1     0.00     0.00  IpsLog::is_read_logInfo()
+  0.00      0.00     0.00        1     0.00     0.00  IpsLog::IpsLog()
+  0.00      0.00     0.00        1     0.00     0.00  IpsMatch::is_read_rules(char*)
+  0.00      0.00     0.00        1     0.00     0.00  IpsMatch::is_compile_rule()
+  0.00      0.00     0.00        1     0.00     0.00  IpsMatch::inIPValue(int, char*, unsigned int)
+  0.00      0.00     0.00        1     0.00     0.00  IpsMatch::IpsMatch()
+
+ %         the percentage of the total running time of the
+time       program used by this function.
+
+cumulative a running sum of the number of seconds accounted
+ seconds   for by this function and those listed above it.
+
+ self      the number of seconds accounted for by this
+seconds    function alone.  This is the major sort for this
+           listing.
+
+calls      the number of times this function was invoked, if
+           this function is profiled, else blank.
+
+ self      the average number of milliseconds spent in this
+ms/call    function per call, if this function is profiled,
+	   else blank.
+
+ total     the average number of milliseconds spent in this
+ms/call    function and its descendents per call, if this
+	   function is profiled, else blank.
+
+name       the name of the function.  This is the minor sort
+           for this listing. The index shows the location of
+	   the function in the gprof listing. If the index is
+	   in parenthesis it shows where it would appear in
+	   the gprof listing if it were to be printed.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+
+		     Call graph (explanation follows)
+
+
+granularity: each sample hit covers 2 byte(s) no time propagated
+
+index % time    self  children    called     name
+                0.00    0.00 3384296/3384296     packet_sniff(unsigned char*, pcap_pkthdr const*, unsigned char const*) [84]
+[8]      0.0    0.00    0.00 3384296         is_skip_port(unsigned short) [8]
+-----------------------------------------------
+                0.00    0.00 3367384/3367384     IpsMatch::ruleFilter(packet_t*, unsigned char*) [18]
+[9]      0.0    0.00    0.00 3367384         IpsMatch::compareSession(int, packet_t*) [9]
+-----------------------------------------------
+                0.00    0.00 2526604/2526604     setFlow(packet_t*) [15]
+[10]     0.0    0.00    0.00 2526604         is_dbPort(unsigned short) [10]
+-----------------------------------------------
+                0.00    0.00      42/2103366     IpsMatch::is_check_matchSession(packet_t*, int) [32]
+                0.00    0.00  419632/2103366     IpsMatch::ruleFilter(packet_t*, unsigned char*) [18]
+                0.00    0.00 1683692/2103366     IpsSession::checkSession(packet_t*) [16]
+[11]     0.0    0.00    0.00 2103366         IpsSession::makeSession(packet_t*) [11]
+-----------------------------------------------
+                0.00    0.00 1694420/1694420     packet_sniff(unsigned char*, pcap_pkthdr const*, unsigned char const*) [84]
+[12]     0.0    0.00    0.00 1694420         decode_packet(packet_t*, int, unsigned char const*) [12]
+                0.00    0.00 1694420/1694420     get_ipmac_from_ippkt(unsigned char const*, packet_t*) [13]
+-----------------------------------------------
+                0.00    0.00 1694420/1694420     decode_packet(packet_t*, int, unsigned char const*) [12]
+[13]     0.0    0.00    0.00 1694420         get_ipmac_from_ippkt(unsigned char const*, packet_t*) [13]
+-----------------------------------------------
+                0.00    0.00 1684851/1684851     packet_sniff(unsigned char*, pcap_pkthdr const*, unsigned char const*) [84]
+[14]     0.0    0.00    0.00 1684851         packet_filter(unsigned char*, packet_t*, int) [14]
+                0.00    0.00 1684851/1684851     setFlow(packet_t*) [15]
+                0.00    0.00 1684851/1684851     IpsSession::checkSession(packet_t*) [16]
+                0.00    0.00 1683692/1683692     preBuildData(packet_t*, unsigned char*, int, int) [17]
+                0.00    0.00 1683692/1683692     IpsMatch::ruleFilter(packet_t*, unsigned char*) [18]
+                0.00    0.00      42/42          IpsMatch::is_check_matchSession(packet_t*, int) [32]
+                0.00    0.00      42/84          IpsMatch::getRule(int) [24]
+                0.00    0.00      42/42          IpsLog::logEnqueue(unsigned char*, packet_t*, int) [28]
+-----------------------------------------------
+                0.00    0.00 1684851/1684851     packet_filter(unsigned char*, packet_t*, int) [14]
+[15]     0.0    0.00    0.00 1684851         setFlow(packet_t*) [15]
+                0.00    0.00 2526604/2526604     is_dbPort(unsigned short) [10]
+-----------------------------------------------
+                0.00    0.00 1684851/1684851     packet_filter(unsigned char*, packet_t*, int) [14]
+[16]     0.0    0.00    0.00 1684851         IpsSession::checkSession(packet_t*) [16]
+                0.00    0.00 1683692/2103366     IpsSession::makeSession(packet_t*) [11]
+                0.00    0.00  840548/840548      IpsSession::checkAttack(packet_t*) [19]
+                0.00    0.00      38/38          IpsSession::addSession(packet_t*, int) [34]
+                0.00    0.00       8/8           IpsSession::delSession(packet_t*, int) [40]
+-----------------------------------------------
+                0.00    0.00 1683692/1683692     packet_filter(unsigned char*, packet_t*, int) [14]
+[17]     0.0    0.00    0.00 1683692         preBuildData(packet_t*, unsigned char*, int, int) [17]
+-----------------------------------------------
+                0.00    0.00 1683692/1683692     packet_filter(unsigned char*, packet_t*, int) [14]
+[18]     0.0    0.00    0.00 1683692         IpsMatch::ruleFilter(packet_t*, unsigned char*) [18]
+                0.00    0.00 3367384/3367384     IpsMatch::compareSession(int, packet_t*) [9]
+                0.00    0.00  419632/2103366     IpsSession::makeSession(packet_t*) [11]
+                0.00    0.00  419632/419632      IpsSession::getSession(int) [20]
+-----------------------------------------------
+                0.00    0.00  840548/840548      IpsSession::checkSession(packet_t*) [16]
+[19]     0.0    0.00    0.00  840548         IpsSession::checkAttack(packet_t*) [19]
+-----------------------------------------------
+                0.00    0.00  419632/419632      IpsMatch::ruleFilter(packet_t*, unsigned char*) [18]
+[20]     0.0    0.00    0.00  419632         IpsSession::getSession(int) [20]
+-----------------------------------------------
+                0.00    0.00     154/154         IpsMatch::is_read_rules(char*) [69]
+[21]     0.0    0.00    0.00     154         IpsMatch::setRules(char*, char*, int) [21]
+                0.00    0.00      40/40          IpsMatch::convertValue(char*, char*, int) [33]
+-----------------------------------------------
+                0.00    0.00      42/147         IpsLog::dequeue(logQueue_t*) [29]
+                0.00    0.00     105/147         IpsLog::is_empty_logQueue() [23]
+[22]     0.0    0.00    0.00     147         IpsLog::is_empty(logQueue_t*) [22]
+-----------------------------------------------
+                0.00    0.00     105/105         log_insert(void*) [73]
+[23]     0.0    0.00    0.00     105         IpsLog::is_empty_logQueue() [23]
+                0.00    0.00     105/147         IpsLog::is_empty(logQueue_t*) [22]
+-----------------------------------------------
+                0.00    0.00      42/84          IpsLog::logEnqueue(unsigned char*, packet_t*, int) [28]
+                0.00    0.00      42/84          packet_filter(unsigned char*, packet_t*, int) [14]
+[24]     0.0    0.00    0.00      84         IpsMatch::getRule(int) [24]
+-----------------------------------------------
+                0.00    0.00      42/42          packet_sniff(unsigned char*, pcap_pkthdr const*, unsigned char const*) [84]
+[25]     0.0    0.00    0.00      42         print_to_console(packet_t const*, unsigned char const*, int, int) [25]
+-----------------------------------------------
+                0.00    0.00      42/42          IpsLog::logEnqueue(unsigned char*, packet_t*, int) [28]
+[26]     0.0    0.00    0.00      42         bin_to_hex(unsigned char const*, unsigned long, char*) [26]
+-----------------------------------------------
+                0.00    0.00      42/42          log_insert(void*) [73]
+[27]     0.0    0.00    0.00      42         IpsLog::logDequeue() [27]
+                0.00    0.00      42/42          IpsLog::dequeue(logQueue_t*) [29]
+-----------------------------------------------
+                0.00    0.00      42/42          packet_filter(unsigned char*, packet_t*, int) [14]
+[28]     0.0    0.00    0.00      42         IpsLog::logEnqueue(unsigned char*, packet_t*, int) [28]
+                0.00    0.00      42/42          bin_to_hex(unsigned char const*, unsigned long, char*) [26]
+                0.00    0.00      42/84          IpsMatch::getRule(int) [24]
+                0.00    0.00      42/42          IpsLog::enqueue(logQueue_t*, char*) [30]
+-----------------------------------------------
+                0.00    0.00      42/42          IpsLog::logDequeue() [27]
+[29]     0.0    0.00    0.00      42         IpsLog::dequeue(logQueue_t*) [29]
+                0.00    0.00      42/147         IpsLog::is_empty(logQueue_t*) [22]
+-----------------------------------------------
+                0.00    0.00      42/42          IpsLog::logEnqueue(unsigned char*, packet_t*, int) [28]
+[30]     0.0    0.00    0.00      42         IpsLog::enqueue(logQueue_t*, char*) [30]
+                0.00    0.00      42/42          IpsLog::is_full(logQueue_t*) [31]
+-----------------------------------------------
+                0.00    0.00      42/42          IpsLog::enqueue(logQueue_t*, char*) [30]
+[31]     0.0    0.00    0.00      42         IpsLog::is_full(logQueue_t*) [31]
+-----------------------------------------------
+                0.00    0.00      42/42          packet_filter(unsigned char*, packet_t*, int) [14]
+[32]     0.0    0.00    0.00      42         IpsMatch::is_check_matchSession(packet_t*, int) [32]
+                0.00    0.00      42/2103366     IpsSession::makeSession(packet_t*) [11]
+-----------------------------------------------
+                0.00    0.00      40/40          IpsMatch::setRules(char*, char*, int) [21]
+[33]     0.0    0.00    0.00      40         IpsMatch::convertValue(char*, char*, int) [33]
+                0.00    0.00      20/20          IpsMatch::inValue(int, char*, int) [36]
+                0.00    0.00      12/12          IpsMatch::cutdp_both(char*) [37]
+                0.00    0.00      11/11          IpsMatch::preBuildContent(char*, int, char*) [39]
+                0.00    0.00      10/24          strim_both(char*) [35]
+                0.00    0.00       1/1           IpsMatch::inIPValue(int, char*, unsigned int) [71]
+-----------------------------------------------
+                0.00    0.00      38/38          IpsSession::checkSession(packet_t*) [16]
+[34]     0.0    0.00    0.00      38         IpsSession::addSession(packet_t*, int) [34]
+-----------------------------------------------
+                0.00    0.00       5/24          IpsLog::is_read_logInfo() [67]
+                0.00    0.00       9/24          get_dump_conf(char const*, char const*, char*, int) [38]
+                0.00    0.00      10/24          IpsMatch::convertValue(char*, char*, int) [33]
+[35]     0.0    0.00    0.00      24         strim_both(char*) [35]
+-----------------------------------------------
+                0.00    0.00      20/20          IpsMatch::convertValue(char*, char*, int) [33]
+[36]     0.0    0.00    0.00      20         IpsMatch::inValue(int, char*, int) [36]
+-----------------------------------------------
+                0.00    0.00      12/12          IpsMatch::convertValue(char*, char*, int) [33]
+[37]     0.0    0.00    0.00      12         IpsMatch::cutdp_both(char*) [37]
+-----------------------------------------------
+                0.00    0.00      11/11          init_program(int) [60]
+[38]     0.0    0.00    0.00      11         get_dump_conf(char const*, char const*, char*, int) [38]
+                0.00    0.00       9/24          strim_both(char*) [35]
+-----------------------------------------------
+                0.00    0.00      11/11          IpsMatch::convertValue(char*, char*, int) [33]
+[39]     0.0    0.00    0.00      11         IpsMatch::preBuildContent(char*, int, char*) [39]
+-----------------------------------------------
+                0.00    0.00       8/8           IpsSession::checkSession(packet_t*) [16]
+[40]     0.0    0.00    0.00       8         IpsSession::delSession(packet_t*, int) [40]
+-----------------------------------------------
+                0.00    0.00       5/5           IpsSession::printSession() [62]
+[41]     0.0    0.00    0.00       5         IpsSession::existSession() [41]
+-----------------------------------------------
+                0.00    0.00       1/3           main [6]
+                0.00    0.00       1/3           init_program(int) [60]
+                0.00    0.00       1/3           stop_processor(int) [77]
+[42]     0.0    0.00    0.00       3         log_printf(char*, char const*, ...) [42]
+-----------------------------------------------
+                0.00    0.00       1/1           __libc_csu_init [100]
+[43]     0.0    0.00    0.00       1         _GLOBAL__sub_I__Z16init_net_monitori [43]
+                0.00    0.00       1/1           __static_initialization_and_destruction_0(int, int) [56]
+-----------------------------------------------
+                0.00    0.00       1/1           __libc_csu_init [100]
+[44]     0.0    0.00    0.00       1         _GLOBAL__sub_I__ZN10IpsSession12checkSessionEP8packet_t [44]
+                0.00    0.00       1/1           __static_initialization_and_destruction_0(int, int) [57]
+-----------------------------------------------
+                0.00    0.00       1/1           __libc_csu_init [100]
+[45]     0.0    0.00    0.00       1         _GLOBAL__sub_I__ZN6IpsLog15is_read_logInfoEv [45]
+                0.00    0.00       1/1           __static_initialization_and_destruction_0(int, int) [54]
+-----------------------------------------------
+                0.00    0.00       1/1           __libc_csu_init [100]
+[46]     0.0    0.00    0.00       1         _GLOBAL__sub_I_g_conf [46]
+                0.00    0.00       1/1           __static_initialization_and_destruction_0(int, int) [53]
+-----------------------------------------------
+                0.00    0.00       1/1           __libc_csu_init [100]
+[47]     0.0    0.00    0.00       1         _GLOBAL__sub_I_g_license_string [47]
+                0.00    0.00       1/1           __static_initialization_and_destruction_0(int, int) [58]
+-----------------------------------------------
+                0.00    0.00       1/1           __libc_csu_init [100]
+[48]     0.0    0.00    0.00       1         _GLOBAL__sub_I_rule_field_name [48]
+                0.00    0.00       1/1           __static_initialization_and_destruction_0(int, int) [55]
+-----------------------------------------------
+                0.00    0.00       1/1           main [6]
+[49]     0.0    0.00    0.00       1         getopt_long2(int, char**, char*, option2 const*, int*, char**) [49]
+-----------------------------------------------
+                0.00    0.00       1/1           init_server_agent(configure_t*) [52]
+[50]     0.0    0.00    0.00       1         init_net_monitor(int) [50]
+                0.00    0.00       1/1           init_resetpacket(char const*) [51]
+-----------------------------------------------
+                0.00    0.00       1/1           init_net_monitor(int) [50]
+[51]     0.0    0.00    0.00       1         init_resetpacket(char const*) [51]
+-----------------------------------------------
+                0.00    0.00       1/1           main [6]
+[52]     0.0    0.00    0.00       1         init_server_agent(configure_t*) [52]
+                0.00    0.00       1/1           create_pcap_handler(char const*, char*) [61]
+                0.00    0.00       1/1           init_net_monitor(int) [50]
+-----------------------------------------------
+                0.00    0.00       1/1           _GLOBAL__sub_I_g_conf [46]
+[53]     0.0    0.00    0.00       1         __static_initialization_and_destruction_0(int, int) [53]
+                0.00    0.00       1/1           IpsMatch::IpsMatch() [72]
+                0.00    0.00       1/1           IpsLog::IpsLog() [68]
+                0.00    0.00       1/1           IpsSession::IpsSession() [63]
+-----------------------------------------------
+                0.00    0.00       1/1           _GLOBAL__sub_I__ZN6IpsLog15is_read_logInfoEv [45]
+[54]     0.0    0.00    0.00       1         __static_initialization_and_destruction_0(int, int) [54]
+-----------------------------------------------
+                0.00    0.00       1/1           _GLOBAL__sub_I_rule_field_name [48]
+[55]     0.0    0.00    0.00       1         __static_initialization_and_destruction_0(int, int) [55]
+-----------------------------------------------
+                0.00    0.00       1/1           _GLOBAL__sub_I__Z16init_net_monitori [43]
+[56]     0.0    0.00    0.00       1         __static_initialization_and_destruction_0(int, int) [56]
+-----------------------------------------------
+                0.00    0.00       1/1           _GLOBAL__sub_I__ZN10IpsSession12checkSessionEP8packet_t [44]
+[57]     0.0    0.00    0.00       1         __static_initialization_and_destruction_0(int, int) [57]
+-----------------------------------------------
+                0.00    0.00       1/1           _GLOBAL__sub_I_g_license_string [47]
+[58]     0.0    0.00    0.00       1         __static_initialization_and_destruction_0(int, int) [58]
+-----------------------------------------------
+                0.00    0.00       1/1           init_program(int) [60]
+[59]     0.0    0.00    0.00       1         strncpy2(char*, char const*, unsigned long) [59]
+-----------------------------------------------
+                0.00    0.00       1/1           main [6]
+[60]     0.0    0.00    0.00       1         init_program(int) [60]
+                0.00    0.00      11/11          get_dump_conf(char const*, char const*, char*, int) [38]
+                0.00    0.00       1/1           IpsMatch::is_read_rules(char*) [69]
+                0.00    0.00       1/1           IpsMatch::is_compile_rule() [70]
+                0.00    0.00       1/1           IpsLog::is_read_logInfo() [67]
+                0.00    0.00       1/1           IpsLog::connect_db() [64]
+                0.00    0.00       1/1           IpsLog::conn_policy() [66]
+                0.00    0.00       1/1           IpsLog::create_log() [65]
+                0.00    0.00       1/1           strncpy2(char*, char const*, unsigned long) [59]
+                0.00    0.00       1/3           log_printf(char*, char const*, ...) [42]
+-----------------------------------------------
+                0.00    0.00       1/1           init_server_agent(configure_t*) [52]
+[61]     0.0    0.00    0.00       1         create_pcap_handler(char const*, char*) [61]
+-----------------------------------------------
+                0.00    0.00       1/1           IpsSession::printSessionWrapper(void*) [87]
+[62]     0.0    0.00    0.00       1         IpsSession::printSession() [62]
+                0.00    0.00       5/5           IpsSession::existSession() [41]
+-----------------------------------------------
+                0.00    0.00       1/1           __static_initialization_and_destruction_0(int, int) [53]
+[63]     0.0    0.00    0.00       1         IpsSession::IpsSession() [63]
+-----------------------------------------------
+                0.00    0.00       1/1           init_program(int) [60]
+[64]     0.0    0.00    0.00       1         IpsLog::connect_db() [64]
+-----------------------------------------------
+                0.00    0.00       1/1           init_program(int) [60]
+[65]     0.0    0.00    0.00       1         IpsLog::create_log() [65]
+-----------------------------------------------
+                0.00    0.00       1/1           init_program(int) [60]
+[66]     0.0    0.00    0.00       1         IpsLog::conn_policy() [66]
+-----------------------------------------------
+                0.00    0.00       1/1           init_program(int) [60]
+[67]     0.0    0.00    0.00       1         IpsLog::is_read_logInfo() [67]
+                0.00    0.00       5/24          strim_both(char*) [35]
+-----------------------------------------------
+                0.00    0.00       1/1           __static_initialization_and_destruction_0(int, int) [53]
+[68]     0.0    0.00    0.00       1         IpsLog::IpsLog() [68]
+-----------------------------------------------
+                0.00    0.00       1/1           init_program(int) [60]
+[69]     0.0    0.00    0.00       1         IpsMatch::is_read_rules(char*) [69]
+                0.00    0.00     154/154         IpsMatch::setRules(char*, char*, int) [21]
+-----------------------------------------------
+                0.00    0.00       1/1           init_program(int) [60]
+[70]     0.0    0.00    0.00       1         IpsMatch::is_compile_rule() [70]
+-----------------------------------------------
+                0.00    0.00       1/1           IpsMatch::convertValue(char*, char*, int) [33]
+[71]     0.0    0.00    0.00       1         IpsMatch::inIPValue(int, char*, unsigned int) [71]
+-----------------------------------------------
+                0.00    0.00       1/1           __static_initialization_and_destruction_0(int, int) [53]
+[72]     0.0    0.00    0.00       1         IpsMatch::IpsMatch() [72]
+-----------------------------------------------
+
+ This table describes the call tree of the program, and was sorted by
+ the total amount of time spent in each function and its children.
+
+ Each entry in this table consists of several lines.  The line with the
+ index number at the left hand margin lists the current function.
+ The lines above it list the functions that called this function,
+ and the lines below it list the functions this one called.
+ This line lists:
+     index	A unique number given to each element of the table.
+		Index numbers are sorted numerically.
+		The index number is printed next to every function name so
+		it is easier to look up where the function is in the table.
+
+     % time	This is the percentage of the `total' time that was spent
+		in this function and its children.  Note that due to
+		different viewpoints, functions excluded by options, etc,
+		these numbers will NOT add up to 100%.
+
+     self	This is the total amount of time spent in this function.
+
+     children	This is the total amount of time propagated into this
+		function by its children.
+
+     called	This is the number of times the function was called.
+		If the function called itself recursively, the number
+		only includes non-recursive calls, and is followed by
+		a `+' and the number of recursive calls.
+
+     name	The name of the current function.  The index number is
+		printed after it.  If the function is a member of a
+		cycle, the cycle number is printed between the
+		function's name and the index number.
+
+
+ For the function's parents, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the function into this parent.
+
+     children	This is the amount of time that was propagated from
+		the function's children into this parent.
+
+     called	This is the number of times this parent called the
+		function `/' the total number of times the function
+		was called.  Recursive calls to the function are not
+		included in the number after the `/'.
+
+     name	This is the name of the parent.  The parent's index
+		number is printed after it.  If the parent is a
+		member of a cycle, the cycle number is printed between
+		the name and the index number.
+
+ If the parents of the function cannot be determined, the word
+ `<spontaneous>' is printed in the `name' field, and all the other
+ fields are blank.
+
+ For the function's children, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the child into the function.
+
+     children	This is the amount of time that was propagated from the
+		child's children to the function.
+
+     called	This is the number of times the function called
+		this child `/' the total number of times the child
+		was called.  Recursive calls by the child are not
+		listed in the number after the `/'.
+
+     name	This is the name of the child.  The child's index
+		number is printed after it.  If the child is a
+		member of a cycle, the cycle number is printed
+		between the name and the index number.
+
+ If there are any cycles (circles) in the call graph, there is an
+ entry for the cycle-as-a-whole.  This entry shows who called the
+ cycle (as parents) and the members of the cycle (as children.)
+ The `+' recursive calls entry shows the number of function calls that
+ were internal to the cycle, and the calls entry for each member shows,
+ for that member, how many times it was called from other members of
+ the cycle.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+
+Index by function name
+
+  [43] _GLOBAL__sub_I__Z16init_net_monitori [26] bin_to_hex(unsigned char const*, unsigned long, char*) [66] IpsLog::conn_policy()
+  [44] _GLOBAL__sub_I__ZN10IpsSession12checkSessionEP8packet_t [60] init_program(int) [67] IpsLog::is_read_logInfo()
+  [45] _GLOBAL__sub_I__ZN6IpsLog15is_read_logInfoEv [8] is_skip_port(unsigned short) [23] IpsLog::is_empty_logQueue()
+  [46] _GLOBAL__sub_I_g_conf  [12] decode_packet(packet_t*, int, unsigned char const*) [29] IpsLog::dequeue(logQueue_t*)
+  [47] _GLOBAL__sub_I_g_license_string [14] packet_filter(unsigned char*, packet_t*, int) [30] IpsLog::enqueue(logQueue_t*, char*)
+  [48] _GLOBAL__sub_I_rule_field_name [61] create_pcap_handler(char const*, char*) [31] IpsLog::is_full(logQueue_t*)
+  [42] log_printf(char*, char const*, ...) [13] get_ipmac_from_ippkt(unsigned char const*, packet_t*) [22] IpsLog::is_empty(logQueue_t*)
+  [35] strim_both(char*)      [15] setFlow(packet_t*)     [68] IpsLog::IpsLog()
+  [49] getopt_long2(int, char**, char*, option2 const*, int*, char**) [10] is_dbPort(unsigned short) [37] IpsMatch::cutdp_both(char*)
+  [17] preBuildData(packet_t*, unsigned char*, int, int) [34] IpsSession::addSession(packet_t*, int) [18] IpsMatch::ruleFilter(packet_t*, unsigned char*)
+  [38] get_dump_conf(char const*, char const*, char*, int) [40] IpsSession::delSession(packet_t*, int) [33] IpsMatch::convertValue(char*, char*, int)
+  [50] init_net_monitor(int)  [20] IpsSession::getSession(int) [69] IpsMatch::is_read_rules(char*)
+  [51] init_resetpacket(char const*) [19] IpsSession::checkAttack(packet_t*) [9] IpsMatch::compareSession(int, packet_t*)
+  [25] print_to_console(packet_t const*, unsigned char const*, int, int) [11] IpsSession::makeSession(packet_t*) [70] IpsMatch::is_compile_rule()
+  [52] init_server_agent(configure_t*) [16] IpsSession::checkSession(packet_t*) [39] IpsMatch::preBuildContent(char*, int, char*)
+  [53] __static_initialization_and_destruction_0(int, int) [41] IpsSession::existSession() [32] IpsMatch::is_check_matchSession(packet_t*, int)
+  [54] __static_initialization_and_destruction_0(int, int) [62] IpsSession::printSession() [24] IpsMatch::getRule(int)
+  [55] __static_initialization_and_destruction_0(int, int) [63] IpsSession::IpsSession() [36] IpsMatch::inValue(int, char*, int)
+  [56] __static_initialization_and_destruction_0(int, int) [64] IpsLog::connect_db() [21] IpsMatch::setRules(char*, char*, int)
+  [57] __static_initialization_and_destruction_0(int, int) [65] IpsLog::create_log() [71] IpsMatch::inIPValue(int, char*, unsigned int)
+  [58] __static_initialization_and_destruction_0(int, int) [27] IpsLog::logDequeue() [72] IpsMatch::IpsMatch()
+  [59] strncpy2(char*, char const*, unsigned long) [28] IpsLog::logEnqueue(unsigned char*, packet_t*, int)

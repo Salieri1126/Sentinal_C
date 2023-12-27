@@ -98,7 +98,7 @@ void *init_net_monitor(int nic_index)
 		return NULL;
 	}
 	/////////////////////////////////////////////////
-	
+
 	pcap_loop(g_conf.pd[nic_index], NEVER_ENDING_MODE, packet_sniff, (u_char*)&u_nic_index);
 
 	g_conf.is_running = 0;
@@ -308,7 +308,7 @@ static int packet_filter(u_char *packet, packet_t *p, int nic_index)
 		fprintf(stderr, "%s,%d: Flow(%d) %x:%d -> %x:%d dsize:%d\n", __func__, __LINE__, p->flow, p->sip, p->sp, p->dip, p->dp, p->dsize);
 
 	//	세션 확인
-	if( sess.checkSession(p) ) 
+	if( sess.checkSession(p) == 1 ) 
 		return ACTION_LOG;
 
 	//	룰 중에 content가 없는 IP와 PORT를 먼저 비교하여 차단
@@ -317,13 +317,14 @@ static int packet_filter(u_char *packet, packet_t *p, int nic_index)
 		if(rules.is_check_matchSession(p, ruleIndex) ){
 			return ACTION_PASS;
 		}
-		printf("(Detected_Name : %s)  ", (rules.getRule(ruleIndex))->deName);
+		printf("(Detected_Name : %s)\n", (rules.getRule(ruleIndex))->deName);
 		logs.logEnqueue(packet, p, ruleIndex);
 		return ACTION_LOG;
 	}
 
+	memset( p->nocase, 0, sizeof(p->nocase) );
 	preBuildData(p, packet, p->dsize, p->caplen - p->dsize);
-	
+
 	//	룰 매칭 확인
 	ruleIndex = rules.ruleFilter(p, p->nocase);
 	if ( ruleIndex != -1 && p->flow == 1){
@@ -331,7 +332,7 @@ static int packet_filter(u_char *packet, packet_t *p, int nic_index)
 			return ACTION_PASS;
 		}
 		rule_t* match = rules.getRule(ruleIndex);
-		printf("(Detected_Name : %s) ", match->deName); 
+		printf("(Detected_Name : %s)\n", match->deName); 
 		logs.logEnqueue(packet, p, ruleIndex);
 		return ACTION_LOG;
 	}

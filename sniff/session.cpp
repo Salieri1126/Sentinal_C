@@ -22,8 +22,6 @@ void* finDelSession(void* index);
  */
 int IpsSession::checkSession(packet_t *p){
 
-	time_t curTime = time(NULL);
-
 	if( !p || p->flow == 0 )
 		return -1;
 
@@ -44,6 +42,7 @@ int IpsSession::checkSession(packet_t *p){
 			// 1. 그냥 추가
 			// 2. 비정상 접근 변수 추가
 			// 3. 비정상 접근 배열 하나 더
+			addSession(p, nIndex);
 		}
 		return 0;
 	}
@@ -52,11 +51,11 @@ int IpsSession::checkSession(packet_t *p){
 	// 관리중인 세션 중 기준시간(1시간)이 지났으면 세션 삭제
 	// 시간이 지났는데 SYN 패킷이라면 세션 초기화
 	// 시간이 지났는데 SYN 패킷이 아니라면 세션 초기화
-	if( difftime( curTime, m_astSession[nIndex].e_time ) > MAX_SESSION_TIME ){
+	/*if( difftime( curTime, m_astSession[nIndex].e_time ) > MAX_SESSION_TIME ){
 		delSession(nIndex);
 		addSession(p, nIndex);
 	}
-
+*/
 	// 관리중인 세션 중 RST 패킷이 들어오면 세션 삭제
 	if( p->tcph->th_flags & R_RST ) {
 		delSession(nIndex);
@@ -73,10 +72,8 @@ int IpsSession::checkSession(packet_t *p){
 	// 시간이 지났는데 SYN 패킷이라면 FIN LIST 삭제하고 addSession
 	// 시간이 지났는데 SYN 패킷이 아니라면 FIN LIST 삭제하고 delSession
 	if( check_finSession() ){
-		if( p->tcph->th_flags & R_SYN ){
-			addSession(p, nIndex);
-			return 0;
-		}
+		addSession(p, nIndex);
+		return 0;
 	}
 
 	// 관리 중인 세션이면서 RST과 FIN이 아닐경우 세션에 카운트 추가, 세션 마지막 시간 최신화
@@ -116,8 +113,7 @@ int IpsSession::check_finSession(){
 		m_nFinCnt = 0;
 
 	for( u_int i = 0 ; i < m_nFinCnt ; i++ ){
-		if( difftime(curTime, m_astFinSession[i].fin_time) > 5 ){
-			delSession( (m_astFinSession[i].fin_session % MAX_SESSION_NUM) );
+		if( difftime(curTime, m_astFinSession[i].fin_time) > 120 ){
 			memset( &m_astFinSession[i], 0, sizeof(finSession_t) );
 		}
 	}
@@ -223,7 +219,7 @@ int IpsSession::printSession(){
 			continue;
 		}
 
-		sleep(10);
+		sleep(600);
 
 		struct in_addr *ip_src;
 		struct in_addr *ip_dst;
@@ -250,7 +246,7 @@ int IpsSession::printSession(){
 			memcpy( cDst_ip, inet_ntoa(*ip_dst), sizeof(cDst_ip)-1 );
 
 			if( difftime(tmpTime,(m_astSession[i].s_time)) <= 120 ){
-				printf("(%s:%d)->(%s:%d) Cnt : %d Size : %d\n", cSrc_ip, m_astSession[i].p_session.sp, cDst_ip, m_astSession[i].p_session.dp, m_astSession[i].session_cnt, m_astSession[i].data_size);
+				printf("%d (%s:%d)->(%s:%d) Cnt : %d Size : %d\n", i, cSrc_ip, m_astSession[i].p_session.sp, cDst_ip, m_astSession[i].p_session.dp, m_astSession[i].session_cnt, m_astSession[i].data_size);
 
 			}
 		}

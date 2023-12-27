@@ -1,0 +1,80 @@
+[13:59:55] main()-89: START
+[13:59:56] init_program()-492
+[13:59:56] readPolicyDB()-134
+[14:01:01] New session 4110851081 0 0:-1096790774 -> 808a:-1096790774
+[14:04:46] Del session : Count(0) bea04d0a:32906 -> bea04d0a:3306
+[14:05:00] New session 714083696 0 0:-1096790774 -> ccd6:1275308224
+[14:05:41] Del session : Count(0) bea04d0a:52438 -> 4c03a8c0:3306
+[14:06:52] New session 2101455134 0 0:-1096790774 -> 9790:-1096790774
+[14:07:53] Del session : Count(0) bea04d0a:38800 -> bea04d0a:3306
+[14:08:13] New session 2101476126 0 0:-1096790774 -> aed0:-1096790774
+[14:21:57] Del session : Count(0) bea04d0a:44752 -> bea04d0a:3306
+[14:22:21] New session 4110853129 0 0:-1096790774 -> 9522:-1096790774
+[14:23:37] Del session : Count(0) bea04d0a:38178 -> bea04d0a:3306
+[14:23:43] New session 2101455110 0 0:-1096790774 -> c79c:-1096790774
+[14:23:43] Del session : Count(0) bea04d0a:51100 -> bea04d0a:3306
+[14:23:54] New session 4110771209 0 0:-1096790774 -> d972:-1096790774
+[14:23:54] Del session : Count(0) bea04d0a:55666 -> bea04d0a:3306
+[14:24:14] New session 4110937097 0 0:-1096790774 -> aece:-1096790774
+[14:26:44] Del session : Count(0) bea04d0a:44750 -> bea04d0a:3306
+[14:26:48] New session 2101467406 0 0:-1096790774 -> b948:-1096790774
+[14:27:16] Del session : Count(0) bea04d0a:47432 -> bea04d0a:3306
+[14:27:57] New session 4110855177 0 0:-1096790774 -> d25e:-1096790774
+[14:27:57] Del session : Count(0) bea04d0a:53854 -> bea04d0a:3306
+[14:28:01] New session 4110853129 0 0:-1096790774 -> c75e:-1096790774
+[14:30:20] Del session : Count(0) bea04d0a:51038 -> bea04d0a:3306
+[14:30:35] New session 2101455118 0 0:-1096790774 -> 85d8:-1096790774
+[14:30:35] Del session : Count(0) bea04d0a:34264 -> bea04d0a:3306
+[14:30:48] New session 178520908 0 0:-1096790774 -> c8cc:1275308224
+[14:31:35] Del session : Count(0) bea04d0a:51404 -> 4c03a8c0:3306
+[14:53:04] stop_processor()-342: signal=15
+[14:53:04] main() 265: End of program
+[18:05:47] main()-89: START
+[18:06:00] main()-89: START
+[18:06:01] init_program()-492
+[18:06:02] readPolicyDB()-134
+[18:06:22] main()-89: START
+[18:06:22] stop_processor()-342: signal=2
+[18:06:30] main()-89: START
+[18:06:31] init_program()-492
+[18:06:31] readPolicyDB()-134
+[18:06:36] main()-89: START
+[18:06:36] stop_processor()-342: signal=2
+[19:21:23] main()-89: START
+[19:21:24] init_program()-492
+[19:21:24] readPolicyDB()-134
+[19:26:26] main()-89: START
+[19:26:26] stop_processor()-342: signal=2
+[19:26:27] init_program()-492
+[19:26:27] readPolicyDB()-134
+[19:30:05] main()-89: START
+[19:30:05] stop_processor()-342: signal=2
+[19:30:06] init_program()-492
+[19:30:06] readPolicyDB()-134
+[19:30:38] main()-89: START
+[19:30:38] stop_processor()-342: signal=2
+[19:31:09] main()-89: START
+[19:31:38] main()-89: START
+[19:31:42] main()-89: START
+[19:31:45] main()-89: START
+[19:31:46] init_program()-492
+[19:31:46] readPolicyDB()-134
+[19:32:05] main()-89: START
+[19:32:05] stop_processor()-342: signal=2
+[19:32:55] main()-89: START
+[19:32:56] init_program()-492
+[19:32:56] readPolicyDB()-134
+[19:34:45] New session 4127835381 0 0:855746752 -> c38d:-939415360
+[19:35:20] main()-89: START
+[19:35:20] stop_processor()-342: signal=2
+[19:35:21] init_program()-492
+[19:35:21] readPolicyDB()-134
+[19:35:40] main()-89: START
+[19:35:40] stop_processor()-342: signal=2
+[19:36:01] main()-89: START
+[19:36:04] main()-89: START
+[19:36:05] init_program()-492
+[19:36:05] readPolicyDB()-134
+[19:38:19] New session 3626449655 0 0:855746752 -> c39f:-939415360
+[19:40:48] New session 3626449783 5 3301a8c0:50103 -> c801a8c0:4002
+[19:40:53] New session 4127837893 10 3301a8c0:50105 -> c801a8c0:4002

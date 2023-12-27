@@ -1,0 +1,11 @@
+[23:44:48] main()-82: START
+[23:44:49] init_program()-340
+[23:48:49] main()-82: START
+[23:48:49] init_program()-340
+[23:49:20] stop_processor()-359: signal=2
+[23:50:46] main()-82: START
+[23:50:46] init_program()-340
+[23:55:04] main()-82: START
+[23:55:04] init_program()-340
+[23:56:59] main()-82: START
+[23:56:59] init_program()-340
