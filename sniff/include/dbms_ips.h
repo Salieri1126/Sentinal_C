@@ -12,7 +12,7 @@
 /*! \file   dbms_ips.h
  *  \date   2010/03/12
  *  \note   N/A
- *  \author JST(zalhae@pnpsecure.com)
+ *  \author PHS(pak0302@gmail.com)
  *  \brief  dbms_ips 1.0
  *  \remark
  *   - packet sniffer

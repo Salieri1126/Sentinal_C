@@ -11,7 +11,7 @@
 
 /**
  * @file util.c
- * @author SunTae Jin(zalhae@pnpsecure.com)
+ * @author PHS(pak0302@gmail.com)
  * @brief 플랫폼에 상관없이 동작하도록 지원하기 위한 각종 함수 모음
  * @remark
  *  주요 함수:  getopt_long(), send_reset(), get_dump_conf()

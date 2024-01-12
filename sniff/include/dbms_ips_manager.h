@@ -11,7 +11,7 @@
 
 /*! \file   dbms_ips_manager.h
  *  \date   2010/04/05
- *  \author JST(zalhae@pnpsecure.com)
+ *  \author PHS(pak0302@gmail.com)
  *  \brief  dbms_ips_manager header
  *  \remark
  */

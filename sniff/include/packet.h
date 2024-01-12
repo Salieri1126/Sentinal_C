@@ -17,7 +17,7 @@
 /*! \file   packet.h
  *  \date   2023/08/23
  *  \note   N/A
- *  \author JST(zalhae@pnpsecure.com)
+ *  \author PHS(pak0302@gmail.com)
  *  \brief  net_monitor
  */
 

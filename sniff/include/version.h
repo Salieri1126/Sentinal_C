@@ -2,7 +2,7 @@
  @file version.h
 
  @section  CREATEINFO information
-  - writer: JST(SunTae Jin, zalhae@pnpsecure.com)
+  - writer: PHS(HeeSeung Park, pak0302@gmail.com)
   - date  : 2010-05-07
 
 

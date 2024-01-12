@@ -12,7 +12,7 @@
 /*! \file   policy.h
  *  \date   2023/08/07
  *  \note   N/A
- *  \author JST(zalhae@pnpsecure.com)
+ *  \author PHS(pak0302@gmail.com)
  *  \remark
  *   - 정책 처리 관련 구조체 및 변수 정의
  */

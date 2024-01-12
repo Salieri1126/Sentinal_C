@@ -16,7 +16,7 @@
 /*! \file   init_agent.c
  *  \date   2010.07.12
  *  \note   N/A
- *  \author JST(zalhae@pnpsecure.com)
+ *  \author PHS(pak0302@gmail.com)
  *  \brief  프로그램 구동에 필요한 메모리 초기화 및 환경 변수 값을 읽어 오기 
  */
 

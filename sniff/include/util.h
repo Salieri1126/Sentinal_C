@@ -11,7 +11,7 @@
 
 /**
  * @file util.h
- * @author SunTae Jin(zalhae@pnpsecure.com)
+ * @author PHS(pak0302@gmail.com)
  * @brief util.c¿« header file
  */
 

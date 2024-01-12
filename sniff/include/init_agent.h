@@ -2,11 +2,11 @@
   @file init_agent.h
 
   @section  CREATEINFO information
-	- writer: JST(SunTae Jin, zalhae@pnpsecure.com)
+	- writer: PHS(HeeSeung Park, pak0302@gmail.com)
 	- date  : 2010-03-12
 
   @section MODIFYINFO modify info
-	- JST/2010-03-12 : 최초 작성
+	- JST/2023-11-07 : 최초 작성
   @brief 프로그램 초기화 관련 함수 정의
 */
 

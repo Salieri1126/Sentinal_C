@@ -13,7 +13,7 @@
  * \file   net_monitor.c
  * \date   2010.07.12
  * \note   N/A
- * \author JST(zalhae@pnpsecure.com)
+ * \author PHS(pak0302@gmail.com) 
  * \brief  TCP/IP packet sniffer
  * \remark
  *  TODO: 멀티 CPU환경에서 잘 동작하도록 수정 (CPU Channel 개념 도입)

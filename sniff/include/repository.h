@@ -11,7 +11,7 @@
 
 /*! \file   repository.h
  *  \date   2008/09/11
- *  \author JST(zalhae@pnpsecure.com)
+ *  \author PHS(pak0302@gmail.com)
  *  \brief  dbms_ips_manager의 공통 정의
  *  \remark
  *   - 

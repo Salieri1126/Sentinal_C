@@ -9,7 +9,7 @@
 
 /*!
  * \file dbms_ips_manager.c
- * \author SunTae Jin(zalhae@pnpsecure.com)
+ * \author Heeseung Park(pak0302@gmail.com)
  * \brief 
  *  Information required for dbms_ips operation is read from mysql db, 
  *  loaded into memory, and detection and policy management threads are created.
